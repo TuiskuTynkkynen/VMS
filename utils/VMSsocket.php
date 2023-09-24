@@ -1,7 +1,7 @@
 <?php
 //php -q C:\wamp64\www\php_test/socket_test.php
 
-$address = '192.168.8.162';
+$address = $argv[1];
 $port = 8080;
 $clients = array();
 

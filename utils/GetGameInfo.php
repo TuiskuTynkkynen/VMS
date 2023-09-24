@@ -25,6 +25,8 @@ if ($mysqli->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $mysqli->
 $result = $mysqli->query($sql);
 $row = $result->fetch_array(MYSQLI_NUM);
 
+$hasdeckleft = ($row[6] > 0);
+
 $ischargeturn = $row[2];
 $cid = $row[3];
 $nextcid = $cid +1;
@@ -68,7 +70,7 @@ $hand = $mysqli->query($sql);
 if ($mysqli->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $mysqli->error; }
 
 echo "<ingamecontainer>";
-if ($hand->num_rows == 0 && $Ingame !== 0) { 
+if ($hand->num_rows == 0 && $Ingame !== 0 && $hasdeckleft) { 
 	$now = time();
 	$sql = "UPDATE sessions SET status = 0, last_seen = $now WHERE id = $UID";
 	if ($mysqli->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $mysqli->error; }

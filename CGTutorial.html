@@ -1,0 +1,95 @@
+<html>
+<head>
+    <title>Virtuaalinen Moska Simulaattori</title>
+	
+	<link rel="stylesheet" href="CG.css">
+	<style>
+	
+		#notice {
+            position: absolute;
+            top: 50%;
+            left: 34%;
+            height: 35%;
+            width: 32%;
+            background-image: url("imgs/win_img.png");
+            background-size: 100% 100%;
+        }
+
+        #ntc {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            height: 90%;
+            width: 90%;
+            container-type: size;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        #ntctittle {
+            font-weight: 525;
+            font-size: min(2rem, 20cqh);
+            margin: 0;
+        }
+
+        #ntctxt {
+            font-weight: 525;
+            font-size: min(1.4rem, 12.5cqh);
+            margin: 0;
+        }
+	</style>
+</head>
+
+
+<body>
+	<div class="container" ;>
+		<img src="imgs/bg_image.png" ; id="bg_img">
+		<div id="deckinfo">
+			<div id="trumpcard">
+			</div>
+			<div id="trumpsuit" class="hidden">
+			</div>
+			<div id="deck">
+				<img id="deckimg2" ; src="imgs/card_img.png">
+				<p id="deckp"></p>
+			</div>
+		</div>
+		<div id="playerinfo">
+		</div>
+		<div id="handcontainer" ;>
+			<div id="handflexcontainer">
+			</div>
+		</div>
+		<div id="opponentcontainer" ;>
+			<div id="opponentflexcontainer">
+			</div>
+		</div>
+		<div id="chosencontainer" ;>
+			<div id="chosenflexcontainer">
+
+			</div>
+		</div>
+		<div id="fieldcontainer" ;>
+			<div id="fieldflexcontainer">
+				<div class="fieldflex">
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="notice">
+		<div id="ntc">
+			<p id="ntctittle">Tervetuloa VMS:‰‰n</p>
+			<p id="ntctxt">T‰ss‰ lyhyess‰ tutoriaalissa opetetaan kuinka pelia ohjataan</p>
+			<p id="ntctxt">Paina mit‰ tahansa n‰pp‰int‰ jatkaaksesi</p>
+		</div>
+	</div>
+
+
+	<script src="CGTutorial.js">
+	</script>
+
+</body>
