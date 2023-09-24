@@ -1,18 +1,19 @@
-let activeCard = 0;
+let activeCard = -1;
+let target = 3;
 let chosenCards = [];
 let field = [];
 let chargerid = 0;
 let oldchargerid = 0;
 let players = [["0", "Pelaaja1"], ["1", "Pelaaja2"]];
 let isingame = 1;
-let hand = [[1, 1], [1, 1]];
+let hand = [[1, 7], [2, 2], [2, 5], [3, 2], [3, 11], [4, 13]];
 let tcard = [[1, 2]];
 let deckstr = "&thickapprox;30";
-let notice = true;
+let notice = 0;
+let mustkill = 0;
 
 //TODO figure out which of these are needed
 let cancharge;
-let mustkill;
 let arr;
 let cankill = [];
 let playerid = 0;
@@ -60,7 +61,7 @@ function GUI() {
 	}
 
 	str = "";
-	if (mustkill == 0 && (supporting == 0 | field.length > 0)) {
+	if (mustkill == 0 && (/*supporting == 0 |*/ field.length > 0)) {
 		document.getElementById('fieldcontainer').classList.add("offset");
 		for (let i = 0; i < opponent; i++) {
 			str += '<div class=opponentflex> <div class=flexcontent> <img src="imgs/card_img.png"> </div> </div>';
@@ -136,7 +137,7 @@ function InitializeGUI() {
 	document.getElementById('trumpcard').innerHTML = str;
 	document.getElementById('trumpsuit').innerHTML = '<p style=color:' + color + ' > ' + suit + '</p >';
 
-	str = '<div> <div> <p style="left:25%">Pelaajat:</p> </div> </div>';
+	str = '<div> <div> <p style="width:100%; text-align:center">Pelaajat:</p> </div> </div>';
 	for (let i = 0; i < players.length; i++) {
 		str += '<div id="player' + players[i][0] + '"> <div> <p class="nick"> ' + players[i][1] + ' </p> </div> </div>';
 	}
@@ -179,14 +180,99 @@ function ParseCard(array, num) {
 	return [suit, value, color];
 }
 
+function Notice() {
+	notice++;
+	switch (notice) {
+		case 1:
+			document.getElementById("ntctittle").innerHTML = "Tutoriaali:";
+			document.getElementById("ntcmain").innerHTML = "Kädessäsi olevat kortit näkyvät tässä";
+			document.getElementById("handflexcontainer").classList.add("highlight");
+			document.getElementById("notice").style.bottom = "25%";
+			break;
+		case 2:
+			document.getElementById("ntcmain").innerHTML = "Valtti kortti näkyy tässä";
+			document.getElementById("handflexcontainer").classList.remove("highlight");
+			document.getElementById("trumpcard").classList.add("highlight");
+			document.getElementById("notice").style.bottom = "62.5%";
+			document.getElementById("notice").style.left = "15%";
+			break;
+		case 3:
+			document.getElementById("ntcmain").innerHTML = "Pakassa jäljellä olevien korttien määärä näkyy tässä. Lukumäärä ilmoitetaan likiarvona 10 korttiin saakka";
+			document.getElementById("trumpcard").classList.remove("highlight");
+			document.getElementById("deckimg2").classList.add("highlight");
+			break;
+		case 4:
+			document.getElementById("ntcmain").innerHTML = "Pelaajien järjestys näkyy tässä: sinä olet merkattuna keltaisella";
+			document.getElementById("deckimg2").classList.remove("highlight");
+			document.getElementById("playerinfo").classList.add("highlight");
+			document.getElementById("notice").style.bottom = "62.5%";
+			document.getElementById("notice").style.left = "53%";
+			break;
+		case 5:
+			document.getElementById("ntcmain").innerHTML = "Vuoroa merkkaava &ldquo;>&rdquo; symboli on sinun kohdallasi, joten on sinun vuoro ajaa";
+			break;
+		case 6:
+			document.getElementById("ntcmain").innerHTML = "Voit vaihataa aktiivista korttia oikealla ja vasemalla nuoli näppäimellä";
+			document.getElementById("ntcaux").innerHTML = "Valitse ruutu 2";
+			document.getElementById("playerinfo").classList.remove("highlight");
+			document.getElementById("notice").style.bottom = "25%";
+			document.getElementById("notice").style.left = "";
+			return false;
+			break;
+		case 7:
+			if (activeCard == target) {
+				document.getElementById("ntcmain").innerHTML = "Voit vahvistaa valinnan painamalla enter näppäintä";
+				document.getElementById("ntcaux").innerHTML = "Vahvista valinta";
+			} else { notice--; }
+			return false;
+			break;
+		case 8:
+			if (chosenCards.length > 0) {
+				document.getElementById("ntcmain").innerHTML = "Valitsemasi kortit näkyvät tässä";
+				document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
+				document.getElementById("chosenflexcontainer").style.width = "25%";
+				document.getElementById("chosenflexcontainer").style.transform = "translate(20%)";
+				document.getElementById("chosenflexcontainer").classList.add("highlight");
+				document.getElementById("notice").style.left = "30%";
+			} else { notice--; }
+			return false;
+			break;
+		case 9:
+			target = 1;
+			document.getElementById("ntcmain").innerHTML = "Voit valita usean kortin, jos ne ovat pareja";
+			document.getElementById("ntcaux").innerHTML = "Valitse hertta 2 ja vahvista valinta";
+			document.getElementById("chosenflexcontainer").classList.remove("highlight");
+			document.getElementById("chosenflexcontainer").style.width = "";
+			document.getElementById("chosenflexcontainer").style.transform = "";
+			document.getElementById("notice").style.left = "";
+			return false;
+			break;
+		case 10:
+			if (chosenCards.length > 1) {
+				target = activeCard;
+				document.getElementById("ntcmain").innerHTML = "Voit siirtyä käden, sekä valittuhen korttien välillä ylös ja alas nuoli näppäimillä";
+				document.getElementById("ntcaux").innerHTML = "Valitse &ldquo;aja&rdquo; nappula";
+			} else { notice--; }
+			return false;
+			break;
+		case 11:
+			if (activeCard == -1) {
+				target = -1;
+				document.getElementById("ntcmain").innerHTML = "Voit ajaa painamalla enter näppäintä, kun &ldquo;aja&rdquo; nappula on valittuna";
+				document.getElementById("ntcaux").innerHTML = "Aja";
+			} else { notice--; }
+			return false;
+			break;
+		//TODO continue making these
+		default:
+			return false;
+	}
+	return true;
+}
 
-//TODO actually name this and remember func name used in other places
 function Sumtin() {
 	
-	if (notice) {
-		document.getElementById("notice").classList.add("hidden");
-		notice = false;
-	}
+	if (Notice()) { return; }
 
 	let key = result.code;
 	let oldActiveCard = activeCard;
@@ -196,6 +282,7 @@ function Sumtin() {
 
 	switch (key) {
 		case 'ArrowDown':
+			if (activeCard == target) { break; }
 			activeCard = 0;
 			console.log(activeCard);
 			break;
@@ -205,6 +292,7 @@ function Sumtin() {
 			console.log(activeCard);
 			break;
 		case 'ArrowRight':
+			if (activeCard == target) { break; }
 			if (activeCard < array.length - 1) {
 				activeCard++;
 			}
@@ -212,18 +300,15 @@ function Sumtin() {
 			console.log(activeCard);
 			break;
 		case 'ArrowLeft':
+			if (activeCard == target) { break; }
 			if (activeCard > -1) {
 				activeCard--;
 			}
 			else { activeCard = array.length - 1; }
 			console.log(activeCard);
 			break;
-		case 'Space':
-			//GetGameInfo();
-			//GUI();
-			//TODO remove this debug thing
-			break;
 		case 'Enter':
+			if (activeCard != target) { break; }
 			if (mustkill == 1) { console.log("you killing"); KillTest(); }
 			else { console.log("you charging"); ChargeTest(); }
 			break;
@@ -237,6 +322,7 @@ function Sumtin() {
 			GUI();
 			break;
 	}
+	Notice();
 
 	if (mustkill == 1) {
 		if (activeCard == -1) {
@@ -376,80 +462,15 @@ function KillTest() {
 
 
 function Charge(cards, isSupporting) {
-	console.log(cancharge); console.log(isSupporting);
-	console.log(cards.toString());
-
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function () {
-		str = this.responseText;
-		console.log(str);
-		if (str == "1" | str == "2") {
-			AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
-			return;
-		}
-		document.getElementById("2").innerHTML = str;
-		chosenCards.splice(0, chosenCards.length);
-		console.log("you charged");
-		if (mustkill == 0) {
-			Draw();
-		} else { cankill = []; GetGameInfo(); GUI(); }
-	}
-	xhttp.open("GET", "utils/Charge.php?Cards=" + cards + "&Support=" + isSupporting + "&UID=" + UId + "&ChargeTurn=" + ischargeturn + "&CID=" + chargerid);
-	xhttp.send();
+	console.log("charging");
 }
 
 function Kill(card, killedId) {
-	console.log(hand);
-	console.log(card.toString());
 	console.log("you killed id " + killedId);
-
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function () {
-		x = this.responseText;
-		console.log(x);
-		document.getElementById("3").innerHTML = x;
-		chosenCards.splice(0, chosenCards.length);
-		cankill = [];
-		if (x != "0") { Draw(); }
-		else {
-			GetGameInfo();
-			GUI();
-		}
-	}
-	xhttp.open("GET", "utils/Kill.php?Card=" + card + "&KillsId=" + killedId + "&UID=" + UId);
-	xhttp.send();
 }
 
 function Draw() {
 	console.log("Drawing cards");
-
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function () {
-		GetGameInfo();
-		GUI();
-	}
-	xhttp.open("GET", "utils/Draw.php?UID=" + UId);
-	xhttp.send();
-}
-
-
-function ChangeTrump() {
-	document.getElementById("trump").classList.remove("hidden");
-
-	Input('ChangeTrump');
-	let key = result.code;
-
-	const xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "utils/ChangeTrump.php?UID=" + UId);
-	xhttp.send();
-
-	if (typeof key != 'undefined') {
-		xhttp.onload = function () {
-			document.getElementById("trump").classList.add("hidden");
-			initialized = 0;
-			Sumtin();
-		}
-	}
 }
 
 function Win(winstatus) {

@@ -7,7 +7,7 @@
 	
 		#notice {
             position: absolute;
-            top: 50%;
+            bottom: 32.5%;
             left: 34%;
             height: 35%;
             width: 32%;
@@ -34,10 +34,18 @@
             margin: 0;
         }
 
-        #ntctxt {
+        .ntctxt {
             font-weight: 525;
             font-size: min(1.4rem, 12.5cqh);
             margin: 0;
+        }
+
+        .highlight {
+            border: 2px dashed yellow;
+            border-radius: 3%;
+            padding: 0.5%;
+			padding-right: 1%;
+			box-sizing: border-box;
         }
 	</style>
 </head>
@@ -83,8 +91,8 @@
 	<div id="notice">
 		<div id="ntc">
 			<p id="ntctittle">Tervetuloa VMS:‰‰n</p>
-			<p id="ntctxt">T‰ss‰ lyhyess‰ tutoriaalissa opetetaan kuinka pelia ohjataan</p>
-			<p id="ntctxt">Paina mit‰ tahansa n‰pp‰int‰ jatkaaksesi</p>
+			<p class="ntctxt" id="ntcmain">T‰ss‰ lyhyess‰ tutoriaalissa opetetaan kuinka pelia ohjataan</p>
+			<p class="ntctxt" id="ntcaux">Paina mit‰ tahansa n‰pp‰int‰ jatkaaksesi</p>
 		</div>
 	</div>
 

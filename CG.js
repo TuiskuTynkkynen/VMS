@@ -270,7 +270,7 @@ function InitializeGUI() {
 	document.getElementById('trumpcard').innerHTML = str;
 	document.getElementById('trumpsuit').innerHTML = '<p style=color:' + color + ' > ' + suit + '</p >';
 
-	str = '<div> <div> <p style="left:25%">Pelaajat:</p> </div> </div>';
+	str = '<div> <div> <p style="width:100%; text-align:center">Pelaajat:</p> </div> </div>';
 	for (let i = 0; i < players.length; i++) {
 		str += '<div id="player' + players[i][0] + '"> <div> <p class="nick"> ' + players[i][1] + ' </p> </div> </div>';
 	}
