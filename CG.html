@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>Virtuaalinen Moska Simulaattori</title>
+	
+	<link rel="stylesheet" href="CG.css">
+</head>
+
+
+<body>
+	<div class="container" ;>
+		<img src="imgs/bg_image.png" ; id="bg_img">
+		<div id="deckinfo">
+			<div id="trumpcard">
+			</div>
+			<div id="trumpsuit" class="hidden">
+			</div>
+			<div id="deck">
+				<img id="deckimg2" ; src="imgs/card_img.png">
+				<p id="deckp"></p>
+			</div>
+		</div>
+		<div id="playerinfo">
+		</div>
+		<div id="handcontainer" ;>
+			<div id="handflexcontainer">
+				<!--
+			<div class="flex">
+				<div class="flexcontent">
+					<img src='card_img.png'>
+					<p>1<br>&#9828</p>
+				</div>
+			</div>
+			-->
+			</div>
+		</div>
+		<div id="opponentcontainer" ;>
+			<div id="opponentflexcontainer">
+			</div>
+		</div>
+		<div id="chosencontainer" ;>
+			<div id="chosenflexcontainer">
+
+			</div>
+		</div>
+		<div id="fieldcontainer" ;>
+			<div id="fieldflexcontainer">
+				<div class="fieldflex">
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+<element class="hidden"; id="element";>
+	Welcome <?php echo $_POST["name"];?>
+	<p id="1";> hope this changes into right one </p>
+	<p id="2";> hope this changes </p>
+	<p id="3";> f </p>
+</element>
+
+<element class="hidden"; id="win";>
+		<div id="winbuttons">
+			<button id="spectate">Seuraa peli&#228</button>
+			<button id="leaderboard">Leaderboard</button>
+			<button id="mainmenu">Takaisin valikkoon</button>
+		</div>
+</element>
+
+<element class="hidden"; id="trump";>
+		<div id="oldtrump">
+					<img src='imgs/card_img.png'>
+		</div>
+		<div id="newtrump">
+					<img src='imgs/card_img.png'>
+		</div>
+		<p id="trumparrow";>&#129106</p>
+		<p id="trumcontinue";>Vaihda valttikortti</p>
+</element>
+
+<div id="error" class="hidden">
+		<div id="err">
+		<p id="errtxt">Virhe yhdist&#228ess&#228 palvelimeen</p>
+		<p id="errtxt">Lataa sivu uudelleen tai ota yhteytt&#228 j&#228rjestelm&#228n valvojaan</p>
+		</div>
+</div>
+
+<script src="CG.js">
+</script>
+
+</body>
+</html>

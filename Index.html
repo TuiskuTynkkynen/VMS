@@ -1,0 +1,89 @@
+<html>
+<head>
+    <title>Virtuaalinen Moska Simulaattori</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="Index.css">
+</head>
+
+<body>
+	<div id="container" class="hidden">
+		<img src="imgs/tittle_img.png" ; id="bg_img">
+		<div id="sulicontainer" class="hidden">
+			<div id="signuplogin">
+				<button id="lin">Kirjaudu sis‰‰n</button>
+				<button id="sup">Luo tili</button>
+			</div>
+		</div>
+		<div id="login" class="hidden" ;>
+			<div id="inputs">
+				<label for="account">K‰ytt‰j‰nimi</label>
+				<input id="account" type="text" name="account" maxlength="25" autocomplete="off">
+				<label for="PIN">Pin-koodi</label>
+				<input id="PIN" type="password" name="PIN" maxlength="4" autocomplete="off">
+				<label for="inputtxt">Nimi</label>
+				<input id="inputtxt" type="text" name="name" maxlength="25" autocomplete="off">
+				<p id="incorrect">&nbsp;</p>
+			</div>
+		</div>
+		<div id="main" class="hidden">
+			<div id="menu">
+				<div id="menubuttons">
+					<button id="game">Liity peliin</button>
+					<button id="leaderboard">Leaderboard</button>
+					<button id="name">Vaihda nimi</button>
+					<button id="settings">Pelin asetukset</button>
+				</div>
+			</div>
+			<button id="playerstoggle"> <img src="imgs/players_img"> </button>
+			<div id="playercontainer" class="hidden">
+				<div id="playerinfo">
+					<div class="status">
+						<div class="playerlabel">
+							<p id="playertoggle0" class="playertoggle">&lt+&gt</p>
+							<p id="playerlabel0">Paikalla</p>
+							<p id="playercount0">()</p>
+						</div>
+						<div id="status0" class="hidden"></div>
+					</div>
+					<div class="status">
+						<div class="playerlabel">
+							<p id="playertoggle1" class="playertoggle">&lt+&gt</p>
+							<p id="playerlabel1">Odottaa</p>
+							<p id="playercount1">()</p>
+						</div>
+						<div id="status1" class="hidden"></div>
+					</div>
+					<div class="status">
+						<div class="playerlabel">
+							<p id="playertoggle2" class="playertoggle">&lt+&gt</p>
+							<p id="playerlabel2">Peliss&#228</p>
+							<p id="playercount2">()</p>
+						</div>
+						<div id="status2" class="hidden"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="version">Versio 0.9.1<br>Tuisku Tynkkynen 2023<p id="copyleft">&#169</p> All Wrongs Reserved</div>
+	</div>
+
+	<div id="notice" class="hidden">
+		<div id="ntc">
+			<p id="ntctittle">Huomautus:</p>
+			<p id="ntctxt">Istuntosi on vanhentunut, ja sinun on kirjauduttava sis‰‰n uudelleen</p>
+			<p id="ntctxt">Paina mit‰ tahansa n‰pp‰int‰ jatkaaksesi</p>
+		</div>
+	</div>
+
+	<div id="error" class="hidden">
+		<div id="err">
+			<p id="errtxt">Virhe yhdist&#228ess&#228 palvelimeen</p>
+			<p id="errtxt">Lataa sivu uudelleen tai ota yhteytt&#228 j&#228rjestelm&#228n valvojaan</p>
+		</div>
+	</div>
+
+
+	<script src="Index.js"></script>
+
+</body>
+</html>
