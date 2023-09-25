@@ -6,11 +6,13 @@ let chargerid = 0;
 let oldchargerid = 0;
 let players = [["0", "Pelaaja1"], ["1", "Pelaaja2"]];
 let isingame = 1;
-let hand = [[1, 7], [2, 2], [2, 5], [3, 2], [3, 11], [4, 13]];
+let hand = [[1, 7], [2, 2], [2, 5], [3, 2], [3, 9], [3, 11]];
 let tcard = [[1, 2]];
 let deckstr = "&thickapprox;30";
 let notice = 0;
 let mustkill = 0;
+let supporting = 0;
+let opponent = 6;
 
 //TODO figure out which of these are needed
 let cancharge;
@@ -18,7 +20,6 @@ let arr;
 let cankill = [];
 let playerid = 0;
 let initialized = 0;
-let opponent;
 
 InitializeGUI();
 GUI();
@@ -61,7 +62,7 @@ function GUI() {
 	}
 
 	str = "";
-	if (mustkill == 0 && (/*supporting == 0 |*/ field.length > 0)) {
+	if (mustkill == 0 && (supporting == 0 | field.length > 0)) {
 		document.getElementById('fieldcontainer').classList.add("offset");
 		for (let i = 0; i < opponent; i++) {
 			str += '<div class=opponentflex> <div class=flexcontent> <img src="imgs/card_img.png"> </div> </div>';
@@ -96,6 +97,7 @@ function GUI() {
 		document.getElementById("player" + oldchargerid).children[0].children[1].remove();
 	}
 	document.getElementById("player" + chargerid).children[0].innerHTML += "<p> > </p>";
+	oldchargerid = chargerid;
 }
 function GUIFlex(array, name) {
 
@@ -202,16 +204,23 @@ function Notice() {
 			document.getElementById("deckimg2").classList.add("highlight");
 			break;
 		case 4:
-			document.getElementById("ntcmain").innerHTML = "Pelaajien järjestys näkyy tässä: sinä olet merkattuna keltaisella";
+			document.getElementById("ntcmain").innerHTML = "Vastustajallasi olevien korttien määrä näkyy tässä. Kentälle ei voi ajaa niiden määrää enempää kortteja";
 			document.getElementById("deckimg2").classList.remove("highlight");
+			document.getElementById("opponentflexcontainer").classList.add("highlight");
+			document.getElementById("notice").style.bottom = "50%";
+			document.getElementById("notice").style.left = "";
+			break;
+		case 5:
+			document.getElementById("ntcmain").innerHTML = "Pelaajien järjestys näkyy tässä: sinä olet merkattuna keltaisella";
+			document.getElementById("opponentflexcontainer").classList.remove("highlight");
 			document.getElementById("playerinfo").classList.add("highlight");
 			document.getElementById("notice").style.bottom = "62.5%";
 			document.getElementById("notice").style.left = "53%";
 			break;
-		case 5:
+		case 6:
 			document.getElementById("ntcmain").innerHTML = "Vuoroa merkkaava &ldquo;>&rdquo; symboli on sinun kohdallasi, joten on sinun vuoro ajaa";
 			break;
-		case 6:
+		case 7:
 			document.getElementById("ntcmain").innerHTML = "Voit vaihataa aktiivista korttia oikealla ja vasemalla nuoli näppäimellä";
 			document.getElementById("ntcaux").innerHTML = "Valitse ruutu 2";
 			document.getElementById("playerinfo").classList.remove("highlight");
@@ -219,14 +228,14 @@ function Notice() {
 			document.getElementById("notice").style.left = "";
 			return false;
 			break;
-		case 7:
+		case 8:
 			if (activeCard == target) {
 				document.getElementById("ntcmain").innerHTML = "Voit vahvistaa valinnan painamalla enter näppäintä";
 				document.getElementById("ntcaux").innerHTML = "Vahvista valinta";
 			} else { notice--; }
 			return false;
 			break;
-		case 8:
+		case 9:
 			if (chosenCards.length > 0) {
 				document.getElementById("ntcmain").innerHTML = "Valitsemasi kortit näkyvät tässä";
 				document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
@@ -237,7 +246,7 @@ function Notice() {
 			} else { notice--; }
 			return false;
 			break;
-		case 9:
+		case 10:
 			target = 1;
 			document.getElementById("ntcmain").innerHTML = "Voit valita usean kortin, jos ne ovat pareja";
 			document.getElementById("ntcaux").innerHTML = "Valitse hertta 2 ja vahvista valinta";
@@ -247,21 +256,155 @@ function Notice() {
 			document.getElementById("notice").style.left = "";
 			return false;
 			break;
-		case 10:
+		case 11:
 			if (chosenCards.length > 1) {
 				target = activeCard;
 				document.getElementById("ntcmain").innerHTML = "Voit siirtyä käden, sekä valittuhen korttien välillä ylös ja alas nuoli näppäimillä";
-				document.getElementById("ntcaux").innerHTML = "Valitse &ldquo;aja&rdquo; nappula";
+				document.getElementById("ntcaux").innerHTML = "Valitse &ldquo;AJA&rdquo; nappula";
 			} else { notice--; }
 			return false;
 			break;
-		case 11:
+		case 12:
 			if (activeCard == -1) {
 				target = -1;
-				document.getElementById("ntcmain").innerHTML = "Voit ajaa painamalla enter näppäintä, kun &ldquo;aja&rdquo; nappula on valittuna";
+				document.getElementById("ntcmain").innerHTML = "Voit ajaa painamalla enter näppäintä, kun &ldquo;AJA&rdquo; nappula on valittuna";
 				document.getElementById("ntcaux").innerHTML = "Aja";
 			} else { notice--; }
 			return false;
+			break;
+		case 13:
+			if (chosenCards.length == 0) {
+				hand.push([4, 5], [4, 12]);
+				GUI();
+				document.getElementById("ntcmain").innerHTML = "Ajon jälkeen nostat uudet kortit automaattisesti";
+				document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
+			} else { notice--; }
+			return false;
+			break;
+		case 14:
+			if (chosenCards.length == 0) {
+				document.getElementById("ntcmain").innerHTML = "Vuoroa merkkaava &ldquo;>&rdquo; symboli on vastustajasi kohdalla, joten on heidän vuoro tappaa";
+				document.getElementById("playerinfo").classList.add("highlight");
+				document.getElementById("notice").style.bottom = "62.5%";
+				document.getElementById("notice").style.left = "53%";
+			} else { notice--; }
+			break;
+		case 15:
+			document.getElementById("ntcmain").innerHTML = "Vastustajallesi ajetut kortit näkyvät tässä";
+			document.getElementById("playerinfo").classList.remove("highlight");
+			document.getElementById("fieldflexcontainer").classList.add("highlight");
+			document.getElementById("notice").style.bottom = "";
+			document.getElementById("notice").style.left = "";
+			break;
+		case 16:
+			field.push([2, 9, 2, 1]);
+			GUI();
+			target = 2;
+			document.getElementById("ntcmain").innerHTML = "Vastustasi tappoi hertta ysillä, joten voit ajaa ruutu ysin rintaan";
+			document.getElementById("ntcaux").innerHTML = "Valitse ruutu yhdeksän ja aja se";
+			document.getElementById("fieldflexcontainer").classList.remove("highlight");
+			document.getElementById("notice").style.bottom = "25%";
+			return false;
+			break;
+		case 17:
+			target = (chosenCards.length > 0) ? -1 : target;
+			if (field.length == 4) {
+				document.getElementById("ntcmain").innerHTML = "Et voi ajaa muita kortteja rintaan, joten sinun on odotettava vastustajaasi";
+				document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
+			} else { notice--; }
+			return false;
+			break;
+		case 18:
+			field.push([3, 6, 2, 0], [3, 13, 2, 3]);
+			GUI();
+			break;
+		case 19:
+			field = [];
+			GUI();
+			document.getElementById("ntcmain").innerHTML = "Vastustajasi tappoi kentällä olevat kortit";
+			document.getElementById("notice").style.bottom = "";
+			break;
+		case 20:
+			document.getElementById("ntcmain").innerHTML = "Vuoroa merkkaava &ldquo;>&rdquo; symboli on vastustajasi kohdalla, joten on heidän vuoro ajaa";
+			document.getElementById("playerinfo").classList.add("highlight");
+			document.getElementById("notice").style.bottom = "62.5%";
+			document.getElementById("notice").style.left = "53%";
+			break;
+		case 21:
+			field.push([2, 3, 0, null]);
+			mustkill = 1;
+			GUI();
+			target = 1;
+			document.getElementById("ntcmain").innerHTML = "Vastustaja ajoi sinulle hertta kolmosen";
+			document.getElementById("ntcaux").innerHTML = "Valitse hertta vitonen";
+			document.getElementById("playerinfo").classList.remove("highlight");
+			document.getElementById("notice").style.bottom = "50%";
+			document.getElementById("notice").style.left = "";
+			return false;
+			break;
+		case 22:
+			if (chosenCards.length > 0) {
+				target = 0;
+				document.getElementById("ntcmain").innerHTML = "Voit siirtää valittua korttia oikealla ja vasemmalla nuolinäppäimella";
+				document.getElementById("ntcaux").innerHTML = "Siirrä kortti hertta kolmosen päälle ja tapa se enter näppäimellä";
+			} else { notice--; }
+			return false;
+			break;
+		case 23:
+			if (field.length > 1) {
+				target = 2;
+				document.getElementById("ntcmain").innerHTML = "Voit ajaa risti vitosen itsellesi rintaan";
+				document.getElementById("ntcaux").innerHTML = "Valitse risti viisi ja aja se rintaan";
+			} else { notice--; }
+			return false;
+			break;
+		case 24:
+			target = (chosenCards.length > 0) ? 0 : target;
+			if (field.length > 2) {
+				target = 2;
+				document.getElementById("ntcmain").innerHTML = "Voit tappaa risti vitosen risti akalla";
+				document.getElementById("ntcaux").innerHTML = "Tapa risti viisi";
+			} else { notice--; }
+			return false;
+			break;
+		case 25:
+			target = (chosenCards.length > 0) ? 0 : target;
+			if (field.length > 3) {
+				field.push([3, 12, 0, null]);
+				GUI();
+				document.getElementById("ntcmain").innerHTML = "Vastustajasi ajoi kortin, jonka voit tappaa vain valtilla";
+				document.getElementById("ntcaux").innerHTML = "Tapa ruutu akka";
+			} else { notice--; }
+			return false;
+			break;
+		case 26:
+			target = (chosenCards.length > 0) ? 0 : target;
+			if (field.length > 5) {
+				target = -1;
+				document.getElementById("ntcmain").innerHTML = "Käsissä ei ole rinnattavia kortteja joten voit tappaa kentän";
+				document.getElementById("ntcaux").innerHTML = "Valitse &ldquo;NOSTA/TAPA&rdquo; nappula ja paina enter";
+			} else { notice--; }
+			return false;
+			break;
+		case 27:
+			if (field.length == 0) {
+				mustkill = 0;
+				hand = [[1, 3], [1, 8], [2, 13], [3, 11], [4, 7], [4, 9]];
+				GUI();
+				document.getElementById("ntcmain").innerHTML = "Tappamisen jälkeen nostat uudet kortit automaattisesti";
+				document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
+				document.getElementById("notice").style.bottom = "25%";
+			} else { notice--; }
+			return false;
+			break;
+		case 28:
+			document.getElementById("ntcmain").innerHTML = "Tutoriaali loppuu tähän ja seuraavaksi sinut uudelleen ohjataan aloitus sivulle";
+			document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
+			document.getElementById("notice").style.bottom = "";
+			document.getElementById("container").innerHTML = '<img src="imgs/bg_image.png" ; id="bg_img">';
+			break;
+		case 29:
+			window.location.assign("Index.html");
 			break;
 		//TODO continue making these
 		default:
@@ -371,7 +514,7 @@ function ChargeTest() {
 				arr = chosenCards;
 				if (field.length > 0 && field.some(HasPairs)) {
 					console.log("field matches");
-					Charge(chosenCards, supporting);
+					Charge();
 				} else {
 					console.log("no match");
 					AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
@@ -382,7 +525,7 @@ function ChargeTest() {
 				AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
 				return;
 			}
-			Charge(chosenCards, supporting);
+			Charge();
 			return;
 		}
 
@@ -432,7 +575,6 @@ function KillTest() {
 		} else { Charge(chosenCards, 1); }
 		return;
 	}
-
 	console.log(hand);
 	chosenCards = [hand.splice(activeCard, 1).flat()];
 	console.log(hand);
@@ -452,8 +594,8 @@ function KillTest() {
 	function IsKillable(value, index, array) {
 		console.log("testing field for killables");
 		if (value[2] != 0) { return; }
-		if (parseInt(chosenCards[0][0]) == tcard0) {
-			if (parseInt(value[0]) != tcard0) { cankill.push(index); }
+		if (parseInt(chosenCards[0][0]) == tcard[0][0]) {
+			if (parseInt(value[0]) != tcard[0][0]) { cankill.push(index); }
 			else if (parseInt(value[1]) <= parseInt(chosenCards[0][1])) { cankill.push(index); }
 		}
 		else if (parseInt(value[0]) == parseInt(chosenCards[0][0]) && parseInt(value[1]) < parseInt(chosenCards[0][1])) { cankill.push(index); }
@@ -461,12 +603,31 @@ function KillTest() {
 }
 
 
-function Charge(cards, isSupporting) {
+function Charge() {
 	console.log("charging");
+	for (let i = 0; i < chosenCards.length; i++) {
+		let card = [chosenCards[i][0], chosenCards[i][1], 0, null];
+		field.push(card);
+	}
+	chosenCards = [];
+	cankill = [];
+	chargerid = (supporting == 0) ? 1 : chargerid;
+	GUI();
 }
 
 function Kill(card, killedId) {
 	console.log("you killed id " + killedId);
+	if (killedId == -1) {
+		chargerid = (chargerid == 0) ? 1 : 0;
+		field = [];
+		GUI();
+		return;
+	}
+	field.push([card[0][0], card[0][1], 2, killedId]);
+	field[killedId][2] = 1;
+	chosenCards = [];
+	cankill = [];
+	GUI();
 }
 
 function Draw() {
