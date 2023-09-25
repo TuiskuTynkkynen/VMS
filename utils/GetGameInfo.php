@@ -70,7 +70,7 @@ $hand = $mysqli->query($sql);
 if ($mysqli->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $mysqli->error; }
 
 echo "<ingamecontainer>";
-if ($hand->num_rows == 0 && $Ingame !== 0 && $hasdeckleft) { 
+if ($hand->num_rows == 0 && $Ingame !== 0 && !$hasdeckleft) { 
 	$now = time();
 	$sql = "UPDATE sessions SET status = 0, last_seen = $now WHERE id = $UID";
 	if ($mysqli->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $mysqli->error; }
