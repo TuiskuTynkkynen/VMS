@@ -125,13 +125,13 @@
         <div id="notice">
             <div id="ntc">
                 <p id="ntctittle">Huomautus:</p>
-                <p id="ntctxt">Pin-koodi s‰ilytet‰‰n palvelimella raakatekstin‰, joten v‰lt‰ arkaluontoisen koodin k‰ytt‰mist‰</p>
-                <p id="ntctxt">Paina mit‰ tahansa n‰pp‰int‰ jatkaaksesi</p>
+                <p id="ntctxt">Pin-koodi s ilytet  n palvelimella raakatekstin , joten v lt  arkaluontoisen koodin k ytt mist </p>
+                <p id="ntctxt">Paina mit  tahansa n pp int  jatkaaksesi</p>
             </div>
         </div>
         <div id="SignUp"  class="hidden">
             <div id="inputs">
-                <label for="account">K‰ytt‰j‰nimi</label>
+                <label for="account">K ytt j nimi</label>
                 <input id="account" type="text" name="account" min="1" required="true" maxlength="25" autocomplete="off">
                 <label for="PIN">Pin-koodi</label>
                 <input id="PIN" type="password" name="PIN" min="1" required="true" maxlength="4" autocomplete="off">
@@ -170,15 +170,15 @@
             let name = document.getElementById("name").value;
 
             if (account == "" | PIN == "" | name == "") {
-                document.getElementById("incorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
+                document.getElementById("incorrect").innerHTML = "T yt  kaikki kent t";
                 return;
             }
             if (PIN.length < 4) {
-                document.getElementById("incorrect").innerHTML = "Pin-koodin on oltava 4 hahmoa pitk‰";
+                document.getElementById("incorrect").innerHTML = "Pin-koodin on oltava 4 hahmoa pitk ";
                 return;
             }
             if (PIN != PIN1) {
-                document.getElementById("incorrect").innerHTML = "Pin-koodit eiv‰t t‰sm‰‰";
+                document.getElementById("incorrect").innerHTML = "Pin-koodit eiv t t sm  ";
                 return;
             }
             document.getElementById("incorrect").innerHTML = "";
@@ -192,12 +192,12 @@
                 x = this.responseText;
                 console.log(x);
                 if (x == "0") {
-                    window.location.replace("Index.html");
+                    window.location.replace("CGTutorial.html");
                 } else if (x == "1") {
-                    document.getElementById("incorrect").innerHTML = "K‰ytt‰j‰nimi ei ole vapaa";
+                    document.getElementById("incorrect").innerHTML = "K ytt j nimi ei ole vapaa";
                 } else {
-                    alert("Ota j‰rjestelm‰nvalvojaan yhteytt‰");
-                    document.getElementById("incorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
+                    alert("Ota j rjestelm nvalvojaan yhteytt ");
+                    document.getElementById("incorrect").innerHTML = "Ennalta arvaamaton virhe, ota j rjestelm nvalvojaan yhteytt ";
                 }
             }
         }
