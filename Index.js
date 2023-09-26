@@ -129,7 +129,7 @@ function MainMenu() {
 	document.getElementById("main").classList.remove("hidden");
 
 	document.getElementById("game").onclick = Game;
-	document.getElementById("name").onclick = Name;
+	document.getElementById("tutorial").onclick = Tutorial;
 
 	document.getElementById("settings").onclick = Settings;
 	document.getElementById("leaderboard").style.color = "#888";
@@ -166,9 +166,8 @@ function MainMenu() {
 		}
 	}
 
-	function Name(event) {
-		document.getElementById("main").classList.add("hidden");
-		LogIn();
+	function Tutorial(event) {
+		window.location.assign("CGTutorial.html");
 	}
 
 	function Settings() {
