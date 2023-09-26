@@ -192,14 +192,14 @@ function Notice() {
 			document.getElementById("notice").style.bottom = "25%";
 			break;
 		case 2:
-			document.getElementById("ntcmain").innerHTML = "Valtti kortti näkyy tässä";
+			document.getElementById("ntcmain").innerHTML = "Valttikortti näkyy tässä";
 			document.getElementById("handflexcontainer").classList.remove("highlight");
 			document.getElementById("trumpcard").classList.add("highlight");
 			document.getElementById("notice").style.bottom = "62.5%";
 			document.getElementById("notice").style.left = "15%";
 			break;
 		case 3:
-			document.getElementById("ntcmain").innerHTML = "Pakassa jäljellä olevien korttien määärä näkyy tässä. Lukumäärä ilmoitetaan likiarvona 10 korttiin saakka";
+			document.getElementById("ntcmain").innerHTML = "Pakassa jäljellä olevien korttien määrä näkyy tässä. Lukumäärä ilmoitetaan likiarvona 10 korttiin saakka";
 			document.getElementById("trumpcard").classList.remove("highlight");
 			document.getElementById("deckimg2").classList.add("highlight");
 			break;
@@ -221,7 +221,7 @@ function Notice() {
 			document.getElementById("ntcmain").innerHTML = "Vuoroa merkkaava &ldquo;>&rdquo; symboli on sinun kohdallasi, joten on sinun vuoro ajaa";
 			break;
 		case 7:
-			document.getElementById("ntcmain").innerHTML = "Voit vaihataa aktiivista korttia oikealla ja vasemalla nuoli näppäimellä";
+			document.getElementById("ntcmain").innerHTML = "Voit vaihataa aktiivista korttia oikealla ja vasemalla nuolinäppäimellä";
 			document.getElementById("ntcaux").innerHTML = "Valitse ruutu 2";
 			document.getElementById("playerinfo").classList.remove("highlight");
 			document.getElementById("notice").style.bottom = "25%";
@@ -259,7 +259,7 @@ function Notice() {
 		case 11:
 			if (chosenCards.length > 1) {
 				target = activeCard;
-				document.getElementById("ntcmain").innerHTML = "Voit siirtyä käden, sekä valittuhen korttien välillä ylös ja alas nuoli näppäimillä";
+				document.getElementById("ntcmain").innerHTML = "Voit siirtyä käden, sekä valittujen korttien välillä ylös ja alas nuolinäppäimillä";
 				document.getElementById("ntcaux").innerHTML = "Valitse &ldquo;AJA&rdquo; nappula";
 			} else { notice--; }
 			return false;
@@ -276,7 +276,7 @@ function Notice() {
 			if (chosenCards.length == 0) {
 				hand.push([4, 5], [4, 12]);
 				GUI();
-				document.getElementById("ntcmain").innerHTML = "Ajon jälkeen nostat uudet kortit automaattisesti";
+				document.getElementById("ntcmain").innerHTML = "Ajamisen jälkeen nostat uudet kortit automaattisesti";
 				document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
 			} else { notice--; }
 			return false;
@@ -300,7 +300,7 @@ function Notice() {
 			field.push([2, 9, 2, 1]);
 			GUI();
 			target = 2;
-			document.getElementById("ntcmain").innerHTML = "Vastustasi tappoi hertta ysillä, joten voit ajaa ruutu ysin rintaan";
+			document.getElementById("ntcmain").innerHTML = "Vastustajasi tappoi hertta ysillä, joten voit ajaa ruutu ysin rintaan";
 			document.getElementById("ntcaux").innerHTML = "Valitse ruutu yhdeksän ja aja se";
 			document.getElementById("fieldflexcontainer").classList.remove("highlight");
 			document.getElementById("notice").style.bottom = "25%";
@@ -345,7 +345,7 @@ function Notice() {
 		case 22:
 			if (chosenCards.length > 0) {
 				target = 0;
-				document.getElementById("ntcmain").innerHTML = "Voit siirtää valittua korttia oikealla ja vasemmalla nuolinäppäimella";
+				document.getElementById("ntcmain").innerHTML = "Voit siirtää valittua korttia oikealla ja vasemmalla nuolinäppäimellä";
 				document.getElementById("ntcaux").innerHTML = "Siirrä kortti hertta kolmosen päälle ja tapa se enter näppäimellä";
 			} else { notice--; }
 			return false;
@@ -381,7 +381,7 @@ function Notice() {
 			target = (chosenCards.length > 0) ? 0 : target;
 			if (field.length > 5) {
 				target = -1;
-				document.getElementById("ntcmain").innerHTML = "Käsissä ei ole rinnattavia kortteja joten voit tappaa kentän";
+				document.getElementById("ntcmain").innerHTML = "Käsissä ei ole rinnattavia kortteja, joten voit tappaa kentän";
 				document.getElementById("ntcaux").innerHTML = "Valitse &ldquo;NOSTA/TAPA&rdquo; nappula ja paina enter";
 			} else { notice--; }
 			return false;
@@ -398,7 +398,7 @@ function Notice() {
 			return false;
 			break;
 		case 28:
-			document.getElementById("ntcmain").innerHTML = "Tutoriaali loppuu tähän ja seuraavaksi sinut uudelleen ohjataan aloitus sivulle";
+			document.getElementById("ntcmain").innerHTML = "Tutoriaali loppuu tähän, ja seuraavaksi sinut uudelleen ohjataan aloitus sivulle";
 			document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
 			document.getElementById("notice").style.bottom = "";
 			document.getElementById("container").innerHTML = '<img src="imgs/bg_image.png" ; id="bg_img">';
