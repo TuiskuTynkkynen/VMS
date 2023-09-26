@@ -131,7 +131,7 @@ function MainMenu() {
 	document.getElementById("game").onclick = Game;
 	document.getElementById("tutorial").onclick = Tutorial;
 
-	document.getElementById("settings").onclick = Settings;
+	document.getElementById("setup").onclick = SetUp;
 	document.getElementById("leaderboard").style.color = "#888";
 
 	document.getElementById("playerstoggle").onclick = Players;
@@ -170,7 +170,7 @@ function MainMenu() {
 		window.location.assign("CGTutorial.html");
 	}
 
-	function Settings() {
+	function SetUp() {
 		window.open("CGSettings.php", "_blanck").focus();
 	}
 
