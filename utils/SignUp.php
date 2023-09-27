@@ -14,7 +14,6 @@
 	$PIN = $_POST["PIN"];
 	$nick = $_POST["name"];
 	
-	$sql = "SELECT id FROM leaderboard WHERE name = $account";
 	$stmt = $conn->prepare("SELECT id FROM leaderboard WHERE name = ?");
 	if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }
 	$stmt->bind_param("s", $account);
