@@ -173,7 +173,7 @@
                 document.getElementById("incorrect").innerHTML = "Täytä kaikki kentät";
                 return;
             }
-            if (PIN.length < 4) {
+            if (PIN.length != 4) {
                 document.getElementById("incorrect").innerHTML = "Pin-koodin on oltava 4 hahmoa pitkä";
                 return;
             }
