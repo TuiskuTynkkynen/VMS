@@ -130,7 +130,6 @@ function MainMenu() {
 
 	document.getElementById("game").onclick = Game;
 	document.getElementById("tutorial").onclick = Tutorial;
-
 	document.getElementById("setup").onclick = SetUp;
 	document.getElementById("leaderboard").style.color = "#888";
 
@@ -138,6 +137,8 @@ function MainMenu() {
 	document.getElementById("playerlabel0").onclick = function () { Label(0); }
 	document.getElementById("playerlabel1").onclick = function () { Label(1); }
 	document.getElementById("playerlabel2").onclick = function () { Label(2); }
+
+	document.getElementById("accountsettings").onclick = function () { window.location.assign("AccountSettings.html"); }
 
 	function Game(event) {
 		if (info.isactive == "0" && waitstatus == 0) {

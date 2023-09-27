@@ -190,9 +190,23 @@ body {
         width: 100%;
     }
 
+#accountsettings {
+    position: absolute;
+    bottom: 4%;
+    left: 2%;
+    width: 4%;
+    border: none;
+    border: none;
+    padding: 0;
+}
+
+    #accountsettings img {
+        width: 100%;
+    }
+
 #version {
     position: absolute;
-    bottom: 1.5%;
+    top: 1.5%;
     left: 1.3%;
     font-size: 0.75rem;
     font-style: italic;
