@@ -56,6 +56,17 @@
                     color: #f2c511;
                 }
 
+        #accname, #accpin, #nick {
+            position: absolute;
+            top: 50%;
+            left: 34%;
+            height: 25%;
+            width: 32%;
+            background-image: url("imgs/acc_img.png");
+            background-size: 100% 100%;
+            container-type: size;
+        }
+
         #login {
             position: absolute;
             top: 50%;
@@ -67,7 +78,7 @@
             container-type: size;
         }
 
-        #inputs {
+        #inputs, .inputs {
             position: absolute;
             top: 10%;
             height: 80%;
@@ -78,36 +89,38 @@
             align-items: center;
         }
 
-            #inputs label {
-                display: block;
-                font-size: min(1.5rem, 10cqh);
-                text-align: center;
-                margin: 0;
-            }
-
-            #inputs input {
-                height: min(1.5rem, 15%);
-                width: 70%;
-                margin: 0;
-                border-width: 1cqh;
-                border-radius: 1cqh;
-                margin: 0;
-                margin-bottom: 5cqh;
-            }
-
-                #inputs input:focus {
-                    border: 1.2cqh solid #888;
-                    outline: none;
-                }
-
-        #incorrect {
+        label {
             display: block;
-            position: relative;
-            bottom: 3cqh;
-            font-size: min(1rem, 7cqh);
-            color: #e62727;
-            text-align: center;
+            font-size: min(1.5rem, 10cqh);
             margin: 0;
+        }
+            .inputs label {
+                font-size: min(1.5rem, 20cqh);
+            }
+
+        input {
+            height: min(1.5rem, 15cqh);
+            width: 70%;
+            margin: 0;
+            border-width: 1cqh;
+            border-radius: 1cqh;
+            margin: 0;
+            margin-bottom: 5cqh;
+        }
+
+            input:focus {
+                border: 1.2cqh solid #888;
+                outline: none;
+            }
+
+            .inputs input {
+                height: min(1.5rem, 27.5cqh);
+            }
+
+        #confirm {
+            display: block;
+            font-size: min(1.75rem, 15cqh);
+            margin: min(0.75rem, 7.5cqh);
         }
 
         #notice {
@@ -145,6 +158,18 @@
             margin: 0;
         }
 
+        .incorrect {
+            display: block;
+            position: relative;
+            bottom: 3cqh;
+            font-size: min(1rem, 7.5cqh);
+            color: #e62727;
+            text-align: center;
+            margin: 0;
+        }
+            .inputs .incorrect {
+                font-size: min(1rem, 15cqh);
+            }
 
         .hidden {
             display: none;
@@ -162,39 +187,41 @@
                 <button id="changenick">Vaihda nimi</button>
                 <button id="changename">Vaihda k‰ytt‰j‰nimi</button>
                 <button id="changepin">Vaihda pin-koodi</button>
+                <button id="logout">Kirjaudu ulos</button>
                 <button id="index">Takaisin valikkoon</button>
             </div>
         </div>
         <div id="login" class="hidden" ;>
             <div id="inputs">
+                <p id="confirm">Vahvista k‰ytt‰j‰:</p>
                 <label for="account">K‰ytt‰j‰nimi</label>
                 <input id="account" type="text" name="account" maxlength="25" autocomplete="off">
                 <label for="PIN">Pin-koodi</label>
                 <input id="PIN" type="password" name="PIN" maxlength="4" autocomplete="off">
-                <p id="incorrect">&nbsp;</p>
+                <p id="incorrect" class="incorrect">&nbsp;</p>
             </div>
         </div>
         <div id="accname" class="hidden">
-            <div id="inputs">
+            <div class="inputs">
                 <label for="newacc">Uusi k‰ytt‰j‰nimi</label>
                 <input id="newacc" type="text" name="account" min="1" maxlength="25" autocomplete="off" disabled="disabled">
-                <p id="incorrect">&nbsp;</p>
+                <p id="anincorrect" class="incorrect">&nbsp;</p>
             </div>
         </div>
         <div id="accpin" class="hidden">
-            <div id="inputs">
+            <div class="inputs">
                 <label for="newPIN">Uusi pin-koodi</label>
                 <input id="newPIN" type="password" name="PIN" min="1" maxlength="4" autocomplete="off" disabled="disabled">
                 <label for="newPIN1">Pin-koodi uudelleen</label>
                 <input id="newPIN1" type="password" name="PIN1" min="1" maxlength="4" autocomplete="off" disabled="disabled">
-                <p id="incorrect">&nbsp;</p>
+                <p id="apincorrect" class="incorrect">&nbsp;</p>
             </div>
         </div>
-        <div id="accnick" class="hidden">
-            <div id="inputs">
-                <label for="name">Nimi</label>
+        <div id="nick" class="hidden">
+            <div class="inputs">
+                <label for="name">Uusi nimi</label>
                 <input id="name" type="text" name="name" min="1" maxlength="25" autocomplete="off" disabled="disabled">
-                <p id="incorrect">&nbsp;</p>
+                <p id="nnincorrect" class="incorrect">&nbsp;</p>
             </div>
         </div>
         <div id="notice" class="hidden">
@@ -213,6 +240,7 @@
             document.getElementById("changenick").onclick = function () { LogIn(1); }
             document.getElementById("changename").onclick = function () { LogIn(2); }
             document.getElementById("changepin").onclick = function () { LogIn(3); }
+            document.getElementById("logout").onclick = function () { LogOut(); }
             document.getElementById("index").onclick = function() { window.location.replace("Index.html"); }
         }
 
@@ -253,8 +281,8 @@
                         document.getElementById("account").disabled = true;
                         document.getElementById("PIN").disabled = true;
                         if (action == 1) { ChangeNick(account, PIN); }
-                        else if (action == 2) { ChangeName(account, PIN); }
-                        else if (action == 3) { ChangePin(account, PIN); }
+                        else if (action == 2) { ChangeAccountName(account, PIN); }
+                        else if (action == 3) { ChangeAccountPIN(account, PIN); }
                     } else if (x == "1") {
                         document.getElementById("incorrect").innerHTML = "V‰‰r‰ k‰ytt‰j‰nimi";
                     } else if (x == "2") {
@@ -270,96 +298,153 @@
         }
 
         function ChangeNick(acc, pin) {
-            document.getElementById("accnick").classList.remove("hidden");
+            document.getElementById("nick").classList.remove("hidden");
             document.getElementById("name").disabled = false;
             document.getElementById("name").addEventListener("keypress", function (event) {
                 if (event.keyCode == 13) { Check();  }
             });
 
             function Check() {
-                let name = document.getElementById("name").value;
+                let nickname = document.getElementById("name").value;
 
-                if (name == "") {
-                    document.getElementById("incorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
+                if (nickname == "") {
+                    document.getElementById("nnincorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
                     return;
                 }
-                document.getElementById("incorrect").innerHTML = "";
+                document.getElementById("nnincorrect").innerHTML = "";
 
                 const xhttp = new XMLHttpRequest();
                 xhttp.open("POST", "utils/AccountAPI.php");
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("account=" + acc + "&PIN=" + pin + "&action=1" + "&name=" + name);
+                xhttp.send("account=" + acc + "&PIN=" + pin + "&action=1" + "&nickname=" + nickname);
 
                 xhttp.onload = function () {
                     x = this.responseText;
                     console.log(x);
                     if (x == "0") {
-                        document.getElementById("accnick").classList.add("hidden");
+                        document.getElementById("name").disabled = true;
+                        document.getElementById("nick").classList.add("hidden");
                         window.location.replace("Index.html");
                     } else {
                         alert("Ota j‰rjestelm‰nvalvojaan yhteytt‰");
-                        document.getElementById("incorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
+                        document.getElementById("nnincorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
                     }
                 }
             }
         }
 
-        //TODO change accname and accpin
+        function ChangeAccountName(acc, pin){
+            document.getElementById("accname").classList.remove("hidden");
+            document.getElementById("newacc").disabled = false;
+            document.getElementById("newacc").addEventListener("keypress", function (event) {
+                if (event.keyCode == 13) { Check(); }
+            });
 
-        /*
-        document.addEventListener("keypress", function (event) {
-            document.getElementById("notice").classList.add("hidden");
-        });
-        document.getElementById("account").addEventListener("keypress", function (event) {
-            if (event.keyCode == 13) { document.getElementById("PIN").focus(); }
-        });
-        document.getElementById("newPIN").addEventListener("keypress", function (event) {
-            if (event.keyCode == 13) { document.getElementById("PIN1").focus(); }
-        });
-        document.getElementById("newPIN1").addEventListener("keypress", function (event) {
-            if (event.keyCode == 13) { document.getElementById("name").focus(); }
-        });
+            function Check() {
+                let accname = document.getElementById("newacc").value;
 
+                if (accname == "") {
+                    document.getElementById("anincorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
+                    return;
+                }
+                document.getElementById("anincorrect").innerHTML = "";
 
-        function Check() {
-            let account = document.getElementById("account").value;
-            let PIN = document.getElementById("PIN").value;
-            let PIN1 = document.getElementById("PIN1").value;
-            let name = document.getElementById("name").value;
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "utils/AccountAPI.php");
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("account=" + acc + "&PIN=" + pin + "&action=2" + "&accname=" + accname);
 
-            if (account == "" | PIN == "" | name == "") {
-                document.getElementById("incorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
-                return;
+                xhttp.onload = function () {
+                    x = this.responseText;
+                    console.log(x);
+                    if (x == "0") {
+                        document.getElementById("newacc").disabled = true;
+                        document.getElementById("accname").classList.add("hidden");
+                        window.location.replace("Index.html");
+                    } else if (x == "01") {
+                        document.getElementById("anincorrect").innerHTML = "K‰ytt‰j‰nimi ei ole vapaa";
+                    } else {
+                        alert("Ota j‰rjestelm‰nvalvojaan yhteytt‰");
+                        document.getElementById("anincorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
+                    }
+                }
             }
-            if (PIN.length < 4) {
-                document.getElementById("incorrect").innerHTML = "Pin-koodin on oltava 4 hahmoa pitk‰";
-                return;
-            }
-            if (PIN != PIN1) {
-                document.getElementById("incorrect").innerHTML = "Pin-koodit eiv‰t t‰sm‰‰";
-                return;
-            }
-            document.getElementById("incorrect").innerHTML = "";
+        }
+        
+        function ChangeAccountPIN(acc, pin) {
+            document.getElementById("notice").classList.remove("hidden");
 
+            document.addEventListener("keypress", function (event) {
+                document.getElementById("notice").classList.add("hidden");
+                document.getElementById("accpin").classList.remove("hidden");
+                document.getElementById("newPIN").disabled = false;
+                document.getElementById("newPIN1").disabled = false;
+            });
+
+            document.getElementById("newPIN").addEventListener("keypress", function (event) {
+                if (event.keyCode == 13) { document.getElementById("newPIN1").focus(); }
+            });
+            document.getElementById("newPIN1").addEventListener("keypress", function (event) {
+                if (event.keyCode == 13) { Check(); }
+            });
+    
+    
+            function Check() {
+                let accPIN = document.getElementById("newPIN").value;
+                let accPIN1 = document.getElementById("newPIN1").value;
+    
+                if (accPIN == "" | accPIN1 == "") {
+                    document.getElementById("apincorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
+                    return;
+                }
+                if (accPIN.length != 4) {
+                    document.getElementById("apincorrect").innerHTML = "Pin-koodin on oltava 4 hahmoa pitk‰";
+                    return;
+                }
+                if (accPIN != accPIN1) {
+                    document.getElementById("apincorrect").innerHTML = "Pin-koodit eiv‰t t‰sm‰‰";
+                    return;
+                }
+                document.getElementById("apincorrect").innerHTML = "";
+    
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "utils/AccountAPI.php");
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("account=" + acc + "&PIN=" + pin + "&action=3" + "&accpin=" + accPIN);
+    
+                xhttp.onload = function () {
+                    x = this.responseText;
+                    console.log(x);
+                    if (x == "0") {
+                        document.getElementById("newPIN").disabled = true;
+                        document.getElementById("newPIN1").disabled = true;
+                        document.getElementById("accpin").classList.add("hidden");
+                        window.location.replace("Index.html");
+                    } else {
+                        alert("Ota j‰rjestelm‰nvalvojaan yhteytt‰");
+                        document.getElementById("apincorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
+                    }
+                }
+            }
+        }
+
+        function LogOut() {
             const xhttp = new XMLHttpRequest();
             xhttp.open("POST", "utils/AccountAPI.php");
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send("account=" + account + "&PIN=" + PIN + "&name=" + name);
+            xhttp.send("action=4");
 
             xhttp.onload = function () {
                 x = this.responseText;
                 console.log(x);
                 if (x == "0") {
-                    window.location.replace("CGTutorial.html");
-                } else if (x == "1") {
-                    document.getElementById("incorrect").innerHTML = "K‰ytt‰j‰nimi ei ole vapaa";
+                    window.location.replace("Index.html");
                 } else {
                     alert("Ota j‰rjestelm‰nvalvojaan yhteytt‰");
-                    document.getElementById("incorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
+                    document.getElementById("apincorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
                 }
             }
         }
-        */
     </script>
 
 </body>
