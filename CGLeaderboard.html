@@ -1,0 +1,175 @@
+<html>
+<head>
+    <title>VMS leaderboard</title>
+    <style>
+        body {
+            color: #fff;
+            background-color: #191919;
+            margin: 0;
+        }
+
+        table p {
+            display: inline;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th id="name">Nimi<p id="ordername"></p></th>
+                <th id="games">Pelit<p id="ordergames"></p></th>
+                <th id="wins">Voitot<p id="orderwins"></p></th>
+                <th id="losses">Häivöt<p id="orderlosses"></p></th>
+                <th id="winrate">Voitto%<p id="orderwinrate"></p></th>
+                <th id="lossrate">Häviö%<p id="orderlossrate"></p></th>
+            </tr>
+        </thead>
+        <tbody id="lb">
+        </tbody>
+        <tfoot>
+            <tr id="avgs">
+                <th scope="row">Keskiverto</th>
+            </tr>
+            <tr>
+                <th scope="row">Sivu</th>
+                <td>
+                    <p id="first"><< &nbsp;</p>
+                    <p id="previous">< &nbsp;</p>
+                </td>
+                <td id="page">
+                </td>
+                <td>
+                    <p id="next">> &nbsp;</p>
+                    <p id="last">>></p>
+                </td>
+                <th scope="row">Rivejä</th>
+                <td>
+                    <select name="rows" id="rows">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        let sort = "games";
+        let order = "DESC";
+        let limit = 10;
+        let currentpage = 0;
+        let numberofpages;
+        Main();
+
+        function Main(){
+            GetAverages();
+            GetResults();
+
+            document.getElementById("rows").onchange = function () { limit = document.getElementById("rows").value; GetResults(); }
+            document.getElementById("first").onclick = function () {
+                if (currentpage > 0) {
+                    currentpage = 0;
+                    GetResults();
+                    TableFooter();
+                }
+            } 
+            document.getElementById("previous").onclick = function () {
+                if (currentpage > 0) {
+                    currentpage--;
+                    GetResults();
+                    TableFooter();
+                } 
+            }
+            document.getElementById("next").onclick = function () {
+                if (currentpage < numberofpages) {
+                    currentpage++;
+                    GetResults();
+                    TableFooter();
+                } 
+            } 
+            document.getElementById("last").onclick = function () {
+                if (currentpage < numberofpages) {
+                    currentpage = numberofpages;
+                    GetResults();
+                    TableFooter();
+                }
+            }
+            
+            document.getElementById("name").onclick = function () { SortBy("name") }
+            document.getElementById("games").onclick = function () { SortBy("games") }
+            document.getElementById("wins").onclick = function () { SortBy("wins") }
+            document.getElementById("losses").onclick = function () { SortBy("losses") }
+            document.getElementById("winrate").onclick = function () { SortBy("winrate") }
+            document.getElementById("lossrate").onclick = function () { SortBy("lossrate") }
+
+            function SortBy(str) {
+                currentpage = 0;
+                if (sort != str) {
+                    document.getElementById("order" + sort).innerHTML = "";
+                    sort = str;
+                    order = (str == "name") ? "ASC" : "DESC";
+                } else {
+                    order = (order == "DESC") ? "ASC" : "DESC";
+                }
+                let arrow = (order == "DESC") ? "&#9650;" : "&#9660;";
+                document.getElementById("order" + str).innerHTML = arrow;
+                GetResults();
+                TableFooter();
+            }
+        }
+
+        function GetResults() {
+            let offset = currentpage * limit;
+            let xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "utils/LeaderboardAPI.php?Mode=0&Sort=" + sort + "&Order=" + order + "&Limit=" + limit + "&Offset=" + offset);
+            xhttp.send();
+            xhttp.onload = function () {
+                let x = this.responseText;
+                console.log(x);
+                let data = JSON.parse(x);
+                let str = "";
+                for (let i = 0; i < data.Users.length; i++) {
+                    str += '<tr id="lb">';
+                    str += "<td> " + data.Users[i].name + "</td>";
+                    str += "<td> " + data.Users[i].games + "</td>";
+                    str += "<td> " + data.Users[i].wins + "</td>";
+                    str += "<td> " + data.Users[i].losses + "</td>";
+                    str += "<td> " + Math.round(100 * data.Users[i].winrate) + "</td>";
+                    str += "<td> " + Math.round(100 * data.Users[i].lossrate) + "</td>";
+                    str += "</tr>";
+                }
+                document.getElementById("lb").innerHTML = str;
+
+            }
+        }
+
+        function GetAverages() {
+            let xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "utils/LeaderboardAPI.php?Mode=1");
+            xhttp.send();
+            xhttp.onload = function () {
+                let x = this.responseText;
+                console.log(x);
+                let data = JSON.parse(x);
+                let str = "<td>" + Math.round(100 * data.games) / 100 + "</td>";
+                str += "<td>" + Math.round(100 * data.wins) / 100 + "</td>";
+                str += "<td>" + Math.round(100 * data.losses) / 100 + "</td>";
+                str += "<td>" + Math.round(100 * data.winrate) + "</td>";
+                str += "<td>" + Math.round(100 * data.lossrate) + "</td>";
+                document.getElementById("avgs").innerHTML += str;
+                numberofpages = Math.ceil(data.count / limit) -1;
+                TableFooter();
+            } 
+        }
+
+        function TableFooter() {
+            let str = (currentpage + 1) + "/" + (numberofpages + 1);
+            document.getElementById("page").innerHTML = str;
+        }
+    </script>
+</body>
+</html>
