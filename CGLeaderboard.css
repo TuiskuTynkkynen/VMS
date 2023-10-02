@@ -1,0 +1,146 @@
+body {
+    color: #fff;
+    background-color: #191919;
+    margin: 0;
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    height: 15%;
+    width: 100%;
+    z-index: 1;
+}
+
+#mainheader {
+    position: relative;
+    height: 60%;
+    width: 100%;
+    background-color: #393939;
+}
+
+#auxheader {
+    height: 40%;
+    background-color: #191919;
+}
+
+#logo {
+    position: relative;
+    height: 80%;
+    top: 10%;
+    left: 0.5%;
+}
+
+#tablecontainer {
+    position: absolute;
+    top: 15%;
+    left: 5%;
+    width: 90%;
+    overflow-x: clip;
+}
+
+#label {
+    position: relative;
+    display: block;
+    background-color: #8034eb;
+}
+
+#tittlecontainer {
+    position: relative;
+    height: 2.5rem;
+}
+
+#tittle {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin: unset;
+}
+
+#statstoggle {
+    position: absolute;
+    height: 60%;
+    top: 20%;
+    right: 1%;
+    border: none;
+    padding: 0;
+    background: none;
+}
+
+    #statstoggle img {
+        height: 100%;
+    }
+
+#stats {
+    display: block;
+    height: 0;
+    overflow-y: hidden;
+}
+
+    #stats p {
+        text-align: center;
+        margin: 0;
+    }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+thead {
+    position: sticky;
+    top: 15%;
+    background-color: #292929;
+}
+
+tbody {
+    background-color: #393939;
+}
+
+tr {
+    border-bottom: 1px solid #191919;
+}
+
+th {
+    width: 15%;
+    font-size: 1.5rem;
+    border-right: 1px solid #191919;
+    padding-right: 0.5%;
+}
+
+    th p {
+        display: inline;
+    }
+
+#num {
+    width: 2.5%;
+}
+
+td {
+    font-size: 1.5rem;
+    border-right: 1px solid #191919;
+    padding-right: 0.5%;
+}
+
+#pageselector {
+    position: sticky;
+    display: block;
+    bottom: 0;
+    height: 2rem;
+    width: 100%;
+    background-color: #191919;
+}
+
+#pageselectorflex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.pscontent {
+    display: inline;
+    margin: 0;
+    padding-right: 2%;
+}
