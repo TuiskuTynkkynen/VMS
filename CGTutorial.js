@@ -630,44 +630,6 @@ function Kill(card, killedId) {
 	GUI();
 }
 
-function Draw() {
-	console.log("Drawing cards");
-}
-
-function Win(winstatus) {
-	document.getElementById("win").classList.remove("hidden");
-	if (winstatus == "0") {
-		document.getElementById("win").innerHTML += "<div id=winmsg>Voitto</div>";
-		document.getElementById("spectate").onclick = Spectate;
-	} else if (winstatus == "1") {
-		document.getElementById("win").innerHTML += "<div id=winmsg>P" + "&#228&#228" + "sit pois pelist" + "&#228" + "</div>";
-		document.getElementById("spectate").onclick = Spectate;
-	} else if (winstatus == "2") {
-		document.getElementById("win").innerHTML += "<div id=winmsg>Tappio</div>";
-		document.getElementById("spectate").style.color = "#888";
-	} else {
-		document.getElementById("win").innerHTML += "<div id=winmsg>Peli on p&#228&#228ttynyt</div>";
-		document.getElementById("spectate").style.color = "#888";
-	}
-
-	document.getElementById("mainmenu").onclick = MainMenu;
-	document.getElementById("leaderboard").onclick = Leaderboard;
-
-	function MainMenu(event) {
-		window.location.replace("Index.html");
-		socket.close();
-	}
-
-	function Spectate(event) {
-		window.location.assign("CGSpectate.html");
-		socket.close();
-	}
-	function Leaderboard(event) {
-		window.location.assign("CGLeaderboard.html");
-		socket.close();
-	}
-}
-
 function HasPairs(value, index, array) {
 	if (array == arr) {
 		for (let i = index + 1; i < arr.length; i++) {
@@ -682,17 +644,3 @@ function HasPairs(value, index, array) {
 		}
 	}
 }
-
-function AddAnimation(container, item, animation) {
-	for (let i = 0; i < document.getElementById(container).childElementCount - 1; i++) {
-		document.getElementById(item + i).classList.add(animation);
-		setTimeout(() => {
-			document.getElementById(item + i).classList.remove(animation);
-			GetGameInfo();
-		}, "500");
-	}
-}
-
-//TODO figure out if need to add more state testing on server requests(ie kill, charge, ect ect) that client has correct state
-//TODO more animations (especially a red border and shake or something when you cant perform an action)
-//TODO make sure winning losing ect and spectate works correctly
