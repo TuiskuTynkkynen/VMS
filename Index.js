@@ -131,7 +131,7 @@ function MainMenu() {
 	document.getElementById("game").onclick = Game;
 	document.getElementById("tutorial").onclick = Tutorial;
 	document.getElementById("setup").onclick = SetUp;
-	document.getElementById("leaderboard").style.color = "#888";
+	document.getElementById("leaderboard").onclick = Leaderboard;
 
 	document.getElementById("playerstoggle").onclick = Players;
 	document.getElementById("playerlabel0").onclick = function () { Label(0); }
@@ -163,12 +163,18 @@ function MainMenu() {
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send("UID=" + UID + "&status=" + waitstatus);
 		} else if (waitstatus == 0) {
+			socket.close();
 			window.location.assign("CGSpectate.html");
 		}
 	}
 
 	function Tutorial(event) {
+		socket.close();
 		window.location.assign("CGTutorial.html");
+	}
+	function Leaderboard(event) {
+		socket.close();
+		window.location.assign("CGLeaderboard.html");
 	}
 
 	function SetUp() {
@@ -206,6 +212,7 @@ function fml() {
 			document.getElementById("game").innerHTML = "Seuraa peli&#228";
 		} else if (waitstatus > 0) {
 			document.getElementById("game").innerHTML = "Uudelleen ohjataan";
+			socket.close();
 			window.location.replace("CG.html");
 		}
 	} else {

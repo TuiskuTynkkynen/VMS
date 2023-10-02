@@ -246,10 +246,14 @@ function ParseCard(array, num) {
 function Win(winstatus) {
 	document.getElementById("win").classList.remove("hidden");
 	document.getElementById("mainmenu").onclick = MainMenu;
-	document.getElementById("leaderboard").style.color = "#888";
+	document.getElementById("leaderboard").onclick = Leaderboard;
 
 	function MainMenu(event) {
 		window.location.replace("Index.html");
+		socket.close();
+	}
+	function Leaderboard(event) {
+		window.location.replace("CGLeaderboard.html");
 		socket.close();
 	}
 }

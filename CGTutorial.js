@@ -651,15 +651,19 @@ function Win(winstatus) {
 	}
 
 	document.getElementById("mainmenu").onclick = MainMenu;
-	document.getElementById("leaderboard").style.color = "#888";
+	document.getElementById("leaderboard").onclick = Leaderboard;
+
+	function MainMenu(event) {
+		window.location.replace("Index.html");
+		socket.close();
+	}
 
 	function Spectate(event) {
 		window.location.assign("CGSpectate.html");
 		socket.close();
 	}
-
-	function MainMenu(event) {
-		window.location.replace("Index.html");
+	function Leaderboard(event) {
+		window.location.assign("CGLeaderboard.html");
 		socket.close();
 	}
 }
