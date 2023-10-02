@@ -8,77 +8,165 @@
             margin: 0;
         }
 
-        #tablecontainer{
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-        }
-        
-        td {
-            padding-right: 0.5%;
+        #header {
+            position: fixed;
+            top: 0;
+            height: 15%;
+            width: 100%;
+            z-index: 1;
         }
 
-        th{
-            width: 15%;
-            padding-right: 0.5%;
+        #mainheader {
+            position: relative;
+            height: 60%;
+            width: 100%;
+            background-color: #393939;
         }
+
+        #auxheader {
+            height: 40%;
+            background-color: #191919;
+        }
+
+        #logo{
+            position: relative;
+            height: 80%;
+            top: 10%;
+            left: 0.5%;
+        }
+
+        #tablecontainer{
+            position: absolute;
+            top: 15%;
+            left: 5%;
+            width: 90%;
+            overflow-x: clip;
+        }
+
+        #label {
+            position: relative;
+            display: block;
+            background-color: #8034eb;
+        }
+
+        #tittlecontainer {
+            position: relative;
+            height: 2.5rem;
+        }
+
+        #tittle {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin: unset;
+        }
+
+        #statstoggle {
+            position: absolute;
+            height: 60%;
+            top: 20%;
+            right: 1%;
+            border: none;
+            padding: 0;
+            background: none;
+        }
+            #statstoggle img {
+                height: 100%;
+            }
+
+        #stats {
+            display: block;
+            height: 0;
+            overflow-y: hidden;
+        }
+            #stats p {
+                text-align: center;
+                margin: 0;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: right;
+            }
 
         thead {
             position: sticky;
-            top: 0%;
-            background-color: #393939;
-        }
-        tbody {
+            top: 15%;
             background-color: #292929;
         }
-        tfoot {
+        tbody {
             background-color: #393939;
         }
-        #num, #avg{
-            width: 10%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: right;
-        }
-
-            table p {
-                display: inline;
-                border: none !important;
-            }
 
         tr {
             border-bottom: 1px solid #191919;
         }
-        tr :nth-child(n) {
+
+        th {
+            width: 15%;
+            font-size: 1.5rem; 
             border-right: 1px solid #191919;
+            padding-right: 0.5%;
+        }
+            th p{
+                display: inline;
+            }
+
+        #num{
+            width: 2.5%;
         }
 
+        td {
+            font-size: 1.5rem;
+            border-right: 1px solid #191919;
+            padding-right: 0.5%;
+        }
 
         #pageselector {
-            height: 1.5rem;
+            position: sticky;
+            display: block;
+            bottom: 0;
+            height: 2rem;
+            width: 100%;
+            background-color: #191919;
+        }
+
+        #pageselectorflex {
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-        #pageselector p, #pageselector h3, #pageselector div{
-            display: inline;
-            padding-right: 2.5%;
+            font-size: 1.25rem;
         }
 
+        .pscontent{
+            display: inline;
+            margin: 0;
+            padding-right: 2%;
+        }
     </style>
 </head>
 
 <body>
     <div id="container">
+        <div id="header">
+            <div id="mainheader">
+                <img id="logo" src="imgs/VMSlogo.png" />
+            </div>
+            <div id="auxheader"></div>
+        </div>
         <div id="tablecontainer">
+            <div id="label">
+                <div id="tittlecontainer">
+                    <p id="tittle"> Leaderboard </p>
+                    <button id="statstoggle"><img src="imgs/statistics_img"></button>
+                </div>
+                <div id="stats"></div>
+            </div>
             <table>
                 <thead>
                     <tr>
-                        <th id="num">Numero</th>
+                        <th id="num">#</th>
                         <th id="name">Nimi<p id="ordername"></p></th>
                         <th id="games">Pelit<p id="ordergames"></p></th>
                         <th id="wins">Voitot<p id="orderwins"></p></th>
@@ -89,26 +177,24 @@
                 </thead>
                 <tbody id="lb">
                 </tbody>
-                <tfoot>
-                    <tr id="avgs">
-                    </tr>
-                </tfoot>
             </table>
 
             <div id="pageselector">
-                <h3>Sivu</h3>
-                <p id="first"><< &nbsp;</p>
-                <p id="previous">< &nbsp;</p>
-                <div id="pagenum"></div>
-                <p id="next">> &nbsp;</p>
-                <p id="last">>></p>
-                <h3>Rivejä</h3>
-                <select name="rows" id="rows">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+                <div id="pageselectorflex">
+                    <h3 class="pscontent">Sivu</h3>
+                    <p id="first" class="pscontent"><< &nbsp;</p>
+                    <p id="previous" class="pscontent">< &nbsp;</p>
+                    <div id="pagenum" class="pscontent"></div>
+                    <p id="next" class="pscontent">> &nbsp;</p>
+                    <p id="last" class="pscontent">>></p>
+                    <h3 class="pscontent">Rivejä</h3>
+                    <select name="rows" id="rows" class="pscontent">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -120,11 +206,20 @@
         let limit = 10;
         let currentpage = 0;
         let numberofpages;
+        let stats = 0;
         Main();
 
         function Main(){
             GetAverages();
             GetResults();
+
+            document.getElementById("logo").onclick = function () { window.location.assign("Index.html"); }
+
+            document.getElementById("statstoggle").onclick = function () {
+                const anim = (stats == 0) ? { duration: 500, fill: "forwards" } : { duration: 500, direction: "reverse", fill: "forwards" };
+                document.getElementById("stats").animate([{ height: "0" }, { height: "1.5rem" }], anim);
+                stats = (stats == 0) ? 1 : 0;
+            }
 
             document.getElementById("rows").onchange = function () { limit = document.getElementById("rows").value; GetResults(); GetAverages(); }
             document.getElementById("first").onclick = function () {
@@ -214,13 +309,8 @@
                 let x = this.responseText;
                 console.log(x);
                 let data = JSON.parse(x);
-                let str = '<thscope = "row" id = "avg" > Keskiverto</th> <td></td>';
-                str += "<td>" + Math.round(100 * data.games) / 100 + "</td>";
-                str += "<td>" + Math.round(100 * data.wins) / 100 + "</td>";
-                str += "<td>" + Math.round(100 * data.losses) / 100 + "</td>";
-                str += "<td>" + Math.round(100 * data.winrate) + "</td>";
-                str += "<td>" + Math.round(100 * data.lossrate) + "</td>";
-                document.getElementById("avgs").innerHTML = str;
+                let str = "<p> Keskiverto&#8193; Pelit: " + Math.round(100 * data.games) / 100 + "&#8193; Voitot: " + Math.round(100 * data.wins) / 100 + "&#8193; Häviöt: " + Math.round(100 * data.losses) / 100 + "&#8193; Voitto%: " + Math.round(100 * data.winrate) + "&#8193; Häviö%: " + Math.round(100 * data.lossrate) + "</p>";
+                document.getElementById("stats").innerHTML = str;
                 numberofpages = Math.ceil(data.count / limit) -1;
                 TableFooter();
             }
