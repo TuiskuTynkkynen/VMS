@@ -1,0 +1,61 @@
+<html>
+<head>
+    <title>VMS leaderboard</title>
+    <link rel="stylesheet" href="CGLeaderboard.css">
+</head>
+
+<body>
+    <div id="container">
+        <div id="header">
+            <div id="mainheader">
+                <img id="logo" src="imgs/VMSlogo.png" />
+            </div>
+            <div id="auxheader"></div>
+        </div>
+        <div id="tablecontainer">
+            <div id="label">
+                <div id="tittlecontainer">
+                    <p id="tittle"> Leaderboard </p>
+                    <button id="statstoggle"><img src="imgs/statistics_img"></button>
+                </div>
+                <div id="stats"></div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th id="num">#</th>
+                        <th id="name">Nimi<p id="ordername"></p></th>
+                        <th id="games">Pelit<p id="ordergames"></p></th>
+                        <th id="wins">Voitot<p id="orderwins"></p></th>
+                        <th id="losses">Häivöt<p id="orderlosses"></p></th>
+                        <th id="winrate">Voitto%<p id="orderwinrate"></p></th>
+                        <th id="lossrate">Häviö%<p id="orderlossrate"></p></th>
+                    </tr>
+                </thead>
+                <tbody id="lb">
+                </tbody>
+            </table>
+
+            <div id="pageselector">
+                <div id="pageselectorflex">
+                    <h3 class="pscontent">Sivu</h3>
+                    <p id="first" class="pscontent"><< &nbsp;</p>
+                    <p id="previous" class="pscontent">< &nbsp;</p>
+                    <div id="pagenum" class="pscontent"></div>
+                    <p id="next" class="pscontent">> &nbsp;</p>
+                    <p id="last" class="pscontent">>></p>
+                    <h3 class="pscontent">Rivejä</h3>
+                    <select name="rows" id="rows" class="pscontent">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="CGLeaderboard.js"></script>
+</body>
+</html>
