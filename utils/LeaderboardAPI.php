@@ -11,6 +11,7 @@
 	$Mode = $_REQUEST["Mode"];
 	if ($Mode == "0"){ Leaderboard($conn); }
 	else if ($Mode == "1"){ Aggregate($conn); }
+	else if ($Mode == "2"){ Top3($conn); }
 	else {	
 		$sql = "SELECT Count(id) FROM Leaderboard";
 		$result = $conn->query($sql);
@@ -18,6 +19,7 @@
 		echo($result->fetch_array(MYSQLI_NUM)[0]);
 	}
 
+	$conn->close();
 
 	function Leaderboard($conn){
 		$Sort = $_REQUEST["Sort"];
@@ -54,5 +56,26 @@
 		echo $str;
 	}
 
-	$conn->close();
+	function Top3($conn){
+		function Res($conn, $sql, $statname){
+			$res = "";
+			$result = $conn->query($sql);
+			if ($result === NULL) {echo "Error: " . $conn->error; }
+			for ($i = 0; $i < $result->num_rows; $i++){
+				$row = $result->fetch_array(MYSQLI_NUM);
+				$res .= '{"name":"' . $row[0] . '", "' . $statname . '":"' . $row[1] . '"}';
+				if ($i != $result->num_rows-1) {$res .= ','; }
+			}
+			return $res;
+		}
+
+		$sql[0] = "SELECT name, wins FROM Leaderboard ORDER BY wins DESC LIMIT 3";
+		$sql[1] = "SELECT name, (wins / games) AS winrate FROM Leaderboard ORDER BY winrate DESC LIMIT 3";
+		$sql[2] = "SELECT name, (wins / losses) AS lossrate FROM Leaderboard ORDER BY lossrate DESC LIMIT 3";
+		
+		$str = '{"topwins":[' . Res($conn, $sql[0], "wins") .'], "topwinrate":[' . Res($conn, $sql[1], "winrate") .'], "toplossrate":[' . Res($conn, $sql[2], "lossrate") . ']}';
+		
+		echo $str;
+	}
+
 ?>
