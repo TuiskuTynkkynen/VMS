@@ -71,7 +71,7 @@
 
 		$sql[0] = "SELECT name, wins FROM Leaderboard ORDER BY wins DESC LIMIT 3";
 		$sql[1] = "SELECT name, (wins / games) AS winrate FROM Leaderboard ORDER BY winrate DESC LIMIT 3";
-		$sql[2] = "SELECT name, (wins / losses) AS lossrate FROM Leaderboard ORDER BY lossrate DESC LIMIT 3";
+		$sql[2] = "SELECT name, (losses / games) AS lossrate FROM Leaderboard ORDER BY lossrate DESC LIMIT 3";
 		
 		$str = '{"topwins":[' . Res($conn, $sql[0], "wins") .'], "topwinrate":[' . Res($conn, $sql[1], "winrate") .'], "toplossrate":[' . Res($conn, $sql[2], "lossrate") . ']}';
 		
