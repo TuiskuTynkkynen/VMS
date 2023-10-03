@@ -106,7 +106,7 @@ function GetAverages() {
         let x = this.responseText;
         console.log(x);
         let data = JSON.parse(x);
-        let str = "<p> Keskiverto&#8193; Pelit: " + Math.round(100 * data.games) / 100 + "&#8193; Voitot: " + Math.round(100 * data.wins) / 100 + "&#8193; Häviöt: " + Math.round(100 * data.losses) / 100 + "&#8193; Voitto%: " + Math.round(100 * data.winrate) + "&#8193; Häviö%: " + Math.round(100 * data.lossrate) + "</p>";
+        let str = "<p>Pelejä yhteensä: " + Math.round(100 * data.count) / 100 + "&#8193; | &#8193;  Keskiverto&#8193; Pelit: " + Math.round(100 * data.games) / 100 + "&#8193; Voitot: " + Math.round(100 * data.wins) / 100 + "&#8193; Häviöt: " + Math.round(100 * data.losses) / 100 + "&#8193; Voitto%: " + Math.round(100 * data.winrate) + "&#8193; Häviö%: " + Math.round(100 * data.lossrate) + "</p>";
         document.getElementById("stats").innerHTML = str;
         numberofpages = Math.ceil(data.count / limit) - 1;
         TableFooter();

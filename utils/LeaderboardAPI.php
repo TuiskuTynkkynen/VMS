@@ -46,15 +46,11 @@
 	}
 
 	function Aggregate($conn){
-		$sql = "SELECT Count(id) FROM Leaderboard";
-		$result = $conn->query($sql);
-		if ($result === NULL) {echo "Error: " . $conn->error; }
-		$count = $result->fetch_array(MYSQLI_NUM)[0];
-
-		$sql = "SELECT AVG(games), AVG(wins), AVG(losses), AVG(wins / games), AVG(losses / games), COUNT(*) FROM Leaderboard WHERE games > 0";
+		
+		$sql = "SELECT AVG(games), AVG(wins), AVG(losses), AVG(wins / games), AVG(losses / games), SUM(wins) FROM Leaderboard WHERE games > 0";
 		if ($conn->query($sql) === NULL) {echo "Error: " . $conn->error; }
 		$row = $conn->query($sql)->fetch_array(MYSQLI_NUM);
-		$str = '{"games":"' . $row[0] . '", "wins":"' . $row[1] . '", "losses":"' . $row[2] . '", "winrate":"' . $row[3] . '", "lossrate":"' . $row[4] . '",  "count":"' . $count . '"}';
+		$str = '{"games":"' . $row[0] . '", "wins":"' . $row[1] . '", "losses":"' . $row[2] . '", "winrate":"' . $row[3] . '", "lossrate":"' . $row[4] . '",  "count":"' . $row[5] . '"}';
 		echo $str;
 	}
 
