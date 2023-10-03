@@ -14,21 +14,21 @@ body {
 
 #mainheader {
     position: relative;
-    height: 60%;
+    height: 75%;
     width: 100%;
     background-color: #393939;
 }
 
 #auxheader {
-    height: 40%;
+    height: 25%;
     background-color: #191919;
 }
 
 #logo {
     position: relative;
-    height: 80%;
-    top: 10%;
-    left: 0.5%;
+    height: 70%;
+    top: 15%;
+    left: 1%;
 }
 
 #topcontainer {
