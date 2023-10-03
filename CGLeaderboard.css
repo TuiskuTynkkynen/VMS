@@ -7,7 +7,7 @@ body {
 #header {
     position: fixed;
     top: 0;
-    height: 15%;
+    height: 20%;
     width: 100%;
     z-index: 1;
 }
@@ -31,9 +31,52 @@ body {
     left: 0.5%;
 }
 
+#topcontainer {
+    position: absolute;
+    container-type: size;
+    height: 80%;
+    width: 70%;
+    top: 10%;
+    left: 15%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.devider {
+    border: 1px solid #191919;
+}
+
+.top {
+    position: relative;
+    height: 100%;
+}
+    .top p, .top h3 {
+        display: inline;
+        height: 25cqh;
+        font-size: 25cqh;
+        overflow-x: clip;
+        margin: 0;
+    }
+
+.topcontent {
+    display: flex;
+    justify-content: space-between;
+}
+
+#topinfo {
+    width: 5cqw;
+    text-align: center;
+}
+
+#topname {
+    min-width: 10cqw;
+    max-width: 20cqw;
+    text-align: center;
+}
+
 #tablecontainer {
     position: absolute;
-    top: 15%;
+    top: 20%;
     left: 5%;
     width: 90%;
     overflow-x: clip;
@@ -90,7 +133,7 @@ table {
 
 thead {
     position: sticky;
-    top: 15%;
+    top: 20%;
     background-color: #292929;
 }
 

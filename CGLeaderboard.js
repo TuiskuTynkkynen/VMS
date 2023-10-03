@@ -9,6 +9,7 @@ Main();
 function Main() {
     GetAverages();
     GetResults();
+    GetTop3();
 
     document.getElementById("logo").onclick = function () { window.location.assign("Index.html"); }
 
@@ -116,4 +117,32 @@ function GetAverages() {
 function TableFooter() {
     let str = (currentpage + 1) + "/" + (numberofpages + 1);
     document.getElementById("pagenum").innerHTML = str;
+}
+
+function GetTop3() {
+    let xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "utils/LeaderboardAPI.php?Mode=2");
+    xhttp.send();
+    xhttp.onload = function () {
+        let x = this.responseText;
+        console.log(x);
+        let data = JSON.parse(x);
+        let str = "<div class=topcontent><div></div><h3>Eniten voittoja</h3><div></div></div>";
+        for (let i = 0; i < data.topwins.length; i++) {
+            str += "<div class=topcontent><p id=topinfo>&#" + (8544 + i) + "</p><p id=topname>" + data.topwins[i].name + "</p><p id=topinfo>" + data.topwins[i].wins + "</p></div>";
+        }
+        document.getElementById("topwins").innerHTML = str;
+
+        str = "<div class=topcontent><div></div><h3>Paras voitto%</h3><div></div></div>";
+        for (let i = 0; i < data.topwinrate.length; i++) {
+            str += "<div class=topcontent><p id=topinfo>&#" + (8544 + i) + "</p><p id=topname>" + data.topwinrate[i].name + "</p><p id=topinfo>" + Math.round(100 * data.topwinrate[i].winrate) + "%</p></div>";
+        }
+        document.getElementById("topwinrate").innerHTML = str;
+
+        str = "<div class=topcontent><div></div><h3>Huonoin häviö%</h3><div></div></div>";
+        for (let i = 0; i < data.toplossrate.length; i++) {
+            str += "<div class=topcontent><p id=topinfo>&#" + (8544 + i) + "</p><p id=topname>" + data.toplossrate[i].name + "</p><p id=topinfo>" + Math.round(100 * data.toplossrate[i].lossrate) + "%</p></div>";
+        }
+        document.getElementById("toplossrate").innerHTML = str;
+    }
 }
