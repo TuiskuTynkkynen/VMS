@@ -1,0 +1,218 @@
+<html>
+<head>
+    <title>VMS Sign Up</title>
+
+    <style>
+        body{
+		    color: #fff;
+		    background-color: #191919;
+		    margin: 0;
+        }
+
+        #container {
+            position: fixed;
+        }
+
+        #bg_img {
+            object-fit: fill;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+
+        #SignUp {
+            position: absolute;
+            top: 45%;
+            left: 34%;
+            height: 50%;
+            width: 32%;
+            background-image: url("imgs/win_img.png");
+            background-size: 100% 100%;
+            container-type: size;
+        }
+
+        #inputs {
+            position: absolute;
+            top: 10%;
+            height: 80%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            #inputs label {
+                display: block;
+                font-size: min(1.5rem, 10cqh);
+                text-align: center;
+                margin: 0;
+            }
+
+            #inputs input {
+                height: min(1.5rem, 15%);
+                width: 70%;
+                margin: 0;
+                border-width: 1cqh;
+                border-radius: 1cqh;
+                margin: 0;
+                margin-bottom: 5cqh;
+            }
+
+                #inputs input:focus {
+                    border: 1.2cqh solid #888;
+                    outline: none;
+                }
+
+        #incorrect {
+            display: block;
+            position: relative;
+            bottom: 3cqh;
+            font-size: min(1rem, 7cqh);
+            color: #e62727;
+            text-align: center;
+            margin: 0;
+        }
+
+        #notice {
+            position: absolute;
+            top: 50%;
+            left: 34%;
+            height: 35%;
+            width: 32%;
+            background-image: url("imgs/win_img.png");
+            background-size: 100% 100%;
+        }
+
+        #ntc {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            height: 90%;
+            width: 90%;
+            container-type: size;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        #ntctittle {
+            font-weight: 525;
+            font-size: min(2rem, 20cqh);
+            margin: 0;
+        }
+
+        #ntctxt {
+            font-weight: 525;
+            font-size: min(1.4rem, 12.5cqh);
+            margin: 0;
+        }
+
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="container">
+        <img src="imgs/tittle_img.png"; id="bg_img">
+        <div id="notice">
+            <div id="ntc">
+                <p id="ntctittle">Huomautus:</p>
+                <p id="ntctxt">Salasana v‰litet‰‰n palvelimelle raakatekstin‰, joten v‰lt‰ arkaluontoisen sis‰llˆn k‰ytt‰mist‰</p>
+                <p id="ntctxt">Paina mit‰ tahansa n‰pp‰int‰ jatkaaksesi</p>
+            </div>
+        </div>
+        <div id="SignUp"  class="hidden">
+            <div id="inputs">
+                <label for="account">K‰ytt‰j‰nimi</label>
+                <input id="account" type="text" name="account" min="1" maxlength="25" autocomplete="off">
+                <label for="PIN">Salasana</label>
+                <input id="PIN" type="password" name="PIN" min="6" maxlength="25" autocomplete="off">
+                <label for="PIN1">Vahvista salasana</label>
+                <input id="PIN1" type="password" name="PIN1" min="6" maxlength="25" autocomplete="off">
+                <label for="name">Nimi</label>
+                <input id="name" type="text" name="name" min="1" maxlength="25" autocomplete="off">
+                <p id="incorrect">&nbsp;</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("keydown", function (event) {
+            document.getElementById("notice").classList.add("hidden");
+            document.getElementById("SignUp").classList.remove("hidden");
+        });
+        document.getElementById("account").addEventListener("keydown", function (event) {
+            if (event.key == "Enter") { document.getElementById("PIN").focus(); }
+        });
+        document.getElementById("PIN").addEventListener("keydown", function (event) {
+            if (event.key == "Enter") { document.getElementById("PIN1").focus(); }
+        });
+        document.getElementById("PIN1").addEventListener("keydown", function (event) {
+            if (event.key == "Enter") { document.getElementById("name").focus(); }
+        });
+        document.getElementById("name").addEventListener("keydown", function (event) {
+            if (event.key == "Enter") { Check();  }
+        });
+
+        function Check() {
+            let account = document.getElementById("account").value;
+            let password = document.getElementById("PIN").value;
+            let passwordverification = document.getElementById("PIN1").value;
+            let nickname = document.getElementById("name").value;
+
+            if (account == "" | password == "" | nickname == "") {
+                document.getElementById("incorrect").innerHTML = "T‰yt‰ kaikki kent‰t";
+                return;
+            }
+            if (account.length > 25 | nickname.length > 25) {
+                document.getElementById("incorrect").innerHTML = "Nimen on oltava enint‰‰n 25 merkki‰ pitk‰";
+                return;
+            }
+            if (password.length < 6) {
+                document.getElementById("incorrect").innerHTML = "Salasanan on oltava v‰hint‰‰n 6 merkki‰ pitk‰";
+                return;
+            }
+            if (password.length > 25) {
+                document.getElementById("incorrect").innerHTML = "Salasanan on oltava enint‰‰n 25 merkki‰ pitk‰";
+                return;
+            }
+            if (password != passwordverification) {
+                document.getElementById("incorrect").innerHTML = "Salasanat eiv‰t t‰sm‰‰";
+                return;
+            }
+
+            document.getElementById("incorrect").innerHTML = "";
+            CreateAccount(account, password, nickname);
+        }
+
+        function CreateAccount(acc, psw, nick) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "server/AccountAPI.php");
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("account=" + acc + "&password=" + psw + "&name=" + nick + "&action=5");
+
+            xhttp.onload = function () {
+                let serverresponse = this.responseText;
+                if (serverresponse == "0") {
+                    window.location.replace("CGTutorial.html");
+                } else if (serverresponse == "1") {
+                    document.getElementById("incorrect").innerHTML = "K‰ytt‰j‰nimi ei ole vapaa";
+                } else {
+                    console.log(serverresponse);
+                    alert("Ota j‰rjestelm‰nvalvojaan yhteytt‰");
+                    document.getElementById("incorrect").innerHTML = "Ennalta arvaamaton virhe, ota j‰rjestelm‰nvalvojaan yhteytt‰";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

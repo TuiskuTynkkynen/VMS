@@ -1,0 +1,284 @@
+body {
+    color: #fff;
+    background-color: #191919;
+    margin: 0px;
+}
+
+#container {
+    position: fixed;
+}
+
+#bg_img {
+    object-fit: fill;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+
+#signuplogin {
+    position: absolute;
+    top: 55%;
+    left: 33%;
+    height: 26%;
+    width: 34%;
+    background-image: url("imgs/name_img.png");
+    background-size: 100% 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    container-type: size;
+}
+
+    #signuplogin button {
+        position: relative;
+        width: 65%;
+        height: 20%;
+        color: #fff;
+        font-weight: 525;
+        font-size: min(1.5rem, 12cqh);
+        line-height: 1.2rem;
+        background-image: url("imgs/button_img");
+        background-size: 100% 100%;
+        border: none;
+        margin: 2.5%;
+    }
+
+        #signuplogin button:hover {
+            color: #f2c511;
+        }
+        
+#login {
+    position: absolute;
+    top: 50%;
+    left: 34%;
+    height: 40%;
+    width: 32%;
+    background-image: url("imgs/win_img.png");
+    background-size: 100% 100%;
+    container-type: size;
+}
+
+#inputs {
+    position: absolute;
+    top: 10%;
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#inputs label{
+    display: block;
+    font-size: min(1.5rem, 10cqh);
+    text-align: center;
+    margin: 0;
+}
+
+#inputs input {
+    width: 70%;
+    height: min(1.5rem, 15%);
+    border-width: 1cqh;
+    border-radius: 1cqh;
+    margin: 0;
+    margin-bottom: 5cqh;
+}
+
+    #inputs input:focus {
+    border: 1.2cqh solid #888;
+    outline: none;
+    }
+
+#incorrect {
+    display: block;
+    position: relative;
+    bottom: 3cqh;
+    font-size: min(1rem, 7cqh);
+    color: #e62727;
+    text-align: center;
+    margin: 0;
+}
+
+
+#menu {
+    position: absolute;
+    bottom: 5%;
+    left: 30%;
+    height: 50%;
+    width: 40%;
+}
+
+#menubuttons {
+    position: absolute;
+    left: 20%;
+    width: 60%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+    #menubuttons button {
+        position: relative;
+        width: 100%;
+        height: 15%;
+        color: #fff;
+        font-weight: 525;
+        font-size: 1.5rem;
+        line-height: 1.2rem;
+        background-image: url("imgs/button_img");
+        background-size: 100% 100%;
+        border: none;
+    }
+
+        #menubuttons button:hover {
+            color: #f2c511;
+        }
+
+#playerinfo {
+    position: absolute;
+    top: 5%;
+    right: 1%;
+    width: 12.5%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.status {
+    flex-shrink: 1;
+    position: relative;
+    width: 100%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.playertoggle {
+    color: #6b05fa;
+    font-size: 0.75rem;
+}
+
+.playerlabel p {
+    display: inline;
+}
+
+#playerinfo p {
+    margin: 0;
+}
+
+#playerinfo .nick {
+    position: relative;
+    left: 5%;
+    overflow: clip;
+}
+
+#playerstoggle {
+    position: absolute;
+    bottom: 4%;
+    right: 2%;
+    width: 4%;
+    border: none;
+    border: none;
+    padding: 0;
+}
+
+    #playerstoggle img {
+        width: 100%;
+    }
+
+#accountsettings {
+    position: absolute;
+    bottom: 4%;
+    left: 2%;
+    width: 4%;
+    border: none;
+    padding: 0;
+}
+
+    #accountsettings img {
+        width: 100%;
+    }
+
+#version {
+    position: absolute;
+    top: 1.5%;
+    left: 1.3%;
+    font-size: 0.75rem;
+    font-style: italic;
+    line-height: 0.25rem;
+}
+
+#copyleft {
+    transform: scale(-1, 1);
+    display: inline-block
+}
+
+#notice {
+    position: absolute;
+    top: 50%;
+    left: 34%;
+    height: 35%;
+    width: 32%;
+    background-image: url("imgs/win_img.png");
+    background-size: 100% 100%;
+}
+
+#ntc {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    height: 90%;
+    width: 90%;
+    container-type: size;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#ntctittle {
+    font-weight: 525;
+    font-size: min(2rem, 20cqh);
+    margin: 0;
+}
+
+#ntctxt {
+    font-weight: 525;
+    font-size: min(1.4rem, 12.5cqh);
+    margin: 0;
+}
+
+#error {
+    position: absolute;
+    top: 35%;
+    left: 30%;
+    height: 30%;
+    width: 40%;
+    background-image: url("imgs/name_img.png");
+    background-size: 100% 100%;
+}
+
+#err {
+    position: absolute;
+    top: 15%;
+    left: 5%;
+    height: 70%;
+    width: 90%;
+    container-type: size;
+    text-align: center;
+}
+
+#errtxt {
+    font-weight: 525;
+    font-size: min(1.5rem, 8cqw);
+    line-height: 1.2rem;
+}
+
+
+.hidden {
+    display: none;
+}
