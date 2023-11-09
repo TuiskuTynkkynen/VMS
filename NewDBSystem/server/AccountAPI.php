@@ -131,9 +131,9 @@
 		$row = $result -> fetch_array(MYSQLI_NUM);
 	
 		if ($result->num_rows > 0){
-			$universalid = $row[0];
+			$sessionid = $row[0];
 
-			$sql = "DELETE FROM sessions WHERE id=$universalid";
+			$sql = "DELETE FROM sessions WHERE id=$sessionid";
 			if ($conn->query($sql) === FALSE) { echo "Error updating record: " . $conn->error; }
 		}
 

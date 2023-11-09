@@ -27,7 +27,7 @@ socket.addEventListener("message", (event) => {
 let waitstatus;
 let SID;
 let info;
-let status = [0, 0, 0];
+let statustoggles = [0, 0, 0];
 let playertoggle = 0;
 let logouttimer;
 
@@ -126,25 +126,27 @@ function LogIn() {
 function MainMenu() {
 	document.getElementById("main").classList.remove("hidden");
 
-	document.getElementById("game").onclick = Game;
+	document.getElementById("lobby").onclick = Lobby;
 	document.getElementById("tutorial").onclick = Tutorial;
 	document.getElementById("setup").onclick = SetUp;
 	document.getElementById("leaderboard").onclick = Leaderboard;
 
 	document.getElementById("playerstoggle").onclick = Players;
-	document.getElementById("playerlabel0").onclick = function () { Label(0); }
-	document.getElementById("playerlabel1").onclick = function () { Label(1); }
-	document.getElementById("playerlabel2").onclick = function () { Label(2); }
+	document.getElementById("playerlabel0").onclick = function () { PlayersLabel(0); }
+	document.getElementById("playerlabel1").onclick = function () { PlayersLabel(1); }
+	document.getElementById("playerlabel2").onclick = function () { PlayersLabel(2); }
 
 	document.getElementById("accountsettings").onclick = function () { window.location.assign("AccountSettings.html"); }
 
-	function Game(event) {
+	function Lobby(event) {
+
+		return;
 		if (info.isactive == "0" && waitstatus == 0) {
 			waitstatus = 1;
 
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function () {
-				document.getElementById("game").innerHTML = "Odotetaan...";
+				document.getElementById("lobby").innerHTML = "Odotetaan...";
 			}
 
 			xhttp.open("POST", "utils/SetStatus.php");
@@ -154,7 +156,7 @@ function MainMenu() {
 			waitstatus = 0;
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function () {
-				document.getElementById("game").innerHTML = "Liity peliin";
+				document.getElementById("lobby").innerHTML = "Liity peliin";
 			}
 
 			xhttp.open("POST", "utils/SetStatus.php");
@@ -168,11 +170,11 @@ function MainMenu() {
 
 	function Tutorial(event) {
 		socket.close();
-		window.location.assign("CGTutorial.html");
+		window.location.assign("Tutorial.html");
 	}
 	function Leaderboard(event) {
 		socket.close();
-		window.location.assign("CGLeaderboard.html");
+		window.location.assign("Leaderboard.html");
 	}
 
 	function SetUp() {
@@ -190,15 +192,15 @@ function MainMenu() {
 		}
 	}
 
-	function Label(x) {
-		if (status[x] == 0) {
+	function PlayersLabel(x) {
+		if (statustoggles[x] == 0) {
 			document.getElementById("playertoggle" + x).innerHTML = "&lt&#8210&gt";
 			document.getElementById("status" + x).classList.remove("hidden");
-			status[x] = 1;
+			statustoggles[x] = 1;
 		} else {
 			document.getElementById("playertoggle" + x).innerHTML = "&lt+&gt";
 			document.getElementById("status" + x).classList.add("hidden");
-			status[x] = 0;
+			statustoggles[x] = 0;
 		}
 	}
 
@@ -207,18 +209,18 @@ function MainMenu() {
 function fml() {
 	if (info.isactive == "1") {
 		if (waitstatus == 0) {
-			document.getElementById("game").innerHTML = "Seuraa peli&#228";
+			document.getElementById("lobby").innerHTML = "Seuraa peli&#228";
 		} else if (waitstatus > 0) {
-			document.getElementById("game").innerHTML = "Uudelleen ohjataan";
+			document.getElementById("lobby").innerHTML = "Uudelleen ohjataan";
 			socket.close();
 			window.location.replace("CG.html");
 		}
 	} else {
 		if (waitstatus == 0) {
-			document.getElementById("game").innerHTML = "Liity peliin";
+			document.getElementById("lobby").innerHTML = "Liity peliin";
 		}
 		if (waitstatus == 1) {
-			document.getElementById("game").innerHTML = "Odotetaan...";
+			document.getElementById("lobby").innerHTML = "Odotetaan...";
 		}
 	}
 }
@@ -262,9 +264,12 @@ function RelogIn(seconds) {
 		document.removeEventListener("keypress", HideNotice);
 	}
 }
-	//TODO Check functions after login to switchs to new db standard
-	//TODO implement room system
-	//TODO make CG work with room system
+	//TODO Check if functions need to be switched to new db standard
+	//TODO implement lobby system
+	//TODO add lobby setting and pswrd
+	//TODO start and stop game to lobby system
+	//TODO gui for lobby system
+	//TODO make CG work with lobby system
 	//TODO redo relogin system 
 	//TODO make websocket work with new systems (relog sys)
 	//TODO (optional) reduce .php server executables to fewer files
