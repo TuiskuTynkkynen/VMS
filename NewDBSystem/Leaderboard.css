@@ -1,0 +1,189 @@
+body {
+    color: #fff;
+    background-color: #191919;
+    margin: 0;
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    height: 20%;
+    width: 100%;
+    z-index: 1;
+}
+
+#mainheader {
+    position: relative;
+    height: 75%;
+    width: 100%;
+    background-color: #393939;
+}
+
+#auxheader {
+    height: 25%;
+    background-color: #191919;
+}
+
+#logo {
+    position: relative;
+    height: 70%;
+    top: 15%;
+    left: 1%;
+}
+
+#topcontainer {
+    position: absolute;
+    container-type: size;
+    height: 80%;
+    width: 70%;
+    top: 10%;
+    left: 15%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.devider {
+    border: 1px solid #191919;
+}
+
+.top {
+    position: relative;
+    height: 100%;
+}
+    .top p, .top h3 {
+        display: inline;
+        height: 25cqh;
+        font-size: 25cqh;
+        overflow-x: clip;
+        margin: 0;
+    }
+
+.topcontent {
+    display: flex;
+    justify-content: space-between;
+}
+
+#topinfo {
+    width: 5cqw;
+    text-align: center;
+}
+
+#topname {
+    min-width: 10cqw;
+    max-width: 20cqw;
+    text-align: center;
+}
+
+#tablecontainer {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    width: 90%;
+    overflow-x: clip;
+}
+
+#label {
+    position: relative;
+    display: block;
+    background-color: #8034eb;
+}
+
+#tittlecontainer {
+    position: relative;
+    height: 2.5rem;
+}
+
+#tittle {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin: unset;
+}
+
+#statstoggle {
+    position: absolute;
+    height: 60%;
+    top: 20%;
+    right: 1%;
+    border: none;
+    padding: 0;
+    background: none;
+}
+
+    #statstoggle img {
+        height: 100%;
+    }
+
+#stats {
+    display: block;
+    height: 0;
+    overflow-y: hidden;
+}
+
+    #stats p {
+        text-align: center;
+        margin: 0;
+    }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+thead {
+    position: sticky;
+    top: 20%;
+    background-color: #292929;
+}
+
+tbody {
+    background-color: #393939;
+}
+
+tr {
+    border-bottom: 1px solid #191919;
+}
+
+th {
+    width: 15%;
+    font-size: 1.5rem;
+    border-right: 1px solid #191919;
+    padding-right: 0.5%;
+}
+
+    th p {
+        display: inline;
+    }
+
+#num {
+    width: 2.5%;
+}
+
+td {
+    font-size: 1.5rem;
+    border-right: 1px solid #191919;
+    padding-right: 0.5%;
+}
+
+#pageselector {
+    position: sticky;
+    display: block;
+    bottom: 0;
+    height: 2rem;
+    width: 100%;
+    background-color: #191919;
+}
+
+#pageselectorflex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.pscontent {
+    display: inline;
+    margin: 0;
+    padding-right: 2%;
+}
