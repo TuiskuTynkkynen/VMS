@@ -267,7 +267,6 @@ function RelogIn(seconds) {
 	//TODO Check if functions need to be switched to new db standard
 	//
 	//TODO implement lobby system
-	//TODO add lobby setting and pswrd
 	//TODO start and stop game to lobby system
 	//TODO gui for lobby system
 	//
