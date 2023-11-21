@@ -12,8 +12,15 @@ socket_bind($server, $address, $port);
 socket_listen($server);
 socket_set_nonblock($server);
 
+$config = parse_ini_file("config/serverconfig.ini");
+	
+$servername = $config['databaseservername'];
+$dbusername = $config['databaseusername'];
+$dbpassword = $config['databasepassword'];
 
-$mysqli = new mysqli("localhost", "root", "", "cardgame");
+$dbname = "cardgame";
+
+$mysqli = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
 $now = time();
 $y = $now - 15*60;

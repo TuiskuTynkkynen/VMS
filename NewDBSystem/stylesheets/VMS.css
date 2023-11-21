@@ -331,7 +331,7 @@ body {
     left: 30%;
     height: 50%;
     width: 40%;
-    background-image: url("imgs/win_img.png");
+    background-image: url("/imgs/win_img.png");
     background-size: 100% 100%;
 }
 
@@ -361,7 +361,7 @@ body {
         font-weight: 525;
         font-size: 1.5rem;
         line-height: 1.2rem;
-        background-image: url("imgs/button_img");
+        background-image: url("/imgs/button_img");
         background-size: 100% 100%;
         border: none;
         margin-top: 3%;
@@ -378,7 +378,7 @@ body {
     left: 30%;
     height: 50%;
     width: 40%;
-    background-image: url("imgs/win_img.png");
+    background-image: url("/imgs/win_img.png");
     background-size: 100% 100%;
     text-align: center;
 }
@@ -434,7 +434,7 @@ body {
     left: 30%;
     height: 30%;
     width: 40%;
-    background-image: url("imgs/name_img.png");
+    background-image: url("/imgs/name_img.png");
     background-size: 100% 100%;
 }
 

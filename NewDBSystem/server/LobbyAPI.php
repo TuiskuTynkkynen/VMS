@@ -1,8 +1,12 @@
 <?php
 	session_start();
-	$servername = "localhost";
-	$dbusername = "root";
-	$dbpassword = "";
+	
+	$config = parse_ini_file("config/serverconfig.ini");
+	
+	$servername = $config['databaseservername'];
+	$dbusername = $config['databaseusername'];
+	$dbpassword = $config['databasepassword'];
+
 	$dbname = "vms";
 	$conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 	if ($conn->connect_error) {die("Connection failed: " . $conn->connect_error); }

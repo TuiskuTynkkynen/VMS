@@ -48,7 +48,7 @@ function GetUserInfo() {
 			MainMenu();
 		}
 	}
-	xhttp.open("GET", "server/GetUserInfo.php");
+	xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
 	xhttp.send();
 }
 
@@ -61,7 +61,7 @@ function SignupLogin() {
 	document.getElementById("sup").onclick = SignUp;
 
 	function SignUp() {
-		window.location.assign("SignUp.html");
+		window.location.assign("/NewDBSystem/SignUp.html");
 	}
 }
 
@@ -98,7 +98,7 @@ function LogIn() {
 		let name = document.getElementById("inputtxt").value;
 
 		const xhttp = new XMLHttpRequest();
-		xhttp.open("POST", "server/AccountAPI.php");
+		xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send("account=" + account + "&password=" + password + "&name=" + name + "&status=" + waitstatus+ "&action=1");
 
@@ -136,7 +136,7 @@ function MainMenu() {
 	document.getElementById("playerlabel1").onclick = function () { PlayersLabel(1); }
 	document.getElementById("playerlabel2").onclick = function () { PlayersLabel(2); }
 
-	document.getElementById("accountsettings").onclick = function () { window.location.assign("AccountSettings.html"); }
+	document.getElementById("accountsettings").onclick = function () { window.location.assign("/NewDBSystem/AccountSettings.html"); }
 
 	function Lobby(event) {
 
@@ -170,11 +170,11 @@ function MainMenu() {
 
 	function Tutorial(event) {
 		socket.close();
-		window.location.assign("Tutorial.html");
+		window.location.assign("/NewDBSystem/Tutorial.html");
 	}
 	function Leaderboard(event) {
 		socket.close();
-		window.location.assign("Leaderboard.html");
+		window.location.assign("/NewDBSystem/Leaderboard.html");
 	}
 
 	function SetUp() {
@@ -246,7 +246,7 @@ function GetUsers() {
 		document.getElementById('playercount2').innerHTML = "(" + statuses[2] + ")";
 
 	}
-	xhttp.open("GET", "server/GetUsers.php");
+	xhttp.open("GET", "/NewDBSystem/server/GetUsers.php");
 	xhttp.send();
 }
 

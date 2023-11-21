@@ -1,12 +1,15 @@
 <?php
 	session_start();
+	
+	$config = parse_ini_file("config/serverconfig.ini");
+	
+	$servername = $config['databaseservername'];
+	$dbusername = $config['databaseusername'];
+	$dbpassword = $config['databasepassword'];
 
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
 	$dbname = "vms";
 
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 	if ($conn->connect_error) {die("Connection failed: " . $conn->connect_error); }
 	
 	//session id needs to be a double quoted string to work with MySQL

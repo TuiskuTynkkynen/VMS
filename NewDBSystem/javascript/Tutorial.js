@@ -31,7 +31,7 @@ function Input() {
 }
 
 function GUI() {
-	let str = '<img id="deckimg2"; src="imgs/card_img.png"> <div>' + deckstr + '</div>';
+	let str = '<img id="deckimg2"; src="/imgs/card_img.png"> <div>' + deckstr + '</div>';
 	document.getElementById('deck').innerHTML = str;
 
 	if (mustkill == 0 || activeCard == -1) { GUIFlex(chosenCards, "chosen"); }
@@ -46,7 +46,7 @@ function GUI() {
 		let value = result[1];
 		let color = result[2];
 		if (suit == "&#NaN" && value == "&#NaN") { hand.splice(i, 1); continue; }
-		str += '<div class=handflex id=hand' + i + '> <div class=flexcontent> <img src="imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+		str += '<div class=handflex id=hand' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
 	}
 	document.getElementById('handflexcontainer').innerHTML = str;
 
@@ -60,7 +60,7 @@ function GUI() {
 	if (mustkill == 0 && (supporting == 0 | field.length > 0)) {
 		document.getElementById('fieldcontainer').classList.add("offset");
 		for (let i = 0; i < opponent; i++) {
-			str += '<div class=opponentflex> <div class=flexcontent> <img src="imgs/card_img.png"> </div> </div>';
+			str += '<div class=opponentflex> <div class=flexcontent> <img src="/imgs/card_img.png"> </div> </div>';
 		}
 	} else {
 		document.getElementById('fieldcontainer').classList.remove("offset");
@@ -69,7 +69,7 @@ function GUI() {
 
 	document.getElementById('fieldflexcontainer').innerHTML = "";
 	if (mustkill == 1) {
-		str = '<div class=fieldflex id=field_button> <img src="imgs/field_img.png" id="field_img" style=width:90%;height:auto> </div>';
+		str = '<div class=fieldflex id=field_button> <img src="/imgs/field_img.png" id="field_img" style=width:90%;height:auto> </div>';
 		document.getElementById('fieldflexcontainer').innerHTML = str;
 	}
 	for (let i = 0; i < field.length; i++) {
@@ -78,10 +78,10 @@ function GUI() {
 		let value = result[1];
 		let color = result[2];
 		if (field[i][2] < 2) {
-			str = '<div class=fieldflex id=field' + i + '> <div class=flexcontent> <img src="imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+			str = '<div class=fieldflex id=field' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
 			document.getElementById('fieldflexcontainer').innerHTML += str;
 		} else {
-			str = ' <div class=killerflexcontent> <img src="imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
+			str = ' <div class=killerflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
 			document.getElementById('field' + field[i][3]).innerHTML += str;
 		}
 	}
@@ -101,7 +101,7 @@ function GUIFlex(array, name) {
 	let str = "";
 
 	if (array.length > 0 && mustkill == 0) {
-		str += '<div class=' + name + 'flex id=' + name + 'charge style=margin:1rem> <img src="imgs/charge_img.png" id="charge_img" style=height:30%> </div>';
+		str += '<div class=' + name + 'flex id=' + name + 'charge style=margin:1rem> <img src="/imgs/charge_img.png" id="charge_img" style=height:30%> </div>';
 	}
 
 	for (i = 0; i < array.length; i++) {
@@ -109,7 +109,7 @@ function GUIFlex(array, name) {
 		let suit = result[0];
 		let value = result[1];
 		let color = result[2];
-		str += '<div class=' + name + 'flex id=' + name + i + '> <div class=flexcontent> <img src="imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+		str += '<div class=' + name + 'flex id=' + name + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
 
 		hand.some(RemovePairs);
 	}
@@ -131,7 +131,7 @@ function InitializeGUI() {
 	let suit = result[0];
 	let value = result[1];
 	let color = result[2];
-	str = '<img id="deckimg1"; src="imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p>';
+	str = '<img id="deckimg1"; src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p>';
 	document.getElementById('trumpcard').innerHTML = str;
 	document.getElementById('trumpsuit').innerHTML = '<p style=color:' + color + ' > ' + suit + '</p >';
 
@@ -397,10 +397,10 @@ function Notice() {
 			document.getElementById("ntcmain").innerHTML = "Tutoriaali loppuu tähän, ja seuraavaksi sinut uudelleen ohjataan aloitus sivulle";
 			document.getElementById("ntcaux").innerHTML = "Paina mitä tahansa näppäintä jatkaaksesi";
 			document.getElementById("notice").style.bottom = "";
-			document.getElementById("container").innerHTML = '<img src="imgs/bg_image.png" ; id="bg_img">';
+			document.getElementById("container").innerHTML = '<img src="/imgs/bg_image.png" ; id="bg_img">';
 			break;
 		case 29:
-			window.location.assign("Index.html");
+			window.location.assign("/NewDBSystem/Index.html");
 			break;
 		default:
 			return false;
@@ -482,7 +482,7 @@ function GameLoop() {
 		let suit = result[0];
 		let value = result[1];
 		let color = result[2];
-		let str = ' <div class=killingflexcontent> <img src="imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
+		let str = ' <div class=killingflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
 		try {
 			document.getElementById('field' + cankill[activeCard]).innerHTML += str;
 		} catch (error) {/*console.error(error); */ }

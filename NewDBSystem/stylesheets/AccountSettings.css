@@ -42,7 +42,7 @@ body {
         font-weight: 525;
         font-size: 1.5rem;
         line-height: 1.2rem;
-        background-image: url("imgs/button_img");
+        background-image: url("/imgs/button_img");
         background-size: 100% 100%;
         border: none;
     }
@@ -57,7 +57,7 @@ body {
     left: 34%;
     height: 25%;
     width: 32%;
-    background-image: url("imgs/acc_img.png");
+    background-image: url("/imgs/acc_img.png");
     background-size: 100% 100%;
     container-type: size;
 }
@@ -68,7 +68,7 @@ body {
     left: 34%;
     height: 40%;
     width: 32%;
-    background-image: url("imgs/win_img.png");
+    background-image: url("/imgs/win_img.png");
     background-size: 100% 100%;
     container-type: size;
 }
@@ -125,7 +125,7 @@ input {
     left: 34%;
     height: 35%;
     width: 32%;
-    background-image: url("imgs/win_img.png");
+    background-image: url("/imgs/win_img.png");
     background-size: 100% 100%;
 }
 

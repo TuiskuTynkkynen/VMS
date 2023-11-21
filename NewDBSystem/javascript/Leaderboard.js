@@ -11,7 +11,7 @@ function Main() {
     GetResults();
     GetTop3();
 
-    document.getElementById("logo").onclick = function () { window.location.assign("Index.html"); }
+    document.getElementById("logo").onclick = function () { window.location.assign("/NewDBSystem/Index.html"); }
 
     document.getElementById("statstoggle").onclick = function () {
         const anim = (stats == 0) ? { duration: 500, fill: "forwards" } : { duration: 500, direction: "reverse", fill: "forwards" };
@@ -75,7 +75,7 @@ function Main() {
 function GetResults() {
     let offset = currentpage * limit;
     let xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "server/LeaderboardAPI.php?Mode=0&Sort=" + sort + "&Order=" + order + "&Limit=" + limit + "&Offset=" + offset);
+    xhttp.open("GET", "/NewDBSystem/server/LeaderboardAPI.php?Mode=0&Sort=" + sort + "&Order=" + order + "&Limit=" + limit + "&Offset=" + offset);
     xhttp.send();
     xhttp.onload = function () {
         let x = this.responseText;
@@ -101,7 +101,7 @@ function GetResults() {
 
 function GetAverages() {
     let xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "server/LeaderboardAPI.php?Mode=1");
+    xhttp.open("GET", "/NewDBSystem/server/LeaderboardAPI.php?Mode=1");
     xhttp.send();
     xhttp.onload = function () {
         let x = this.responseText;
@@ -121,7 +121,7 @@ function TableFooter() {
 
 function GetTop3() {
     let xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "server/LeaderboardAPI.php?Mode=2");
+    xhttp.open("GET", "/NewDBSystem/server/LeaderboardAPI.php?Mode=2");
     xhttp.send();
     xhttp.onload = function () {
         let x = this.responseText;
