@@ -44,6 +44,12 @@
 			DeleteLobby($conn, $isadmin);
 			$conn->close();
 			break;
+		case "6":
+			$info = GetSessionInfo($conn, $phpsessionid);
+			$isadmin = IsAdmin($conn, $info[1], $servername, $dbusername, $dbpassword);
+			ChangeLobbySettings($isadmin, $servername, $dbusername, $dbpassword);
+			$conn->close();
+			break;
 	}
 	exit();
 	
@@ -374,6 +380,29 @@
 
 		$sql = "UPDATE sessions SET status = 0, lobbyid = NULL WHERE lobbyid=$lobbyid";
 		if ($conn->query($sql) === FALSE) { echo "Error updating record: " . $conn->error; }		
+	}
+	
+	function ChangeLobbySettings($isadmin, $servername, $dbusername, $dbpassword) {
+		$lobbyid = $_REQUEST["id"];
+		
+		$deck_size = $_REQUEST['decksize'];
+		$suitcount =  $_REQUEST['suitcount'];
+		$suitsize = $_REQUEST['suitsize'];
+		$handsize = $_REQUEST['handsize'];
+	
+		if ($isadmin == 0){
+			echo 6;
+			exit();
+		}
+		
+		$dbname = "lobby" . $lobbyid;
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "UPDATE settings SET decksize = $deck_size, suitcount = $suitcount, suitsize = $suitsize, handsize = $handsize";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
+		$m_conn->close();
 	}
 
 	function GetSessionInfo($conn, $phpsessionid){
