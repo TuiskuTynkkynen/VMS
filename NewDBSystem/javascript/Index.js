@@ -266,8 +266,6 @@ function RelogIn(seconds) {
 }
 	//TODO Check if functions need to be switched to new db standard
 	//
-	//TODO implement lobby system
-	//TODO start and stop game to lobby system
 	//TODO gui for lobby system
 	//
 	//TODO make CG work with lobby system

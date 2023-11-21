@@ -300,6 +300,9 @@
 		$sql = "UPDATE lobbies SET playercount=playercount+1 WHERE id=$lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
 		$m_conn->close();
 	}
 
@@ -364,7 +367,10 @@
 			$sql = "UPDATE lobbies SET adminid = $newadminid WHERE id = $lobbyid";
 			if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		}
-
+		
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
 		$m_conn->close();
 	}
 	
@@ -400,17 +406,25 @@
 		}
 	
 		$lobbyid = $_REQUEST["id"];
-		
 		$deck_size = $_REQUEST['decksize'];
 		$suitcount =  $_REQUEST['suitcount'];
 		$suitsize = $_REQUEST['suitsize'];
 		$handsize = $_REQUEST['handsize'];
+		$now = time();
 		
 		$dbname = "lobby" . $lobbyid;
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
-		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
 		
 		$sql = "UPDATE settings SET decksize = $deck_size, suitcount = $suitcount, suitsize = $suitsize, handsize = $handsize";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
+		$m_conn->close();
+	
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		$m_conn->close();
@@ -442,6 +456,10 @@
 
 		//Updates sessions to show players are ingame
 		$sql = "UPDATE sessions SET status = 2, last_seen = $now WHERE lobbyid = $lobbyid AND status > 0";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
+		//Updates lobbies to show update
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		$dbname = "lobby" . $lobbyid;
@@ -553,6 +571,38 @@
 
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record : " . $m_conn->error; }
 
+		$m_conn->close();
+	}
+	
+	function StopGame($isadmin, $servername, $dbusername, $dbpassword) {
+		if ($isadmin == 0){
+			echo 8;
+			exit();
+		}
+	
+		$lobbyid = $_REQUEST["id"];
+		$now = time();
+		
+		$dbname = "lobby" . $lobbyid;
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
+
+		$sql = "UPDATE gamestates
+		SET isactive=0, playercount=0, handsize=0, ischargeturn=0, chargerid=0, trumpcard0=0, trumpcard1=0, deckleft = 0, winnerid = NULL, lastupdated = $now";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
+		$m_conn->close();
+		
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
+
+		$sql = "UPDATE sessions SET status = 1 WHERE lobbyid = $lobbyid AND status=2";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
 		$m_conn->close();
 	}
 
