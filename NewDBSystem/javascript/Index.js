@@ -265,11 +265,15 @@ function RelogIn(seconds) {
 	}
 }
 	//TODO Check if functions need to be switched to new db standard
+	//
 	//TODO implement lobby system
 	//TODO add lobby setting and pswrd
 	//TODO start and stop game to lobby system
 	//TODO gui for lobby system
+	//
 	//TODO make CG work with lobby system
-	//TODO redo relogin system 
+	//
+	//TODO redo relogin system
 	//TODO make websocket work with new systems (relog sys)
+	//
 	//TODO (optional) reduce .php server executables to fewer files

@@ -162,7 +162,7 @@
 		}
 	
 		$cost = 12;
-		$hashedpassword = password_hash($accountpassword, PASSWORD_BCRYPT, ["cost" => 12]);
+		$hashedpassword = password_hash($accountpassword, PASSWORD_BCRYPT, ["cost" => $cost]);
 
 		$stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
 		if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }

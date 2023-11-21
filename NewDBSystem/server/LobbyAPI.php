@@ -35,7 +35,7 @@
 		case "4":
 			$info = GetSessionInfo($conn, $phpsessionid);
 			$isadmin = IsAdmin($conn, $info[1], $servername, $dbusername, $dbpassword);
-			LeaveLobby($info[1], $isadmin, $servername, $dbusername, $dbpassword);
+			LeaveLobby($info[1], $isadmin, $servername, $dbusername, $dbpassword, -1);
 			$conn->close();
 			break;
 		case "5":
@@ -52,14 +52,51 @@
 		$nickname = $sessioninfo[2];
 		$now = time();
 		$lobbyname = $_REQUEST["name"];
-
-		$stmt = $conn->prepare("INSERT INTO lobbies
-		(lobbyname, adminid, playercount, lastupdated)
-		VALUES (?, $sessionid, 1, $now)");
+		
+		$stmt = $conn->prepare("SELECT Count(*) FROM lobbies WHERE lobbyname = ?");
 		if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }
 		$stmt->bind_param("s", $lobbyname);
 		$stmt->execute();
+		$result = $stmt->get_result() -> fetch_array(MYSQLI_NUM);
 		$stmt->close();
+		
+		if ($result[0] != 0){ //if a lobby with name alrady exists
+			$conn->close();
+			echo 2;
+			exit();
+		}
+
+		$sql = "SELECT status, lobbyid FROM sessions WHERE id=$sessionid";
+		if ($conn->query($sql) === FALSE) { echo "Error: " . $conn->error; }
+		$result = $conn->query($sql) -> fetch_array(MYSQLI_NUM);
+		
+		if ($result[0] != 0){ //if already in another lobby
+			$conn->close();
+			echo 2;
+			exit();
+		}
+		
+		$lobbypassword = $_REQUEST["password"];
+
+		if($lobbypassword != ""){
+			$cost = 12;
+			$hashedpassword = password_hash($lobbypassword, PASSWORD_BCRYPT, ["cost" => $cost]);
+			$stmt = $conn->prepare("INSERT INTO lobbies
+			(lobbyname, haspassword, lobbypassword, adminid, playercount, lastupdated)
+			VALUES (?, 1, ?, $sessionid, 1, $now)");
+			if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }
+			$stmt->bind_param("ss", $lobbyname, $hashedpassword);
+			$stmt->execute();
+			$stmt->close();
+		} else {
+			$stmt = $conn->prepare("INSERT INTO lobbies
+			(lobbyname, haspassword, adminid, playercount, lastupdated)
+			VALUES (?, 0, $sessionid, 1, $now)");
+			if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }
+			$stmt->bind_param("s", $lobbyname);
+			$stmt->execute();
+			$stmt->close();
+		}
 
 		$stmt = $conn->prepare("SELECT Count(*), id FROM lobbies WHERE lobbyname = ?");
 		if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }
@@ -73,10 +110,8 @@
 			echo 1;
 			exit();
 		}
+
 		$lobbyid = $result[1];
-		//TODO REMOVE HARD CODED DEBUG VALUE
-		$lobbyid = 1;
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		$sql = "UPDATE sessions SET status = 1, lobbyid = $lobbyid, last_seen = $now WHERE id=$sessionid";
 		if ($conn->query($sql) === FALSE) { echo "Error updating record: " . $conn->error; }
 
@@ -179,6 +214,49 @@
 		$now = time();
 		$lobbyid = $_REQUEST["id"];
 		
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "SELECT status, lobbyid FROM sessions WHERE id=$sessionid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql) -> fetch_array(MYSQLI_NUM);
+		
+		if ($result[0] != 0 && $result[1] != $lobbyid){ //if already in another lobby
+			$isadmin = IsAdmin($m_conn, $sessionid, $servername, $dbusername, $dbpassword);
+			LeaveLobby($sessionid, $isadmin, $servername, $dbusername, $dbpassword, $result[1]);
+		}
+
+		$sql = "SELECT haspassword, lobbypassword FROM lobbies WHERE id=$lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql) -> fetch_array(MYSQLI_NUM);
+		
+		if ($result[0] != 0){ //lobby has password
+			$lobbypassword = $_REQUEST["password"];
+			$passwordhash = $result[1];
+
+			if(password_verify($lobbypassword, $passwordhash)){
+				$algorithm = PASSWORD_BCRYPT;
+				$options = ['cost' => 12];
+			
+				if (password_needs_rehash($passwordhash, $algorithm, $options)) {
+					$rehashedpassword = password_hash($passwordhash, $algorithm, $options);
+		
+					$stmt = $m_conn->prepare("UPDATE users SET password = ? WHERE id = $userid");
+					if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $m_conn->error; }
+					$stmt->bind_param("s", $rehashedpassword);
+					$stmt->execute();
+					$stmt->close();
+				}
+			} else {
+				echo 3;
+				$m_conn->close();
+				exit();
+			}
+		}
+
+		$m_conn->close();
+		
 		$dbname = "lobby" . $lobbyid;
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
@@ -200,7 +278,7 @@
 		$stmt->close();
 
 		$m_conn->close();
-
+		
 		$dbname = "vms";
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
@@ -208,12 +286,18 @@
 		$sql = "UPDATE sessions SET status = 1, lobbyid = $lobbyid, last_seen = $now WHERE id=$sessionid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
+		$sql = "UPDATE lobbies SET playercount=playercount+1 WHERE id=$lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
 		$m_conn->close();
 	}
 
-	function LeaveLobby($sessionid, $isadmin, $servername, $dbusername, $dbpassword){
+	function LeaveLobby($sessionid, $isadmin, $servername, $dbusername, $dbpassword, $altid){
 		$now = time();
-		$lobbyid = $_REQUEST["id"];
+		$lobbyid = $altid;
+		if ($altid == -1){
+			$lobbyid = $_REQUEST["id"];
+		}
 		$newadminid = -1;
 
 		$dbname = "lobby" . $lobbyid;
@@ -231,7 +315,6 @@
 		
 		if ($result[0] == 0){
 			echo 4;
-			$m_conn->close();
 			exit();
 		} else {
 			$sql = "DELETE FROM players WHERE id=$sessionid";
@@ -253,6 +336,9 @@
 		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
 		
 		$sql = "UPDATE sessions SET status = 0, lobbyid = NULL, last_seen = $now WHERE id=$sessionid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+		
+		$sql = "UPDATE lobbies SET playercount=$playercount-1 WHERE id=$lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		if ($playercount == 1){
