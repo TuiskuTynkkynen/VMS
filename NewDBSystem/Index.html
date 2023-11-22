@@ -34,6 +34,33 @@
 					<button id="setup">Pelin asetukset</button>
 				</div>
 			</div>
+			<div id="lobbygui" class="hidden">
+				<img src="/imgs/win_img.png" id="lobby_img">
+				<div id="lobbiescontainer">
+					<h2 id="lobbiestittle">Avoimet aulat:</h2>
+					<div id="lobbies">
+						<div id="lobby2" class="lobbiesbutton"><p>test2</p></div>
+						<div id="lobby3" class="lobbiesbutton"><p>test3</p></div>
+					</div>
+					<div class="lobbybuttons">
+						<button id="create">luo aula</button>
+					</div>
+				</div>
+				<div id="lobbycontainer" class="hidden">
+					<div id="lobbyplayers">
+						<p id="player1">player1</p>
+						<p id="player2">player2</p>
+						<p id="player3">player3</p>
+					</div>
+					<div class="lobbybuttons">
+						<button id="join">liity aulaan</button>
+						<button id="leave">poistu aulasta</button>
+						<button id="settings">vaihda aulan asetuksia</button>
+						<button id="startgame">aloita peli</button>
+						<button id="delete">poista aula</button>
+					</div>
+				</div>
+			</div>
 			<button id="playerstoggle"> <img src="/imgs/players_img"> </button>
 			<div id="playercontainer" class="hidden">
 				<div id="playerinfo">
@@ -48,7 +75,7 @@
 					<div class="status">
 						<div class="playerlabel">
 							<p id="playertoggle1" class="playertoggle">&lt+&gt</p>
-							<p id="playerlabel1">Odottaa</p>
+							<p id="playerlabel1">Auloissa</p>
 							<p id="playercount1">()</p>
 						</div>
 						<div id="status1" class="hidden"></div>

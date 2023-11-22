@@ -27,11 +27,13 @@ socket.addEventListener("message", (event) => {
 let waitstatus;
 let SID;
 let info;
+let lobbies;
 let statustoggles = [0, 0, 0];
 let playertoggle = 0;
 let logouttimer;
 
 function GetUserInfo() {
+	//TODO figure out if this function and GetUserInfo.php or can be combined into AccountAPI
 	document.getElementById("container").classList.remove("hidden");
 	const xhttp = new XMLHttpRequest();
 	xhttp.onload = function () {
@@ -139,33 +141,8 @@ function MainMenu() {
 	document.getElementById("accountsettings").onclick = function () { window.location.assign("/NewDBSystem/AccountSettings.html"); }
 
 	function Lobby(event) {
-
-		return;
-		if (info.isactive == "0" && waitstatus == 0) {
-			waitstatus = 1;
-
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function () {
-				document.getElementById("lobby").innerHTML = "Odotetaan...";
-			}
-
-			xhttp.open("POST", "utils/SetStatus.php");
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.send("UID=" + UID + "&status=" + waitstatus);
-		} else if (info.isactive == "0") {
-			waitstatus = 0;
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function () {
-				document.getElementById("lobby").innerHTML = "Liity peliin";
-			}
-
-			xhttp.open("POST", "utils/SetStatus.php");
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.send("UID=" + UID + "&status=" + waitstatus);
-		} else if (waitstatus == 0) {
-			socket.close();
-			window.location.assign("CGSpectate.html");
-		}
+		document.getElementById("lobbygui").classList.remove("hidden");
+		GetLobbies();
 	}
 
 	function Tutorial(event) {
@@ -217,11 +194,40 @@ function fml() {
 		}
 	} else {
 		if (waitstatus == 0) {
-			document.getElementById("lobby").innerHTML = "Liity peliin";
+			document.getElementById("lobby").innerHTML = "Liity aulaan";
 		}
 		if (waitstatus == 1) {
 			document.getElementById("lobby").innerHTML = "Odotetaan...";
 		}
+	}
+}
+
+function GetLobbies() {
+
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=0");
+
+	xhttp.onload = function () {
+		let x = this.responseText;
+
+		if (x != "0") {
+			console.log(x);
+			lobbies = JSON.parse(x);
+			let lobbycount = lobbies.Lobbies.length;
+			let str = "";
+			for (let i = 0; i < lobbycount; i++) {
+				str += '<div id="lobby' + i + '" class="lobbiesbutton">';
+				if (lobbies.Lobbies[i].haspassword == "1") {
+					str += '<img src="/imgs/padlock_img">';
+				}
+				str += '<p>' + lobbies.Lobbies[i].name + '</p></div> ';
+			}
+			document.getElementById('lobbies').innerHTML = str;
+			str = "";
+		}
+
 	}
 }
 
@@ -252,6 +258,8 @@ function GetUsers() {
 
 function RelogIn(seconds) {
 	clearTimeout(logouttimer);
+	//TODO remove debug return
+	return;
 	logouttimer = setTimeout(() => {
 		document.getElementById("notice").classList.remove("hidden");
 		document.getElementById("main").classList.add("hidden");

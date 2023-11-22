@@ -10,11 +10,11 @@
 	//session id needs to be turned into double quoted string to work with MySQL
 	$phpsessionid = '"' . session_id() . '"';
 
-	$action = $_REQUEST["action"];
+	$action = $_POST["action"];
 	
 	switch ($action) {
 		case "0":
-			GetLobbies();
+			GetLobbies($servername, $dbusername, $dbpassword);
 			break;
 		case "1":
 			GetLobbyInfo();
@@ -53,12 +53,39 @@
 	}
 
 	exit();
+
+	function GetLobbies($servername, $dbusername, $dbpassword){
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+
+		$sql = "SELECT id, lobbyname, haspassword FROM lobbies";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql);
+		$lobbycount = $result->num_rows;
+
+		$m_conn->close();
+		
+		if($lobbycount <= 0){
+			echo 0;
+		}
+
+		$str = '{"Lobbies":[';
+		for ($i = 0; $i < $lobbycount; $i++){
+			$row = $result->fetch_array(MYSQLI_NUM);
+			$str .= '{"id":"' . $row[0] . '", "name":"' . $row[1] . '", "haspassword":"' . $row[2] . '"}';
+			if ($i != $result->num_rows-1) {$str .= ','; }
+		}
+		$str .= ']}';
+
+		echo $str;
+	}
 	
 	function CreateLobby($sessioninfo, $servername, $dbusername, $dbpassword){
 		$sessionid = $sessioninfo[1];
 		$nickname = $sessioninfo[2];
 		$now = time();
-		$lobbyname = $_REQUEST["name"];
+		$lobbyname = $_POST["name"];
 		
 		$dbname = "vms";
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
@@ -87,7 +114,7 @@
 			exit();
 		}
 		
-		$lobbypassword = $_REQUEST["password"];
+		$lobbypassword = $_POST["password"];
 
 		if($lobbypassword != ""){
 			$cost = 12;
@@ -223,7 +250,7 @@
 		$sessionid = $sessioninfo[1];
 		$nickname = $sessioninfo[2];
 		$now = time();
-		$lobbyid = $_REQUEST["id"];
+		$lobbyid = $_POST["id"];
 		
 		$dbname = "vms";
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
@@ -243,7 +270,7 @@
 		$result = $m_conn->query($sql) -> fetch_array(MYSQLI_NUM);
 		
 		if ($result[0] != 0){ //lobby has password
-			$lobbypassword = $_REQUEST["password"];
+			$lobbypassword = $_POST["password"];
 			$passwordhash = $result[1];
 
 			if(password_verify($lobbypassword, $passwordhash)){
@@ -310,7 +337,7 @@
 		$now = time();
 		$lobbyid = $altid;
 		if ($altid == -1){
-			$lobbyid = $_REQUEST["id"];
+			$lobbyid = $_POST["id"];
 		}
 		$newadminid = -1;
 
@@ -385,7 +412,7 @@
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 
-		$lobbyid = $_REQUEST["id"];
+		$lobbyid = $_POST["id"];
 
 		$sql = "DROP DATABASE IF EXISTS lobby" . $lobbyid;
 		if ($m_conn->query($sql) === FALSE) { echo "Error deleting database: " . $m_conn->error; }
@@ -405,11 +432,11 @@
 			exit();
 		}
 	
-		$lobbyid = $_REQUEST["id"];
-		$deck_size = $_REQUEST['decksize'];
-		$suitcount =  $_REQUEST['suitcount'];
-		$suitsize = $_REQUEST['suitsize'];
-		$handsize = $_REQUEST['handsize'];
+		$lobbyid = $_POST["id"];
+		$deck_size = $_POST['decksize'];
+		$suitcount =  $_POST['suitcount'];
+		$suitsize = $_POST['suitsize'];
+		$handsize = $_POST['handsize'];
 		$now = time();
 		
 		$dbname = "lobby" . $lobbyid;
@@ -436,7 +463,7 @@
 			exit();
 		}
 		
-		$lobbyid = $_REQUEST["id"];		
+		$lobbyid = $_POST["id"];		
 		$now = time();
 
 		$dbname = "vms";
@@ -580,7 +607,7 @@
 			exit();
 		}
 	
-		$lobbyid = $_REQUEST["id"];
+		$lobbyid = $_POST["id"];
 		$now = time();
 		
 		$dbname = "lobby" . $lobbyid;
@@ -627,7 +654,7 @@
 	}
 
 	function IsAdmin($sessionid, $servername, $dbusername, $dbpassword){
-		$lobbyid = $_REQUEST["id"];
+		$lobbyid = $_POST["id"];
 		
 		$dbname = "vms";
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
