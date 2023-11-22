@@ -30,6 +30,7 @@ let info;
 let lobbies;
 let statustoggles = [0, 0, 0];
 let playertoggle = 0;
+let selectedlobby = -1;
 let logouttimer;
 
 function GetUserInfo() {
@@ -141,8 +142,12 @@ function MainMenu() {
 	document.getElementById("accountsettings").onclick = function () { window.location.assign("/NewDBSystem/AccountSettings.html"); }
 
 	function Lobby(event) {
-		document.getElementById("lobbygui").classList.remove("hidden");
 		GetLobbies();
+		if (waitstatus == 0) {
+			selectedlobby = -1;
+			document.getElementById("lobbygui").classList.remove("hidden");
+			document.getElementById("lobbiescontainer").classList.remove("hidden");
+		}
 	}
 
 	function Tutorial(event) {
@@ -203,7 +208,6 @@ function fml() {
 }
 
 function GetLobbies() {
-
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -226,8 +230,45 @@ function GetLobbies() {
 			}
 			document.getElementById('lobbies').innerHTML = str;
 			str = "";
+			for (let i = 0; i < lobbycount; i++) {
+				document.getElementById("lobby" + i).onclick = function () { LobbyOnClick(lobbies.Lobbies[i].id); }
+			}
 		}
 
+	}
+}
+
+function LobbyOnClick(index) {
+	selectedlobby = index;
+	document.getElementById("lobbiescontainer").classList.add("hidden");
+	GetLobbyInfo();
+	document.getElementById("lobbycontainer").classList.remove("hidden");
+}
+
+function GetLobbyInfo() {
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=1&id=" + selectedlobby);
+
+	xhttp.onload = function () {
+		let x = this.responseText;
+		console.log(x);
+
+		let lobbyinfo = JSON.parse(x);
+		let playercount = lobbyinfo.Players.length;
+		let str = "";
+
+		for (let i = 0; i < playercount; i++) {
+			str += '<div id="player' + i + '" class="lobbyplayer">';
+			if (lobbyinfo.Players[i].id == lobbyinfo.adminid) {
+				str += '<img src="/imgs/padlock_img">';
+			}
+			str += '<p>' + lobbyinfo.Players[i].nickname + '</p></div> ';
+		}
+
+		document.getElementById('lobbyplayers').innerHTML = str;
+		str = "";
 	}
 }
 

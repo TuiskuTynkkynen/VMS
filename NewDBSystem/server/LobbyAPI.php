@@ -17,7 +17,7 @@
 			GetLobbies($servername, $dbusername, $dbpassword);
 			break;
 		case "1":
-			GetLobbyInfo();
+			GetLobbyInfo($servername, $dbusername, $dbpassword);
 			break;
 		case "2":
 			CreateLobby(GetSessionInfo($phpsessionid, $servername, $dbusername, $dbpassword), $servername, $dbusername, $dbpassword);
@@ -74,6 +74,49 @@
 		for ($i = 0; $i < $lobbycount; $i++){
 			$row = $result->fetch_array(MYSQLI_NUM);
 			$str .= '{"id":"' . $row[0] . '", "name":"' . $row[1] . '", "haspassword":"' . $row[2] . '"}';
+			if ($i != $result->num_rows-1) {$str .= ','; }
+		}
+		$str .= ']}';
+
+		echo $str;
+	}
+	
+	function GetLobbyInfo($servername, $dbusername, $dbpassword){
+		$lobbyid = $_POST["id"];
+		
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "SELECT adminid FROM lobbies WHERE id=$lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
+		
+		$str = '{"adminid":"'  . $result[0];
+
+		$m_conn->close();
+
+		$dbname = "lobby" . $lobbyid;
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+
+		$sql = "SELECT isactive FROM gamestates";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
+		
+		$str .= '", "isactive":"' . $result[0];
+
+		$sql = "SELECT id, nickname FROM players";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql);
+		$playercount = $result->num_rows;
+
+		$m_conn->close();
+		
+		$str .= '", "Players":[';
+		for ($i = 0; $i < $playercount; $i++){
+			$row = $result->fetch_array(MYSQLI_NUM);
+			$str .= '{"id":"' . $row[0] . '", "nickname":"' . $row[1] . '"}';
 			if ($i != $result->num_rows-1) {$str .= ','; }
 		}
 		$str .= ']}';

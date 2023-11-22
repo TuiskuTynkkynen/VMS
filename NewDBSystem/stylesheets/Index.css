@@ -202,6 +202,39 @@ body {
         margin: 0;
     }
 
+#lobbyplayers {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    width: 90%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.lobbyplayer {
+    display: flex;
+    height: 15%;
+    width: 30%;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-right: 3%;
+    overflow: clip;
+}
+
+    .lobbyplayer p {
+        display: inline;
+        margin: 0;
+    }
+
+    .lobbyplayer img {
+        object-fit: fill;
+        height: 1.25rem;
+        margin: 0;
+    }
+
 .lobbybuttons {
     display: flex;
     position: absolute;
