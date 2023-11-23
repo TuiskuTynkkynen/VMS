@@ -153,7 +153,22 @@ body {
     height: 100%;
 }
 
-#lobbiestittle {
+.devider {
+    position: absolute;
+    border: 1px solid #555;
+    left: 5%;
+    width: 90%;
+}
+
+#topdevider {
+    top: 19%;
+}
+
+#bottomdevider {
+    bottom: 19%;
+}
+
+.lobbytittles {
     position: absolute;
     top: 7.5%;
     width: 100%;
@@ -247,11 +262,11 @@ body {
 }
 
 .lobbybuttons button{
-    width: 25%;
+    width: 24%;
     height: 100%;
     color: #fff;
     font-weight: 500;
-    font-size: 1.25rem;
+    font-size: 100%;
     line-height: 1.2rem;
     background-image: url("/imgs/button_img");
     background-size: 100% 100%;
@@ -404,4 +419,8 @@ body {
 
 .hidden {
     display: none;
+}
+
+.disabled {
+    color: #555 !important;
 }

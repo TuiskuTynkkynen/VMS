@@ -36,26 +36,31 @@
 			</div>
 			<div id="lobbygui" class="hidden">
 				<img src="/imgs/win_img.png" id="lobby_img">
+				<div id="topdevider" class="devider"></div>
+				<div id="bottomdevider" class="devider"></div>
 				<div id="lobbiescontainer">
-					<h2 id="lobbiestittle">Avoimet aulat:</h2>
+					<h2 id="lobbiestittle" class="lobbytittles">Avoimet aulat:</h2>
 					<div id="lobbies">
 					</div>
 					<div class="lobbybuttons">
-						<button id="create">luo aula</button>
+						<button id="create">Luo aula</button>
 					</div>
 				</div>
 				<div id="lobbycontainer" class="hidden">
+					<h2 id="lobbytittle" class="lobbytittles"></h2>
 					<div id="lobbyplayers">
 						<p id="player1" class="lobbyplayer">player1</p>
 						<p id="player2" class="lobbyplayer">player2</p>
 						<p id="player3" class="lobbyplayer">player3</p>
 					</div>
-					<div class="lobbybuttons">
-						<button id="join">liity aulaan</button>
-						<button id="leave">poistu aulasta</button>
-						<button id="settings">vaihda aulan asetuksia</button>
-						<button id="startgame">aloita peli</button>
-						<button id="delete">poista aula</button>
+					<div id="outlobby" class="lobbybuttons">
+						<button id="join">Liity aulaan</button>
+					</div>
+					<div id="inlobby" class="lobbybuttons hidden">
+						<button id="leave">Poistu aulasta</button>
+						<button id="startgame">Aloita peli</button>
+						<button id="settings">Asetukset</button>
+						<button id="delete">Poista aula</button>
 					</div>
 				</div>
 			</div>

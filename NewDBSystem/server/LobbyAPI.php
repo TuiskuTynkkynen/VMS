@@ -88,11 +88,11 @@
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 		
-		$sql = "SELECT adminid FROM lobbies WHERE id=$lobbyid";
+		$sql = "SELECT lobbyname, adminid FROM lobbies WHERE id=$lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
 		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 		
-		$str = '{"adminid":"'  . $result[0];
+		$str = '{"name":"'  . $result[0]. '", "adminid":"' . $result[1];
 
 		$m_conn->close();
 
@@ -129,6 +129,7 @@
 		$nickname = $sessioninfo[2];
 		$now = time();
 		$lobbyname = $_POST["name"];
+		$lobbypassword = $_POST["password"];
 		
 		$dbname = "vms";
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
@@ -156,8 +157,6 @@
 			echo 2;
 			exit();
 		}
-		
-		$lobbypassword = $_POST["password"];
 
 		if($lobbypassword != ""){
 			$cost = 12;

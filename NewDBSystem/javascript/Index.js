@@ -24,13 +24,14 @@ socket.addEventListener("message", (event) => {
 	fml();
 	GetUsers();
 });
-let waitstatus;
+let userstatus;
+let userlobby;
 let SID;
 let info;
-let lobbies;
 let statustoggles = [0, 0, 0];
 let playertoggle = 0;
 let selectedlobby = -1;
+let currentlobby;
 let logouttimer;
 
 function GetUserInfo() {
@@ -44,7 +45,12 @@ function GetUserInfo() {
 		if (UserInfo.status == "-1") {
 			SignupLogin();
 		} else {
-			waitstatus = UserInfo.status;
+			userstatus = UserInfo.status;
+			userlobby = UserInfo.lobby;
+			if (userstatus != 0) {
+				selectedlobby = userlobby;
+			}
+
 			SID = UserInfo.SID;
 			RelogIn(UserInfo.lgexp);
 			fml();
@@ -103,7 +109,7 @@ function LogIn() {
 		const xhttp = new XMLHttpRequest();
 		xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("account=" + account + "&password=" + password + "&name=" + name + "&status=" + waitstatus+ "&action=1");
+		xhttp.send("account=" + account + "&password=" + password + "&name=" + name + "&status=" + userstatus+ "&action=1");
 
 		xhttp.onload = function () {
 			let serverresponse = this.responseText;
@@ -143,9 +149,9 @@ function MainMenu() {
 
 	function Lobby(event) {
 		GetLobbies();
-		if (waitstatus == 0) {
+		document.getElementById("lobbygui").classList.remove("hidden");
+		if (userstatus == 0) {
 			selectedlobby = -1;
-			document.getElementById("lobbygui").classList.remove("hidden");
 			document.getElementById("lobbiescontainer").classList.remove("hidden");
 		}
 	}
@@ -190,18 +196,18 @@ function MainMenu() {
 
 function fml() {
 	if (info.isactive == "1") {
-		if (waitstatus == 0) {
+		if (userstatus == 0) {
 			document.getElementById("lobby").innerHTML = "Seuraa peli&#228";
-		} else if (waitstatus > 0) {
+		} else if (userstatus > 0) {
 			document.getElementById("lobby").innerHTML = "Uudelleen ohjataan";
 			socket.close();
 			window.location.replace("CG.html");
 		}
 	} else {
-		if (waitstatus == 0) {
+		if (userstatus == 0) {
 			document.getElementById("lobby").innerHTML = "Liity aulaan";
 		}
-		if (waitstatus == 1) {
+		if (userstatus == 1) {
 			document.getElementById("lobby").innerHTML = "Odotetaan...";
 		}
 	}
@@ -215,24 +221,28 @@ function GetLobbies() {
 
 	xhttp.onload = function () {
 		let x = this.responseText;
-
+		console.log(x);
 		if (x != "0") {
-			console.log(x);
-			lobbies = JSON.parse(x);
-			let lobbycount = lobbies.Lobbies.length;
-			let str = "";
-			for (let i = 0; i < lobbycount; i++) {
-				str += '<div id="lobby' + i + '" class="lobbiesbutton">';
-				if (lobbies.Lobbies[i].haspassword == "1") {
-					str += '<img src="/imgs/padlock_img">';
+			if (selectedlobby != -1) {
+				LobbyOnClick(selectedlobby);
+			} else {
+				let lobbies = JSON.parse(x);
+				let lobbycount = lobbies.Lobbies.length;
+				let str = "";
+				for (let i = 0; i < lobbycount; i++) {
+					str += '<div id="lobby' + i + '" class="lobbiesbutton">';
+					if (lobbies.Lobbies[i].haspassword == "1") {
+						str += '<img src="/imgs/padlock_img">';
+					}
+					str += '<p>' + lobbies.Lobbies[i].name + '</p></div> ';
 				}
-				str += '<p>' + lobbies.Lobbies[i].name + '</p></div> ';
+				document.getElementById('lobbies').innerHTML = str;
+				str = "";
+				for (let i = 0; i < lobbycount; i++) {
+					document.getElementById("lobby" + i).onclick = function () { LobbyOnClick(lobbies.Lobbies[i].id); }
+				}
 			}
-			document.getElementById('lobbies').innerHTML = str;
-			str = "";
-			for (let i = 0; i < lobbycount; i++) {
-				document.getElementById("lobby" + i).onclick = function () { LobbyOnClick(lobbies.Lobbies[i].id); }
-			}
+
 		}
 
 	}
@@ -250,6 +260,19 @@ function GetLobbyInfo() {
 	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=1&id=" + selectedlobby);
+	console.log(selectedlobby);
+	if (userlobby == selectedlobby) {
+		document.getElementById("inlobby").classList.remove("hidden");
+		document.getElementById("outlobby").classList.add("hidden");
+		document.getElementById("leave").onclick = function () {
+			LobbyActions(4);
+		}
+	} else {
+		document.getElementById("inlobby").classList.add("hidden");
+		document.getElementById("outlobby").classList.remove("hidden");
+
+		document.getElementById("join").onclick = function () { LobbyActions(3); }
+	}
 
 	xhttp.onload = function () {
 		let x = this.responseText;
@@ -258,17 +281,102 @@ function GetLobbyInfo() {
 		let lobbyinfo = JSON.parse(x);
 		let playercount = lobbyinfo.Players.length;
 		let str = "";
+		let isadmin;
+
+		document.getElementById("lobbytittle").innerHTML = lobbyinfo.name;
 
 		for (let i = 0; i < playercount; i++) {
 			str += '<div id="player' + i + '" class="lobbyplayer">';
 			if (lobbyinfo.Players[i].id == lobbyinfo.adminid) {
-				str += '<img src="/imgs/padlock_img">';
+				if (lobbyinfo.Players[i].id == SID) {
+					isadmin = true;
+				} else {
+					isadmin = false;
+				}
+				str += '<img src="/imgs/crown_img">';
+				str += '<p style="color:#f2c511">';
+
+			} else if (lobbyinfo.Players[i].id == SID){
+				str += '<p style="color:#8034eb">';
+			} else {
+				str += '<p style="color:#fff">';
 			}
-			str += '<p>' + lobbyinfo.Players[i].nickname + '</p></div> ';
+			str += lobbyinfo.Players[i].nickname + '</p></div> ';
 		}
 
 		document.getElementById('lobbyplayers').innerHTML = str;
 		str = "";
+
+		if (isadmin) {
+			document.getElementById("delete").classList.remove("disabled");
+			document.getElementById("settings").classList.remove("disabled");
+			document.getElementById("startgame").classList.remove("disabled");
+			document.getElementById("delete").onclick = function () { LobbyActions(5); }
+			document.getElementById("settings").onclick = function () { LobbyActions(6); }
+			document.getElementById("startgame").onclick = function () { LobbyActions(7); }
+		} else {
+			document.getElementById("delete").classList.add("disabled");
+			document.getElementById("settings").classList.add("disabled");
+			document.getElementById("startgame").classList.add("disabled");
+		}
+	}
+}
+
+function LobbyActions(action) {
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+	switch (action) {
+		case 2:
+			//TODO .send with action, name and password
+			//TODO .onload func
+			break;
+		case 3:
+			xhttp.send("action=" + action + "&id=" + selectedlobby);
+			xhttp.onload = JoinOnLoad();
+			break;
+		case 4:
+			xhttp.send("action=" + action + "&id=" + userlobby);
+			xhttp.onload = LeaveOnLoad();
+			break;
+		case 5:
+			xhttp.send("action=" + action + "&id=" + userlobby);
+			xhttp.onload = LeaveOnLoad();
+			break;
+		case 6:
+			//TODO .send with action, decksize, suitcount, suitsize, handsize
+			//TODO .onload func
+			break;
+		case 7:
+			xhttp.send("action=" + action + "&id=" + userlobby);
+			xhttp.onload = StartOnLoad();
+			break;
+	}
+
+	return;
+
+	function JoinOnLoad() {
+		userlobby = selectedlobby;
+		GetUserInfo();
+		GetLobbyInfo(userlobby);
+	}
+
+	function LeaveOnLoad() {
+		selectedlobby = -1;
+
+		document.getElementById("lobbygui").classList.add("hidden");
+		document.getElementById("lobbiescontainer").classList.add("hidden");
+		document.getElementById("lobbycontainer").classList.add("hidden");
+
+		GetUserInfo();
+
+		document.getElementById("menu").classList.remove("hidden");
+	}
+
+	function StartOnLoad() {
+		alert("TODO make CG version that works on new db system");
+		window.location.replace("/NewDBSystem/VMS.html");
 	}
 }
 
