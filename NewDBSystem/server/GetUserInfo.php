@@ -15,6 +15,7 @@
 	//session id needs to be a double quoted string to work with MySQL
 	$phpsessionid = '"' . session_id() . '"';
 	$sql = "SELECT id, status, lobbyid, last_seen FROM sessions WHERE php_session_id=$phpsessionid";
+	if ($conn->query($sql) === FALSE) {echo "Error: " . $conn->error; }
 	$result = $conn->query($sql);
 	$row = $result->fetch_array(MYSQLI_NUM);
 	
@@ -35,8 +36,16 @@
 		$result = $conn->query($sql)->fetch_array(MYSQLI_NUM);
 		$canchangetrump = $result[0];
 	}
-	
-	echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "lgexp":"' . $lgexpiration . '", "canchangetrump":"' . $canchangetrump . '"}';
+
+	$isadmin = 0;
+	if ($lobby != ""){
+		$sql = "SELECT adminid FROM lobbies WHERE id=$lobby";
+		if ($conn->query($sql) === FALSE) {echo "Error: " . $conn->error; }
+		$result = $conn->query($sql)->fetch_array(MYSQLI_NUM);
+		$isadmin = ($SID == $result[0]);
+	}
+
+	echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "isadmin":"' . $isadmin . '", "lgexp":"' . $lgexpiration . '", "canchangetrump":"' . $canchangetrump . '"}';
 
 	$conn->close();
 ?>

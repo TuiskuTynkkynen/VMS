@@ -277,6 +277,50 @@ body {
         color: #f2c511;
     }
 
+.inputs {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    width: 90%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    container-type: size;
+}
+
+    .inputs label {
+        display: block;
+        font-size: min(1.5rem, 20cqh);
+        margin: 0;
+    }
+
+    .inputs input {
+        height: min(1.5rem, 27.5cqh);
+        width: 70%;
+        border-width: 1cqh;
+        border-radius: 1cqh;
+        margin: 0;
+        margin-bottom: 5cqh;
+    }
+
+        .inputs input:focus {
+            border: 1.2cqh solid #888;
+            outline: none;
+        }
+
+#toggle {
+    display: flex;
+    flex-direction: row;
+}
+
+#passwordtoggle {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-left: 10%;
+}
+
 #playerinfo {
     position: absolute;
     top: 5%;

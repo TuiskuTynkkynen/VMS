@@ -88,11 +88,11 @@
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 		
-		$sql = "SELECT lobbyname, adminid FROM lobbies WHERE id=$lobbyid";
+		$sql = "SELECT lobbyname, haspassword, adminid FROM lobbies WHERE id=$lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
 		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 		
-		$str = '{"name":"'  . $result[0]. '", "adminid":"' . $result[1];
+		$str = '{"name":"'  . $result[0] . '", "haspassword":"' . $result[1] . '", "adminid":"' . $result[2];
 
 		$m_conn->close();
 
@@ -154,7 +154,7 @@
 		
 		if ($result[0] != 0){ //if already in another lobby
 			$m_conn->close();
-			echo 2;
+			echo -1;
 			exit();
 		}
 
@@ -187,11 +187,14 @@
 
 		if ($result[0] == 0){
 			$m_conn->close();
-			echo 1;
+			echo -1;
 			exit();
 		}
 
 		$lobbyid = $result[1];
+
+		echo $lobbyid;
+
 		$sql = "UPDATE sessions SET status = 1, lobbyid = $lobbyid, last_seen = $now WHERE id=$sessionid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 
@@ -285,6 +288,7 @@
 		$stmt->execute();
 		$stmt->close();
 
+		echo 0;
 		$m_conn->close();
 	}
 
@@ -372,6 +376,7 @@
 		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
+		echo 0;
 		$m_conn->close();
 	}
 
@@ -496,6 +501,7 @@
 		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
+		echo 0;
 		$m_conn->close();
 	}
 

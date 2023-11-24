@@ -49,9 +49,6 @@
 				<div id="lobbycontainer" class="hidden">
 					<h2 id="lobbytittle" class="lobbytittles"></h2>
 					<div id="lobbyplayers">
-						<p id="player1" class="lobbyplayer">player1</p>
-						<p id="player2" class="lobbyplayer">player2</p>
-						<p id="player3" class="lobbyplayer">player3</p>
 					</div>
 					<div id="outlobby" class="lobbybuttons">
 						<button id="join">Liity aulaan</button>
@@ -61,6 +58,47 @@
 						<button id="startgame">Aloita peli</button>
 						<button id="settings">Asetukset</button>
 						<button id="delete">Poista aula</button>
+					</div>
+				</div>
+				<div id="lobbyinputs" class="hidden">
+					<div id="joinpassword" class="hidden">
+						<h2 id="lobbiestittle" class="lobbytittles">Liity aulaan:</h2>
+						<div id="jpinputs" class="inputs">
+							<label for="password">Salasana</label>
+							<input id="password" type="password" name="password" maxlength="25" autocomplete="off">
+							<p id="jpincorrect" class="incorrect">&nbsp;</p>
+						</div>
+					</div>
+					<div id="createlobby" class="hidden">
+						<h2 id="lobbiestittle" class="lobbytittles">Luo aula:</h2>
+						<div id="clinputs" class="inputs">
+							<label for="lobbyname">Nimi</label>
+							<input id="lobbyname" type="text" name="lobbyname" maxlength="25" autocomplete="off">
+							<div id="toggle">
+								<label for="lobbypassword">Salasana</label>
+								<input id="passwordtoggle" type="checkbox" name="passwordtoggle">
+							</div>
+							<input id="lobbypassword" type="password" name="lobbypassword" maxlength="25" autocomplete="off" disabled="disabled">
+							<p id="clincorrect" class="incorrect">&nbsp;</p>
+						</div>
+					</div>
+					<div id="lobbysettings" class="hidden">
+						<h2 id="lobbiestittle" class="lobbytittles">Aulan asetukset:</h2>
+						<div id="lsinputs" class="inputs">
+							<label for="decksize">Pakan koko:</label>
+							<input type="number" name="decksize" id="decksize" min="1" value=52>
+							<label for="suitcount">Maiden m‰‰r‰:</label>
+							<input type="number" name="suitcount" id="suitcount" min="1" value=4>
+							<label for="suitsize">Maiden koko:</label>
+							<input type="number" name="suitsize" id="suitsize" min="1" value=13>
+							<label for="handsize">K‰sien koko:</label>
+							<input type="number" name="handsize" id="handsize" min="1" value=6>
+							<p id="lsincorrect" class="incorrect">&nbsp;</p>
+						</div>
+					</div>
+					<div class="lobbybuttons">
+						<button id="submit">Valmis</button>
+						<button id="return">Takaisin</button>
 					</div>
 				</div>
 			</div>
