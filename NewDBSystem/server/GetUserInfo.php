@@ -38,11 +38,13 @@
 	}
 
 	$isadmin = 0;
-	if ($lobby != ""){
+	if ($lobby != "" && $lobby != -1){
 		$sql = "SELECT adminid FROM lobbies WHERE id=$lobby";
 		if ($conn->query($sql) === FALSE) {echo "Error: " . $conn->error; }
 		$result = $conn->query($sql)->fetch_array(MYSQLI_NUM);
-		$isadmin = ($SID == $result[0]);
+		if($result != null){
+			$isadmin = ($SID == $result[0]);
+		}
 	}
 
 	echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "isadmin":"' . $isadmin . '", "lgexp":"' . $lgexpiration . '", "canchangetrump":"' . $canchangetrump . '"}';
