@@ -208,6 +208,8 @@ function fml() {
 		} else {
 			document.getElementById("lobby").innerHTML = "Odotetaan...";
 		}
+	} else {
+		window.location.replace("/NewDBSystem/VMS.html");
 	}
 }
 
