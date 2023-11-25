@@ -18,21 +18,14 @@ $servername = $config['databaseservername'];
 $dbusername = $config['databaseusername'];
 $dbpassword = $config['databasepassword'];
 
-$dbname = "cardgame";
+$dbname = "vms";
 
 $mysqli = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
-$now = time();
-$y = $now - 15*60;
-$sql = "DELETE FROM sessions WHERE last_seen < $y";
-if ($mysqli->query($sql) === FALSE) { echo "Error updating record: " . $mysqlir->error; }
-
-$isactive = 0;
-$sql = "UPDATE gamestates SET isactive = $isactive";
-if ($mysqli->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $mysqli->error; }
-
-$sql = "SELECT isactive, lastupdated FROM gamestates";
-$old_time_stamp = $mysqli->query($sql)->fetch_array(MYSQLI_NUM)[1];
+$old_time_stamps = array();
+$new_time_stamps = array();
+$new_time_stamps[-1] = 0;
+$updated_lobbies = array();
 
 echo "VMS ws opened\n";
 // Send messages into WebSocket in a loop.
@@ -56,18 +49,66 @@ while (true) {
         $headers .= "Sec-WebSocket-Accept: $key\r\n\r\n";
         socket_write($newc, $headers, strlen($headers));
     
-        $content = '"connection":"establised", "isactive":"' . $isactive . '"';
+        $content = '{"connection":"establised"}';
         $response = chr(129) . chr(strlen($content)) . $content;
         socket_write($newc, $response);
     }
     
     sleep(1);
-    $isactive = $mysqli->query($sql)->fetch_array(MYSQLI_NUM)[0];
-    $new_time_stamp = $mysqli->query($sql)->fetch_array(MYSQLI_NUM)[1];
-    if ($new_time_stamp > $old_time_stamp){
+    
+    //$now = time();
+    //$y = $now - 2*60;
+    //$sql = "DELETE FROM sessions WHERE last_seen < $y";
+    //if ($mysqli->query($sql) === FALSE) { echo "Error updating record: " . $mysqlir->error; }
+
+    $sql = "SELECT id, lastupdated FROM lobbies";
+    $result = $mysqli->query($sql);
+    $lobbycount = $result->num_rows;
+
+    $old_time_stamps = $new_time_stamps;
+    
+    unset($new_time_stamps);
+    unset($updated_lobbies);
+
+    for ($i = 0; $i < $lobbycount; $i++){
+        $row = $result->fetch_array(MYSQLI_NUM);
+        $lobbyid = $row[0];
+
+        $new_time_stamps[$lobbyid] = $row[1];
+        
+        if(!array_key_exists($lobbyid, $old_time_stamps)){
+            $updated_lobbies[] = $lobbyid;
+            continue;
+        } 
+        
+        if($new_time_stamps[$lobbyid] > $old_time_stamps[$lobbyid]){
+            $updated_lobbies[] = $lobbyid;
+        }
+
+        unset($old_time_stamps[$lobbyid]);
+    }
+
+    while(!empty($old_time_stamps)){
+        $updated_lobbies[] = array_key_last($old_time_stamps);
+        array_pop($old_time_stamps);
+    }
+
+
+    if (!empty($updated_lobbies)){
+        $content = '{"connection":"open", "updatedlobbies":[';
+        $updated_lobby_count = count($updated_lobbies);
+        
+        for($i = 0; $i < $updated_lobby_count; $i++){
+            $id = array_pop($updated_lobbies);
+			$content .= '{"id":"' . $id . '"}';
+			if ($i != $updated_lobby_count - 1) {$content .= ','; }
+        }
+        
+        $content .= ']}';
+        
         $x = 0;
-        for ($i = 0; $i < count($clients); $i++){
-            $content = '"timestamp":"' . $new_time_stamp . '", "isactive":"' . $isactive . '"';
+        $client_count = count($clients);
+        for ($i = 0; $i < $client_count; $i++){
             echo $content;
             $response = chr(129) . chr(strlen($content)) . $content;
             if (socket_write($clients[$i], $response)){
@@ -82,11 +123,10 @@ while (true) {
             }
             $x++;
         }
-        $old_time_stamp = $new_time_stamp;
     }
 }
 
-$content = '"connection":"closed"';
+$content = '{"connection":"closed"}';
 $response = chr(129) . chr(strlen($content)) . $content;
 for ($i = 0; $i < count($clients); $i++){
     socket_write($clients[$i], $response);

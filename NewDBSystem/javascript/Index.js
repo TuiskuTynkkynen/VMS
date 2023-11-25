@@ -19,7 +19,7 @@ socket.addEventListener("open", (event) => {
 socket.addEventListener("message", (event) => {
 	let data = event.data;
 	console.log("Message from server ", data);
-	let str = "{" + data + "}";
+	let str = data;
 	info = JSON.parse(str);
 	fml();
 	GetUsers();
@@ -208,7 +208,8 @@ function fml() {
 		} else {
 			document.getElementById("lobby").innerHTML = "Odotetaan...";
 		}
-	} else {
+	} else if (userstatus == 2) {
+		alert("TODO make VMS version that works on new db system");
 		window.location.replace("/NewDBSystem/VMS.html");
 	}
 }
@@ -448,7 +449,7 @@ function LobbyActions(action) {
 	}
 
 	function StartOnLoad() {
-		alert("TODO make CG version that works on new db system");
+		alert("TODO make VMS version that works on new db system");
 		window.location.replace("/NewDBSystem/VMS.html");
 	}
 
