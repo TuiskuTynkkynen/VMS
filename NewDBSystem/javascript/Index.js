@@ -214,6 +214,7 @@ function fml() {
 function GetLobbies() {
 	if (selectedlobby != -1) {
 		LobbyOnClick(selectedlobby);
+		return;
 	}
 
 	const xhttp = new XMLHttpRequest();

@@ -175,15 +175,14 @@
 		$nickname = $_POST["name"];
 		$status = 0;
 
-		$sql = "SELECT Count(*), id FROM sessions WHERE php_session_id=$phpsessionid";
+		$sql = "SELECT Count(*) FROM sessions WHERE php_session_id = $phpsessionid OR userid = $userid";
 		if ($conn->query($sql) === FALSE) { echo "Error: " . $conn->error; }
 		$result = $conn->query($sql) -> fetch_array(MYSQLI_NUM);
 		
 		if ($result[0] == 0){
 			$stmt = $conn->prepare("INSERT INTO sessions (php_session_id, userid, nickname, last_seen) VALUES ($phpsessionid, $userid, ?, $time)");
 		} else {
-			$sessionid = $result[1];
-			$stmt = $conn->prepare("UPDATE sessions SET nickname = ?, last_seen=$time WHERE id=$sessionid");
+			$stmt = $conn->prepare("UPDATE sessions SET php_session_id = $phpsessionid, userid = $userid, nickname = ?, last_seen=$time WHERE id = $phpsessionid OR userid = $userid");
 		}
 		if ($stmt === FALSE) { echo "Error: " . $stmt . "<br>" . $conn->error; }
 		$stmt->bind_param("s", $nickname);
