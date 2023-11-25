@@ -33,7 +33,7 @@
 		case "5":
 			$info = GetSessionInfo($phpsessionid, $servername, $dbusername, $dbpassword);
 			$isadmin = IsAdmin($info[1], $servername, $dbusername, $dbpassword);
-			DeleteLobby($isadmin);
+			DeleteLobby($isadmin, $servername, $dbusername, $dbpassword);
 			break;
 		case "6":
 			$info = GetSessionInfo($phpsessionid, $servername, $dbusername, $dbpassword);
@@ -193,8 +193,6 @@
 
 		$lobbyid = $result[1];
 
-		echo $lobbyid;
-
 		$sql = "UPDATE sessions SET status = 1, lobbyid = $lobbyid, last_seen = $now WHERE id=$sessionid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 
@@ -287,8 +285,10 @@
 		$stmt->bind_param("s", $nickname);
 		$stmt->execute();
 		$stmt->close();
-
+		
 		echo 0;
+		echo $lobbyid;
+
 		$m_conn->close();
 	}
 
@@ -448,7 +448,7 @@
 		$m_conn->close();
 	}
 	
-	function DeleteLobby($isadmin){
+	function DeleteLobby($isadmin, $servername, $dbusername, $dbpassword){
 		if ($isadmin == 0){
 			echo 5;
 			$m_conn->close();

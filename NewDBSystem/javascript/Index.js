@@ -404,7 +404,8 @@ function LobbyActions(action) {
 				let response = this.responseText;
 				if (response == 2) {
 					document.getElementById("clincorrect").innerHTML = "Nimi on jo käytössä";
-				} else if (response == 0) {
+				} else if (response[0] == 0) {
+					response = response.substring(1);
 					userlobby = selectedlobby = response;
 					GetUserInfo();
 
@@ -416,11 +417,11 @@ function LobbyActions(action) {
 
 					document.getElementById("clincorrect").innerHTML = "";
 					document.getElementById("lobbypassword").value = "";
+					document.getElementById("lobbyname").value = "";
 				} else {
 					console.log(response);
 					document.getElementById("clincorrect").innerHTML = "Ennalta odottamaton virhe";
 				}
-
 			}
 		}
 
@@ -474,7 +475,7 @@ function LobbyActions(action) {
 			xhttp = new XMLHttpRequest();
 			xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.send("action=6" + "&id=" + userlobby + "&decksize=" + suitcount + "&suitcount=" + decksize + "&suitsize=" + suitsize + "&handsize=" + handsize);
+			xhttp.send("action=6" + "&id=" + userlobby + "&decksize=" + decksize + "&suitcount=" + suitcount + "&suitsize=" + suitsize + "&handsize=" + handsize);
 
 			xhttp.onload = function () {
 				let response = this.responseText;

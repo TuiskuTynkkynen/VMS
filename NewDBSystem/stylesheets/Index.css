@@ -92,7 +92,7 @@ body {
     outline: none;
     }
 
-#incorrect {
+.incorrect {
     display: block;
     position: relative;
     bottom: 3cqh;
