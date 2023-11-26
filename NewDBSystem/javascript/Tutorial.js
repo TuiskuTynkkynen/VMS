@@ -1,3 +1,19 @@
+const beforeUnloadHandler = (event) => {
+	//set updaterequired = true -> needs to update within 1 min or session will be deleted
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=6");
+
+	return "d";
+};
+window.addEventListener("beforeunload", beforeUnloadHandler);
+
+//set updaterequired = false
+const xhttp = new XMLHttpRequest();
+xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
+xhttp.send();
+
 let activeCard = -1;
 let target = 3;
 let chosenCards = [];
