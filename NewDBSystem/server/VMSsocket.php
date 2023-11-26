@@ -23,7 +23,7 @@ $mysqli = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
 $serverdirectory = $config['serverdirectory'];
 $sessionid = $status = $lobbyid = "-1 ";
-$cmd = "php -q " . $serverdirectory . "/NewDBSystem/server/DeleteSession.php " . $sessionid . $status . $lobbyid;
+$cmd = "php -q " . $serverdirectory . "/NewDBSystem/server/DeleteSession.php";
 
 $minute = 60;
 $halfhour = 30 * 60;
@@ -72,16 +72,22 @@ while (true) {
         $row = $result->fetch_array(MYSQLI_NUM);
         $sessionid = $row[0] . " ";
         $status = $row[1] . " ";
-        $lobbyid = $row[2] . " ";
-        
-        echo "Deleted session with id = " . $sessionid;
-
-        //run DeleteUser.php in background
-        if (substr(php_uname(), 0, 7) == "Windows"){
-            pclose( popen("start /b ". $cmd, "r" ) );
-        } else {
-           exec($cmd . " > /dev/null &"); 
+    
+        $lobbyid = "-1 ";
+        if ($row[2] != null){
+            $lobbyid = $row[2] . " ";
         }
+
+        $arguments = " " . $sessionid . $status . $lobbyid;
+        
+        //run DeleteUser.php in background with platform specific command
+        if (substr(php_uname(), 0, 7) == "Windows"){
+            pclose( popen("start /b ". $cmd . $arguments, "r" ) );
+        } else {
+            exec($cmd . $arguments .  " > /dev/null &"); 
+        }
+
+        echo "Deleted session with id = " . $sessionid;
     }
 
     $sql = "SELECT id, lastupdated FROM lobbies";
@@ -128,14 +134,14 @@ while (true) {
         }
         
         $content .= ']}';
+        echo "Message = " . $content . "\r\n";
         
         $x = 0;
         $client_count = count($clients);
         for ($i = 0; $i < $client_count; $i++){
-            echo $content;
             $response = chr(129) . chr(strlen($content)) . $content;
             if (socket_write($clients[$i], $response)){
-            echo "Message sent to client " . $i ,"\r\n";
+                echo "Message sent to client " . $i ,"\r\n";
             } else {
                 echo "closing client " . $x ,"\r\n";
                 socket_shutdown($clients[$i]);
@@ -143,6 +149,7 @@ while (true) {
                 array_splice($clients, $i, 1);
                 echo 'Client disconnected!',"\r\n";
                 $i--;
+                $client_count--;
             }
             $x++;
         }

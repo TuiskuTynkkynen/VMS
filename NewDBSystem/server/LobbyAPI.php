@@ -413,7 +413,9 @@
 				if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
 				$result = $m_conn->query($sql) -> fetch_array(MYSQLI_NUM);
 				
-				$newadminid = $result[0];
+				if ($playercount > 1){
+					$newadminid = $result[0];
+				}
 			}
 		}
 
@@ -426,15 +428,13 @@
 		$sql = "UPDATE sessions SET status = 0, lobbyid = NULL, last_seen = $now WHERE id=$sessionid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
-		$sql = "UPDATE lobbies SET playercount=$playercount-1 WHERE id=$lobbyid";
-		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
-		
 		if ($playercount == 1){
 			$sql = "DROP DATABASE IF EXISTS lobby" . $lobbyid;
 			if ($m_conn->query($sql) === FALSE) { echo "Error deleting database: " . $m_conn->error; }
 
 			$sql = "DELETE FROM lobbies WHERE id = $lobbyid";
 			if ($m_conn->query($sql) === FALSE) { echo "Error deleting record: " . $m_conn->error; }
+			return;
 		}
 		
 		if ($newadminid != -1){
@@ -442,7 +442,7 @@
 			if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		}
 		
-		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
+		$sql = "UPDATE lobbies SET playercount = $playercount-1, lastupdated = $now WHERE id = $lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		$m_conn->close();
@@ -686,7 +686,7 @@
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 
-		$sql = "SELECT Count(*), id FROM sessions WHERE php_session_id=$phpsessionid";
+		$sql = "SELECT Count(*), id, nickname FROM sessions WHERE php_session_id=$phpsessionid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
 		$result = $m_conn->query($sql) -> fetch_array(MYSQLI_NUM);
 	
