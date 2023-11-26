@@ -686,7 +686,7 @@
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 
-		$sql = "SELECT Count(*), id, nickname FROM sessions WHERE php_session_id=$phpsessionid";
+		$sql = "SELECT Count(*), id FROM sessions WHERE php_session_id=$phpsessionid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
 		$result = $m_conn->query($sql) -> fetch_array(MYSQLI_NUM);
 	
@@ -700,7 +700,7 @@
 		
 		$m_conn->close();
 	}
-
+	
 	function IsAdmin($sessionid, $servername, $dbusername, $dbpassword){
 		$lobbyid = $_POST["id"];
 		

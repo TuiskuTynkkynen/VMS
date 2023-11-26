@@ -19,8 +19,14 @@ $dbusername = $config['databaseusername'];
 $dbpassword = $config['databasepassword'];
 
 $dbname = "vms";
-
 $mysqli = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+
+$serverdirectory = $config['serverdirectory'];
+$sessionid = $status = $lobbyid = "-1 ";
+$cmd = "php -q " . $serverdirectory . "/NewDBSystem/server/DeleteSession.php " . $sessionid . $status . $lobbyid;
+
+$minute = 60;
+$halfhour = 30 * 60;
 
 $old_time_stamps = array();
 $new_time_stamps = array();
@@ -56,10 +62,27 @@ while (true) {
     
     sleep(1);
     
-    //$now = time();
-    //$y = $now - 2*60;
-    //$sql = "DELETE FROM sessions WHERE last_seen < $y";
-    //if ($mysqli->query($sql) === FALSE) { echo "Error updating record: " . $mysqlir->error; }
+    $now = time();
+
+    $sql = "SELECT id, status, lobbyid FROM sessions WHERE (updaterequired = 1 AND last_seen < $now-$minute) or last_seen < $now-$halfhour";
+    $result = $mysqli->query($sql);
+    $deletedsessioncount = $result->num_rows;
+
+    for($i = 0; $i < $deletedsessioncount; $i++){
+        $row = $result->fetch_array(MYSQLI_NUM);
+        $sessionid = $row[0] . " ";
+        $status = $row[1] . " ";
+        $lobbyid = $row[2] . " ";
+        
+        echo "Deleted session with id = " . $sessionid;
+
+        //run DeleteUser.php in background
+        if (substr(php_uname(), 0, 7) == "Windows"){
+            pclose( popen("start /b ". $cmd, "r" ) );
+        } else {
+           exec($cmd . " > /dev/null &"); 
+        }
+    }
 
     $sql = "SELECT id, lastupdated FROM lobbies";
     $result = $mysqli->query($sql);
