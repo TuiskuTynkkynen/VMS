@@ -37,6 +37,9 @@
 			CreateAccount($conn);
 			AddSession($conn, GetAccount($conn), $phpsessionid, $time);
 			break;
+		case "6":
+			RequireRelog($conn, $phpsessionid, $time);
+			break;
 	}
 
 	$sql = "SELECT id, php_session_id FROM sessions WHERE php_session_id=$phpsessionid";
@@ -191,5 +194,17 @@
 		
 		$conn->close();
 		exit();
+	}
+
+	function RequireRelog($conn, $phpsessionid, $time){
+		$sql = "SELECT Count(*), id FROM sessions WHERE php_session_id=$phpsessionid";
+		$result = $conn->query($sql) -> fetch_array(MYSQLI_NUM);
+	
+		if ($result[0] > 0){
+			$sessionid = $result[1];
+		
+			$sql = "UPDATE sessions SET updaterequired = 1, last_seen=$time WHERE id = $sessionid";
+			if ($conn->query($sql) === FALSE) { echo "Error updating record: " . $conn->error; }
+		}
 	}
 ?>

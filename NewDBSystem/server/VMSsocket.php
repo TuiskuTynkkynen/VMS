@@ -26,7 +26,8 @@ $sessionid = $status = $lobbyid = "-1 ";
 $cmd = "php -q " . $serverdirectory . "/NewDBSystem/server/DeleteSession.php";
 
 $minute = 60;
-$halfhour = 30 * 60;
+//TODO set $halfhour value to 30 * 60 instead of dev value
+$halfhour = 24 * 3600;
 
 $old_time_stamps = array();
 $new_time_stamps = array();
@@ -124,13 +125,13 @@ while (true) {
 
 
     if (!empty($updated_lobbies)){
-        $content = '{"connection":"open", "updatedlobbies":[';
+        $content = '{"connection":"open", "updatedlobbies":[-1, ';
         $updated_lobby_count = count($updated_lobbies);
         
         for($i = 0; $i < $updated_lobby_count; $i++){
             $id = array_pop($updated_lobbies);
-			$content .= '{"id":"' . $id . '"}';
-			if ($i != $updated_lobby_count - 1) {$content .= ','; }
+			$content .= $id;
+			if ($i != $updated_lobby_count - 1) {$content .= ', '; }
         }
         
         $content .= ']}';

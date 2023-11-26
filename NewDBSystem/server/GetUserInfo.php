@@ -28,7 +28,7 @@
 		$SID = $row[0];
 		$status = $row[1];
 		$lobby =$row[2];
-		$lgexpiration = $row[3] + 900 - time();
+		$lgexpiration = $row[3] + 1700 - time();
 	}
 	if ($status == "2"){
 		//TODO make this get from lobby->players
@@ -48,6 +48,13 @@
 	}
 
 	echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "isadmin":"' . $isadmin . '", "lgexp":"' . $lgexpiration . '", "canchangetrump":"' . $canchangetrump . '"}';
-
+	
+	$now = time();
+	
+	if ($SID != null){
+		$sql = "UPDATE sessions SET updaterequired = 0, last_seen = $now WHERE id = $SID";
+		if ($conn->query($sql) === FALSE) { echo $sql . "      "; echo "Error updating record: " . $conn->error; }
+	}
+	
 	$conn->close();
 ?>

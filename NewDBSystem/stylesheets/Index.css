@@ -254,11 +254,11 @@ body {
     display: flex;
     position: absolute;
     bottom: 7.5%;
-    left: 5%;
-    width: 90%;
+    left: 3%;
+    width: 94%;
     height: 10%;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 .lobbybuttons button{
@@ -271,6 +271,8 @@ body {
     background-image: url("/imgs/button_img");
     background-size: 100% 100%;
     border: none;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
 }
 
     .lobbybuttons button:hover {

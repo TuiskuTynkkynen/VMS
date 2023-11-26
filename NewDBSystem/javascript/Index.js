@@ -1,3 +1,14 @@
+const beforeUnloadHandler = (event) => {
+	//set updaterequired = true -> needs to update within 1 min or session will be deleted
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=6");
+
+	return "d";
+};
+window.addEventListener("beforeunload", beforeUnloadHandler);
+
 // Create WebSocket connection.
 const serverip = location.host;
 const socket = new WebSocket("ws://" + serverip + ":8080/NewDBSystem/server/VMSsocket.php");
@@ -17,21 +28,29 @@ socket.addEventListener("open", (event) => {
 
 // Listen for messages
 socket.addEventListener("message", (event) => {
-	let data = event.data;
+	const data = event.data;
 	console.log("Message from server ", data);
-	let str = data;
-	info = JSON.parse(str);
+	const info = JSON.parse(data);
+
+	if (islobbiesshown == 1) {
+		UpdateLobbies();
+	}
+
+	if (islobbyshown == 1 && info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(selectedlobby))) {
+		UpdateLobby();
+	}
+
 	fml();
 	GetUsers();
 });
-let userstatus;
-let userlobby;
+
+let userstatus = -1;
+let userlobby = -1;
 let SID;
-let info;
 let statustoggles = [0, 0, 0];
 let playertoggle = 0;
 let selectedlobby = -1;
-let currentlobby;
+let islobbiesshown, islobbyshown = 0;
 let isadmin;
 let logouttimer;
 
@@ -55,7 +74,7 @@ function GetUserInfo() {
 			SID = UserInfo.SID;
 			isadmin = (UserInfo.isadmin == 1) ? true : false;
 
-			RelogIn(UserInfo.lgexp);
+			RelogNotice(UserInfo.lgexp);
 			fml();
 			MainMenu();
 		}
@@ -121,7 +140,7 @@ function LogIn() {
 				document.getElementById("account").disabled = true;
 				document.getElementById("PIN").disabled = true;
 				document.getElementById("inputtxt").disabled = true;
-				RelogIn(900)
+				RelogNotice(1700)
 				GetUserInfo();
 			} else if (serverresponse == "1") {
 				document.getElementById("incorrect").innerHTML = "V‰‰r‰ k‰ytt‰j‰nimi tai salasana";
@@ -151,7 +170,7 @@ function MainMenu() {
 	document.getElementById("accountsettings").onclick = function () { window.location.assign("/NewDBSystem/AccountSettings.html"); }
 
 	function Lobby(event) {
-		GetLobbies();
+		ShowLobbies();
 
 		document.getElementById("lobbygui").classList.remove("hidden");
 
@@ -214,12 +233,27 @@ function fml() {
 	}
 }
 
-function GetLobbies() {
+function ShowLobbies() {
 	if (selectedlobby != -1) {
-		LobbyOnClick(selectedlobby);
+		ShowLobby(selectedlobby);
 		return;
 	}
 
+	islobbiesshown = 1;
+	islobbyshown = 0;
+
+	UpdateLobbies();
+
+	document.getElementById("create").onclick = function () { LobbyActions(2); }
+	document.getElementById("lobbiesreturn").onclick = function () {
+		islobbiesshown = islobbyshown = 0;
+		document.getElementById("lobbygui").classList.add("hidden");
+		document.getElementById("lobbiescontainer").classList.add("hidden");
+		document.getElementById("lobbycontainer").classList.add("hidden");
+
+	}
+}
+function UpdateLobbies() {
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -242,37 +276,50 @@ function GetLobbies() {
 			document.getElementById('lobbies').innerHTML = str;
 			str = "";
 			for (let i = 0; i < lobbycount; i++) {
-				document.getElementById("lobby" + i).onclick = function () { LobbyOnClick(lobbies.Lobbies[i].id); }
+				document.getElementById("lobby" + i).onclick = function () { ShowLobby(lobbies.Lobbies[i].id); }
 			}
 		}
 	}
-
-	document.getElementById("create").onclick = function () { LobbyActions(2); }
 }
 
-function LobbyOnClick(index) {
+
+function ShowLobby(index) {
+	islobbiesshown = 0;
+	islobbyshown = 1;
 	selectedlobby = index;
-	document.getElementById("lobbiescontainer").classList.add("hidden");
-	GetLobbyInfo();
-	document.getElementById("lobbycontainer").classList.remove("hidden");
-}
-
-function GetLobbyInfo() {
-	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("action=1&id=" + selectedlobby);
-
+	UpdateLobby();
+	
 	if (userlobby == selectedlobby) {
 		document.getElementById("inlobby").classList.remove("hidden");
 		document.getElementById("outlobby").classList.add("hidden");
 		document.getElementById("leave").onclick = function () {
 			LobbyActions(4);
 		}
+		document.getElementById("inlobbyreturn").onclick = function () {
+			islobbiesshown = islobbyshown = 0;
+			document.getElementById("lobbygui").classList.add("hidden");
+			document.getElementById("lobbycontainer").classList.add("hidden");
+		}
 	} else {
 		document.getElementById("inlobby").classList.add("hidden");
 		document.getElementById("outlobby").classList.remove("hidden");
+		document.getElementById("outlobbyreturn").onclick = function () {
+			islobbyshown = 0;
+			document.getElementById("lobbycontainer").classList.add("hidden");
+			islobbiesshown = 1;
+			document.getElementById("lobbiescontainer").classList.remove("hidden");
+		}
 	}
+
+	document.getElementById("lobbiescontainer").classList.add("hidden");
+	document.getElementById("lobbycontainer").classList.remove("hidden");
+}
+
+function UpdateLobby() {
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=1&id=" + selectedlobby);
 
 	xhttp.onload = function () {
 		let x = this.responseText;
@@ -378,6 +425,7 @@ function LobbyActions(action) {
 		}
 
 		document.getElementById("return").onclick = function () {
+			islobbiesshown = 1;
 			document.getElementById("lobbiescontainer").classList.remove("hidden");
 			document.getElementById("lobbyinputs").classList.add("hidden");
 			document.getElementById("createlobby").classList.add("hidden");
@@ -410,13 +458,15 @@ function LobbyActions(action) {
 				} else if (response[0] == 0) {
 					response = response.substring(1);
 					userlobby = selectedlobby = response;
+					islobbiesshown = 0;
+					islobbyshown = 1;
 					GetUserInfo();
 
 					document.getElementById("lobbycontainer").classList.remove("hidden");
 					document.getElementById("lobbyinputs").classList.add("hidden");
 					document.getElementById("createlobby").classList.add("hidden");
 
-					GetLobbyInfo(userlobby);
+					UpdateLobby(userlobby);
 
 					document.getElementById("clincorrect").innerHTML = "";
 					document.getElementById("lobbypassword").value = "";
@@ -433,10 +483,11 @@ function LobbyActions(action) {
 	function JoinOnLoad() {
 		userlobby = selectedlobby;
 		GetUserInfo();
-		GetLobbyInfo(userlobby);
+		ShowLobby(userlobby);
 	}
 
 	function LeaveOnLoad() {
+		islobbyshown = 0;
 		selectedlobby = userlobby = -1;
 
 		document.getElementById("lobbygui").classList.add("hidden");
@@ -570,7 +621,7 @@ function GetUsers() {
 	xhttp.send();
 }
 
-function RelogIn(seconds) {
+function RelogNotice(seconds) {
 	clearTimeout(logouttimer);
 	//TODO remove debug return
 	return;
@@ -586,15 +637,6 @@ function RelogIn(seconds) {
 		document.removeEventListener("keypress", HideNotice);
 	}
 }
-	//TODO Check if functions need to be switched to new db standard
-	//
-	//TODO Prevent same user account creating multiple sessions
-	//
-	//TODO make joining/leaving/creatin/deleting lobby update gui
-	//
 	//TODO make CG work with lobby system
-	//
-	//TODO redo relogin system
-	//TODO make websocket work with new systems (relog sys)
 	//
 	//TODO (optional) reduce .php server executables to fewer files
