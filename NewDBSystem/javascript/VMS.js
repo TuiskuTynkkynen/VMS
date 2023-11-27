@@ -138,41 +138,41 @@ function GetGameInfo() {
 			document.getElementById("trumpsuit").classList.remove("hidden");
 		}
 
-		if (oldtrumpcard != Trumpcard | oldplayers != Players) { initialized++; InitializeGUI(); }
+		if (oldtrumpcard != TrumpCard | oldplayers != Players) { Initialized++; InitializeGUI(); }
 		if (CanKill.length == 0) { GUI(); }
 	}
 }
 
 function GUI() {
-	let str = '<img id="deckimg2"; src="/imgs/card_img.png"> <div>' + deckstr + '</div>';
+	let str = '<img id="deckimg2"; src="/imgs/card_img.png"> <div>' + DeckStr + '</div>';
 	document.getElementById('deck').innerHTML = str;
 
-	if (mustkill == 0 || activeCard == -1) { GUIFlex(chosenCards, "chosen"); }
+	if (MustKill == 0 || ActiveCard == -1) { GUIFlex(ChosenCards, "chosen"); }
 	else { GUIFlex("", "chosen"); }
 
 	str = "";
-	hand = hand.sort((a, b) => a[1] - b[1]);
-	hand = hand.sort((a, b) => a[0] - b[0]);
-	for (let i = 0; i < hand.length; i++) {
-		let result = ParseCard(hand, i);
+	Hand = Hand.sort((a, b) => a[1] - b[1]);
+	Hand = Hand.sort((a, b) => a[0] - b[0]);
+	for (let i = 0; i < Hand.length; i++) {
+		let result = ParseCard(Hand, i);
 		let suit = result[0];
 		let value = result[1];
 		let color = result[2];
-		if (suit == "&#NaN" && value == "&#NaN") { hand.splice(i, 1); continue; }
-		str += '<div class=handflex id=hand' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+		if (suit == "&#NaN" && value == "&#NaN") { Hand.splice(i, 1); continue; }
+		str += '<div class=handflex id=Hand' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
 	}
 	document.getElementById('handflexcontainer').innerHTML = str;
 
-	if (cankill.length == 0 && activeCard > -1) {
+	if (CanKill.length == 0 && ActiveCard > -1) {
 		try {
-			document.getElementById('hand' + activeCard).classList.add("active");
+			document.getElementById('Hand' + ActiveCard).classList.add("active");
 		} catch (error) { console.log(error); }
 	}
 
 	str = "";
-	if (mustkill == 0 && (supporting == 0 | field.length > 0)) {
+	if (MustKill == 0 && (Supporting == 0 | Field.length > 0)) {
 		document.getElementById('fieldcontainer').classList.add("offset");
-		for (let i = 0; i < opponent; i++) {
+		for (let i = 0; i < Opponent; i++) {
 			str += '<div class=opponentflex> <div class=flexcontent> <img src="/imgs/card_img.png"> </div> </div>';
 		}
 	} else {
@@ -181,37 +181,37 @@ function GUI() {
 	document.getElementById('opponentflexcontainer').innerHTML = str;
 
 	document.getElementById('fieldflexcontainer').innerHTML = "";
-	if (mustkill == 1) {
+	if (MustKill == 1) {
 		str = '<div class=fieldflex id=field_button> <img src="/imgs/field_img.png" id="field_img" style=width:90%;height:auto> </div>';
 		document.getElementById('fieldflexcontainer').innerHTML = str;
 	}
-	for (let i = 0; i < field.length; i++) {
-		let result = ParseCard(field, i);
+	for (let i = 0; i < Field.length; i++) {
+		let result = ParseCard(Field, i);
 		let suit = result[0];
 		let value = result[1];
 		let color = result[2];
-		if (field[i][2] < 2) {
-			str = '<div class=fieldflex id=field' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+		if (Field[i][2] < 2) {
+			str = '<div class=fieldflex id=Field' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
 			document.getElementById('fieldflexcontainer').innerHTML += str;
 		} else {
 			str = ' <div class=killerflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
-			document.getElementById('field' + field[i][3]).innerHTML += str;
+			document.getElementById('Field' + Field[i][3]).innerHTML += str;
 		}
 	}
-	str = '<div class=fieldflex flex id=field' + field.length + ' style=width:1> <div style=height:37%> </div></div>'
+	str = '<div class=fieldflex flex id=Field' + Field.length + ' style=width:1> <div style=height:37%> </div></div>'
 	document.getElementById('fieldflexcontainer').innerHTML += str;
 
-	while (1 < document.getElementById("player" + oldchargerid).children[0].childElementCount) {
-		document.getElementById("player" + oldchargerid).children[0].children[1].remove();
+	while (1 < document.getElementById("player" + OldChargerId).children[0].childElementCount) {
+		document.getElementById("player" + OldChargerId).children[0].children[1].remove();
 	}
-	document.getElementById("player" + chargerid).children[0].innerHTML += "<p> > </p>";
+	document.getElementById("player" + ChargerId).children[0].innerHTML += "<p> > </p>";
 }
 function GUIFlex(array, name) {
 
 	let i;
 	let str = "";
 
-	if (array.length > 0 && mustkill == 0) {
+	if (array.length > 0 && MustKill == 0) {
 		str += '<div class=' + name + 'flex id=' + name + 'charge style=margin:1rem> <img src="/imgs/charge_img.png" id="charge_img" style=height:30%> </div>';
 	}
 
@@ -222,14 +222,14 @@ function GUIFlex(array, name) {
 		let color = result[2];
 		str += '<div class=' + name + 'flex id=' + name + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
 
-		hand.some(RemovePairs);
+		Hand.some(RemovePairs);
 	}
 	document.getElementById(name + 'flexcontainer').innerHTML = str;
 
 	function RemovePairs(value, index) {
 		if (parseInt(value[0]) == parseInt(array[i][0])) {
 			if (parseInt(value[1]) == parseInt(array[i][1])) {
-				hand.splice(index, 1);
+				Hand.splice(index, 1);
 			}
 		}
 	}
@@ -238,7 +238,7 @@ function GUIFlex(array, name) {
 function InitializeGUI() {
 	let str = "";
 
-	let result = ParseCard(tcard, 0);
+	let result = ParseCard([TrumpCard], 0);
 	let suit = result[0];
 	let value = result[1];
 	let color = result[2];
@@ -247,21 +247,21 @@ function InitializeGUI() {
 	document.getElementById('trumpsuit').innerHTML = '<p style=color:' + color + ' > ' + suit + '</p >';
 
 	str = '<div> <div> <p style="width:100%; text-align:center">Pelaajat:</p> </div> </div>';
-	for (let i = 0; i < players.length; i++) {
-		str += '<div id="player' + players[i][0] + '"> <div> <p class="nick"> ' + players[i][1] + ' </p> </div> </div>';
+	for (let i = 0; i < Players.length; i++) {
+		str += '<div id="player' + Players[i][0] + '"> <div> <p class="nick"> ' + Players[i][1] + ' </p> </div> </div>';
 	}
 	document.getElementById('playerinfo').innerHTML = str;
 
-	document.getElementById("player" + playerid).classList.add("yellow");
+	document.getElementById("player" + PlayerId).classList.add("yellow");
 
-	result = ParseCard([[tcard[0][0], "2"]], 0);
+	result = ParseCard([[TrumpCard[0][0], "2"]], 0);
 	suit = result[0];
 	value = result[1];
 	color = result[2];
 
 	str = '<p style=color:' + color + ' >' + value + '<br>' + suit + '</p>';
 	document.getElementById('newtrump').innerHTML += str;
-	result = ParseCard(tcard, 0);
+	result = ParseCard(TrumpCard, 0);
 	suit = result[0];
 	value = result[1];
 	color = result[2];
@@ -310,32 +310,32 @@ function GameLoop() {
 	Input('GameLoop');
 	let oldActiveCard = ActiveCard;
 
-	if (cankill.length == 0) { array = hand; }
-	else { array = cankill; }
+	if (CanKill.length == 0) { array = Hand; }
+	else { array = CanKill; }
 
 	switch (InputKey) {
 		case 'ArrowDown':
-			activeCard = 0;
-			console.log(activeCard);
+			ActiveCard = 0;
+			console.log(ActiveCard);
 			break;
 		case 'ArrowUp':
-			if (chosenCards.length > 0 || mustkill == 1) { activeCard = -1; }
-			else { activeCard = 0; }
-			console.log(activeCard);
+			if (ChosenCards.length > 0 || MustKill == 1) { ActiveCard = -1; }
+			else { ActiveCard = 0; }
+			console.log(ActiveCard);
 			break;
 		case 'ArrowRight':
-			if (activeCard < array.length - 1) {
-				activeCard++;
+			if (ActiveCard < array.length - 1) {
+				ActiveCard++;
 			}
-			else { activeCard = -1; }
-			console.log(activeCard);
+			else { ActiveCard = -1; }
+			console.log(ActiveCard);
 			break;
 		case 'ArrowLeft':
-			if (activeCard > -1) {
-				activeCard--;
+			if (ActiveCard > -1) {
+				ActiveCard--;
 			}
-			else { activeCard = array.length - 1; }
-			console.log(activeCard);
+			else { ActiveCard = array.length - 1; }
+			console.log(ActiveCard);
 			break;
 		case 'Space':
 			//GetGameInfo();
@@ -343,52 +343,52 @@ function GameLoop() {
 			//TODO remove this debug thing
 			break;
 		case 'Enter':
-			if (mustkill == 1) { console.log("you killing"); KillTest(); }
+			if (MustKill == 1) { console.log("you killing"); KillTest(); }
 			else { console.log("you charging"); ChargeTest(); }
 			break;
 		case 'Escape':
-			let x = chosenCards.length;
+			let x = ChosenCards.length;
 			for (let i = 0; i < x; i++) {
-				hand.push(chosenCards.splice(0, 1).flat());
+				Hand.push(ChosenCards.splice(0, 1).flat());
 			}
-			cankill = [];
-			hand.sort(); console.log(hand); console.log(activeCard);
+			CanKill = [];
+			Hand.sort(); console.log(Hand); console.log(ActiveCard);
 			GUI();
 			break;
 	}
 
-	if (mustkill == 1) {
-		if (activeCard == -1) {
+	if (MustKill == 1) {
+		if (ActiveCard == -1) {
 			document.getElementById('field_img').classList.add("active1");
 		} else if (oldActiveCard == -1) {
 			document.getElementById('field_img').classList.remove("active1");
 		}
 	} else {
-		if (activeCard == -1 && chosenCards.length > 0) {
+		if (ActiveCard == -1 && ChosenCards.length > 0) {
 			document.getElementById('charge_img').classList.add("active1");
-		} else if (oldActiveCard == -1 && chosenCards.length > 0) {
+		} else if (oldActiveCard == -1 && ChosenCards.length > 0) {
 			document.getElementById('charge_img').classList.remove("active1");
 		}
 	}
-	if (mustkill == 1 && cankill.length > 0) {
+	if (MustKill == 1 && CanKill.length > 0) {
 		console.log("ff");
 		GUI();
-		let result = ParseCard(chosenCards, 0);
+		let result = ParseCard(ChosenCards, 0);
 		let suit = result[0];
 		let value = result[1];
 		let color = result[2];
 		let str = ' <div class=killingflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
 		try {
-			document.getElementById('field' + cankill[activeCard]).innerHTML += str;
+			document.getElementById('Field' + CanKill[ActiveCard]).innerHTML += str;
 		} catch (error) {/*console.error(error); */ }
 	} else {
 		try {
-			document.getElementById('hand' + activeCard).classList.add("active");
+			document.getElementById('Hand' + ActiveCard).classList.add("active");
 		} catch (error) {/*console.error(error); */ }
 
-		if (oldActiveCard !== activeCard) {
+		if (oldActiveCard !== ActiveCard) {
 			try {
-				document.getElementById('hand' + oldActiveCard).classList.remove("active");
+				document.getElementById('Hand' + oldActiveCard).classList.remove("active");
 			} catch (error) {/* console.error(error); */ }
 		}
 	}
@@ -396,100 +396,100 @@ function GameLoop() {
 
 function ChargeTest() {
 
-	if (chosenCards.length > 0) {
+	if (ChosenCards.length > 0) {
 
-		arr = chosenCards;
-		if (activeCard == -1) {
-			if (supporting == 1) {	//!!!!!!!!!!!!!!! might not work
-				arr = chosenCards;
-				if (field.length > 0 && field.some(HasPairs)) {
-					console.log("field matches");
-					Charge(chosenCards, supporting);
+		arr = ChosenCards;
+		if (ActiveCard == -1) {
+			if (Supporting == 1) {	//!!!!!!!!!!!!!!! might not work
+				arr = ChosenCards;
+				if (Field.length > 0 && Field.some(HasPairs)) {
+					console.log("Field matches");
+					Charge(ChosenCards, Supporting);
 				} else {
 					console.log("no match");
 					AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
 				}
 				return;
 			}
-			if (chosenCards.length > 1 && !chosenCards.every(HasPairs)) { //!!!!!!!!!!!!!!! .every might not work
+			if (ChosenCards.length > 1 && !ChosenCards.every(HasPairs)) { //!!!!!!!!!!!!!!! .every might not work
 				AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
 				return;
 			}
-			Charge(chosenCards, supporting);
+			Charge(ChosenCards, Supporting);
 			return;
 		}
 
 
 		let temp = [];
-		temp[0] = hand.splice(activeCard, 1).flat();
-		activeCard = hand.length;
+		temp[0] = Hand.splice(ActiveCard, 1).flat();
+		ActiveCard = Hand.length;
 
 		let x = 0;
-		arr = chosenCards;
+		arr = ChosenCards;
 		if (temp.some(HasPairs)) {
-			chosenCards.push(temp.splice(0, 1).flat()); x++;
+			ChosenCards.push(temp.splice(0, 1).flat()); x++;
 			GUI();
 			return;
 		}
 
-		arr = chosenCards;
-		if (!chosenCards.some(HasPairs)) {
-			hand.push(temp.splice(0, temp.length).flat());
+		arr = ChosenCards;
+		if (!ChosenCards.some(HasPairs)) {
+			Hand.push(temp.splice(0, temp.length).flat());
 			GUI();
 			return;
 		}
 
-		arr = hand;
-		if (supporting == 0 && temp.some(HasPairs)) {
-			chosenCards.push(temp.splice(0, temp.length).flat()); x++;
+		arr = Hand;
+		if (Supporting == 0 && temp.some(HasPairs)) {
+			ChosenCards.push(temp.splice(0, temp.length).flat()); x++;
 			GUI();
 			return;
 		}
 
 		if (x == 0) {
 			console.log("that wasnt a pair");
-			hand.push(temp.splice(0, temp.length).flat());
-			console.log(chosenCards); console.log(hand);
+			Hand.push(temp.splice(0, temp.length).flat());
+			console.log(ChosenCards); console.log(Hand);
 			GUI();
 		}
-	} else { chosenCards.push(hand.splice(activeCard, 1).flat()); GUI(); }
+	} else { ChosenCards.push(Hand.splice(ActiveCard, 1).flat()); GUI(); }
 
 
 }
 function KillTest() {
-	if (activeCard == -1) { Kill(chosenCards, activeCard); return; }//picks cards from field to hand 
+	if (ActiveCard == -1) { Kill(ChosenCards, ActiveCard); return; }//picks cards from Field to Hand 
 
-	if (cankill.length > 0) {
-		if (cankill[activeCard] < field.length) {
-			Kill(chosenCards, cankill[activeCard]);
-		} else { Charge(chosenCards, 1); }
+	if (CanKill.length > 0) {
+		if (CanKill[ActiveCard] < Field.length) {
+			Kill(ChosenCards, CanKill[ActiveCard]);
+		} else { Charge(ChosenCards, 1); }
 		return;
 	}
 
-	console.log(hand);
-	chosenCards = [hand.splice(activeCard, 1).flat()];
-	console.log(hand);
-	cankill = [];
-	activeCard = -1;
-	field.forEach(IsKillable);
+	console.log(Hand);
+	ChosenCards = [Hand.splice(ActiveCard, 1).flat()];
+	console.log(Hand);
+	CanKill = [];
+	ActiveCard = -1;
+	Field.forEach(IsKillable);
 
-	arr = chosenCards;
-	if (field.some(HasPairs)) { cankill.push(field.length); }
+	arr = ChosenCards;
+	if (Field.some(HasPairs)) { CanKill.push(Field.length); }
 
-	console.log(cankill); console.log(chosenCards); console.log(activeCard); console.log("Can kill:");
-	for (i = 0; i < cankill.length; i++) { console.log(field[cankill[i]]); }
+	console.log(CanKill); console.log(ChosenCards); console.log(ActiveCard); console.log("Can kill:");
+	for (i = 0; i < CanKill.length; i++) { console.log(Field[CanKill[i]]); }
 
-	if (cankill.length == 0) { console.log("hand:"); hand.push(chosenCards.splice(0, 1).flat()); console.log(hand); activeCard = 0; }
+	if (CanKill.length == 0) { console.log("Hand:"); Hand.push(ChosenCards.splice(0, 1).flat()); console.log(Hand); ActiveCard = 0; }
 
 	GUI();
 	function IsKillable(value, index, array) {
-		console.log("testing field for killables");
+		console.log("testing Field for killables");
 		if (value[2] != 0) { return; }
-		if (parseInt(chosenCards[0][0]) == tcard0) {
-			if (parseInt(value[0]) != tcard0) { cankill.push(index); }
-			else if (parseInt(value[1]) <= parseInt(chosenCards[0][1])) { cankill.push(index); }
+		if (parseInt(ChosenCards[0][0]) == TrumpCard0) {
+			if (parseInt(value[0]) != TrumpCard0) { CanKill.push(index); }
+			else if (parseInt(value[1]) <= parseInt(ChosenCards[0][1])) { CanKill.push(index); }
 		}
-		else if (parseInt(value[0]) == parseInt(chosenCards[0][0]) && parseInt(value[1]) < parseInt(chosenCards[0][1])) { cankill.push(index); }
+		else if (parseInt(value[0]) == parseInt(ChosenCards[0][0]) && parseInt(value[1]) < parseInt(ChosenCards[0][1])) { CanKill.push(index); }
 	}
 }
 
@@ -506,18 +506,18 @@ function Charge(cards, isSupporting) {
 			AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
 			return;
 		}
-		chosenCards.splice(0, chosenCards.length);
+		ChosenCards.splice(0, ChosenCards.length);
 		console.log("you charged");
-		if (mustkill == 0) {
+		if (MustKill == 0) {
 			Draw();
-		} else { cankill = []; GetGameInfo(); GUI(); }
+		} else { CanKill = []; GetGameInfo(); GUI(); }
 	}
-	xhttp.open("GET", "/NewDBSystem/server/Charge.php?Cards=" + cards + "&Support=" + isSupporting + "&UID=" + UId + "&ChargeTurn=" + ischargeturn + "&CID=" + chargerid);
+	xhttp.open("GET", "/NewDBSystem/server/Charge.php?Cards=" + cards + "&Support=" + isSupporting + "&UID=" + UId + "&ChargeTurn=" + ischargeturn + "&CID=" + ChargerId);
 	xhttp.send();
 }
 
 function Kill(card, killedId) {
-	console.log(hand);
+	console.log(Hand);
 	console.log(card.toString());
 	console.log("you killed id " + killedId);
 
@@ -525,8 +525,8 @@ function Kill(card, killedId) {
 	xhttp.onload = function () {
 		x = this.responseText;
 		console.log(x);
-		chosenCards.splice(0, chosenCards.length);
-		cankill = [];
+		ChosenCards.splice(0, ChosenCards.length);
+		CanKill = [];
 		if (x != "0") { Draw(); }
 		else {
 			GetGameInfo();
@@ -562,7 +562,7 @@ function ChangeTrump() {
 	if (typeof InputKey != 'undefined') {
 		xhttp.onload = function () {
 			document.getElementById("trump").classList.add("hidden");
-			initialized = 0;
+			Initialized = 0;
 			GameLoop();
 		}
 	}

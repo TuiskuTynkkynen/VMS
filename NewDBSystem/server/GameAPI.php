@@ -80,17 +80,17 @@
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$result = $m_conn->query($sql);
 		$handcount = $result->num_rows;
-
-		if (($playercount <= 0 || $handcount <= 0) && $ingame == 1 && $deckleft <= 0){
+		
+		if (($playercount <= 1 || $handcount <= 0) && $ingame == 1 && $deckleft <= 0){
 			$ingame = 0;
-			$winstatus = GameOver($playerinfo, $servername, $dbusername, $dbpassword);
+			$winstatus = GameOver($PID, $playerinfo, $servername, $dbusername, $dbpassword);
 			
-			echo '"gameover":["ingame":"' . $ingame . ', winstatus":' . $winstatus . '], ';
+			echo '"gameover":{"ingame":' . $ingame . ', "winstatus":' . $winstatus . '}, ';
 		}
-		echo '"handcount":' .$handcount . ', ';
+
 		echo '"hand":[';
 		for ($i = 0; $i < $handcount; $i++){
-			$row = $result>fetch_array(MYSQLI_NUM);
+			$row = $result->fetch_array(MYSQLI_NUM);
 			echo '[' . $row[0] . ', ' . $row[1] . ']';
 			if ($i < $handcount-1) {echo ', '; }
 		}
@@ -153,7 +153,7 @@
 		return $playerinfo;
 	}
 
-	function GameOver($playerinfo, $servername, $dbusername, $dbpassword){
+	function GameOver($PID, $playerinfo, $servername, $dbusername, $dbpassword){
 		$sessionid = $playerinfo[0];
 		$lobbyid = $playerinfo[2];
 		$isadmin = $playerinfo[3];
@@ -163,21 +163,23 @@
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 		
 		$now = time();
-		$sql = "UPDATE players SET playerid = NULL WHERE playerid = $PID;
-				UPDATE players SET playerid = playerid - 1 WHERE playerid > $PID;
-				DELETE FROM hands WHERE playerid = $PID;
-				UPDATE hands SET playerid = playerid - 1 WHERE playerid > $PI;
-				UPDATE gamestates SET playercount = playercount-1 WHERE playercount != 0;
-				UPDATE gamestates SET isactive = 0 WHERE playercount = 0;
-				UPDATE gamestates SET winnerid = $sessionid WHERE winnerid IS NULL;
-				UPDATE gamestates SET lastupdated = $now;";
-		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+		$sql[0] = "UPDATE players SET playerid = NULL WHERE playerid = $PID";
+		$sql[1] = "UPDATE players SET playerid = playerid-1 WHERE playerid > $PID";
+		$sql[2] = "DELETE FROM hands WHERE playerid = $PID";
+		$sql[3] = "UPDATE hands SET playerid = playerid-1 WHERE playerid > $PID";
+		$sql[4] = "UPDATE gamestates SET playercount = playercount-1 WHERE playercount != 0";
+		$sql[5] = "UPDATE gamestates SET isactive = 0 WHERE playercount = 0";
+		$sql[6] = "UPDATE gamestates SET winnerid = $sessionid WHERE winnerid IS NULL";
+		$sql[7] = "UPDATE gamestates SET lastupdated = $now";
+		for ($i = 0; $i < count($sql); $i++){
+			if ($m_conn->query($sql[$i]) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+		}
 		
 		$sql = "SELECT winnerid, isactive, playercount FROM gamestates";
 		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 	
 		$winstatus = 0;
-		if($result[0] == $UID){
+		if($result[0] == $sessionid){
 			$winstatus = 1;
 		} else if($result[1] == 0){
 			$winstatus = -1;
