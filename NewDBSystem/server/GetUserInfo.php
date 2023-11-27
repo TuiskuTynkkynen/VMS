@@ -23,17 +23,23 @@
 	$status = -1;
 	$lobby = -1;
 	$canchangetrump = null;
-	$lgexpiration = null;
+	$inactivitytimer = null;
+
 	if ($result->num_rows != 0){
 		$SID = $row[0];
 		$status = $row[1];
 		$lobby =$row[2];
-		$lgexpiration = $row[3] + 1700 - time();
+		$inactivitytimer = $row[3] + (29*60) - time();
 	}
+	
 	if ($status == "2"){
-		//TODO make this get from lobby->players
+		$dbname = "vms";
+
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+	
 		$sql = "SELECT canchangetrump FROM players WHERE id=$SID";
-		$result = $conn->query($sql)->fetch_array(MYSQLI_NUM);
+		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 		$canchangetrump = $result[0];
 	}
 
@@ -47,7 +53,7 @@
 		}
 	}
 
-	echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "isadmin":"' . $isadmin . '", "lgexp":"' . $lgexpiration . '", "canchangetrump":"' . $canchangetrump . '"}';
+	echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "isadmin":"' . $isadmin . '", "inactive":"' . $inactivitytimer . '", "canchangetrump":"' . $canchangetrump . '"}';
 	
 	$now = time();
 	

@@ -52,7 +52,7 @@ let playertoggle = 0;
 let selectedlobby = -1;
 let islobbiesshown, islobbyshown = 0;
 let isadmin;
-let logouttimer;
+let inactivitytimer;
 
 function GetUserInfo() {
 	//TODO figure out if this function and GetUserInfo.php or can be combined into AccountAPI
@@ -74,7 +74,7 @@ function GetUserInfo() {
 			SID = UserInfo.SID;
 			isadmin = (UserInfo.isadmin == 1) ? true : false;
 
-			RelogNotice(UserInfo.lgexp);
+			InactivityNotice(UserInfo.inactive);
 			fml();
 			MainMenu();
 		}
@@ -140,7 +140,7 @@ function LogIn() {
 				document.getElementById("account").disabled = true;
 				document.getElementById("PIN").disabled = true;
 				document.getElementById("inputtxt").disabled = true;
-				RelogNotice(1700)
+				InactivityNotice(29*60)
 				GetUserInfo();
 			} else if (serverresponse == "1") {
 				document.getElementById("incorrect").innerHTML = "Väärä käyttäjänimi tai salasana";
@@ -621,20 +621,19 @@ function GetUsers() {
 	xhttp.send();
 }
 
-function RelogNotice(seconds) {
-	clearTimeout(logouttimer);
-	//TODO remove debug return
-	return;
-	logouttimer = setTimeout(() => {
+function InactivityNotice(seconds) {
+	clearTimeout(inactivitytimer);
+	inactivitytimer = setTimeout(() => {
 		document.getElementById("notice").classList.remove("hidden");
+		document.getElementById("main").classList.add("hidden");
+		document.getElementById("lobbygui").classList.add("hidden");
 		document.getElementById("main").classList.add("hidden");
 		document.addEventListener("keypress", HideNotice);
 	}, seconds*1000);
 
 	function HideNotice() {
 		document.getElementById("notice").classList.add("hidden");
-		LogIn();
-		document.removeEventListener("keypress", HideNotice);
+		window.location.reload();
 	}
 }
 	//TODO make CG work with lobby system
