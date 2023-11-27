@@ -1,22 +1,14 @@
-let UId;
-let CanChangeTrump;
-let activeCard = 0;
-let chosenCards = [];
-let field = [];
-let chargerid = 0;
-let oldchargerid;
-let players = [];
-let isingame = 1;
-let hand = [];
-let tcard = [];
-let deckstr;
-let cancharge;
-let mustkill;
-let arr;
-let cankill = [];
-let playerid;
-let initialized = 0;
-let opponent;
+const beforeUnloadHandler = (event) => {
+	//set updaterequired = true -> needs to update within 1 min or session will be deleted
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=6");
+
+	return "d";
+};
+window.addEventListener("beforeunload", beforeUnloadHandler);
+
 
 // Create WebSocket connection.
 const serverip = location.host;
@@ -25,7 +17,6 @@ const socket = new WebSocket("ws://" + serverip + ":8080/NewDBSystem/server/VMSs
 // Socket error
 socket.addEventListener("error", (event) => {
 	document.getElementById("error").classList.remove("hidden");
-
 	console.log(event);
 });
 
@@ -38,131 +29,118 @@ socket.addEventListener("open", (event) => {
 socket.addEventListener("message", (event) => {
 	let data = event.data;
 	console.log("Message from server ", data);
-	let str = "{" + data + "}";
-	info = JSON.parse(str);
-	if (isingame != "0") {
-		if (info.isactive == "0") {
-			Win();
-		} else {
-			GetGameInfo();
-		}
+	info = JSON.parse(data);
+
+	if (SessionId != -1 && info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(LobbyId))) {
+		GetGameInfo();
 	}
 });
 
-//Gets user info
+let SessionId = -1;
+let LobbyId;
+let PlayerId;
+let Initialized = 0;
+let Players = [];
+let Field = [];
+let Hand = [];
+let TrumpCard = [];
+let DeckStr;
+let IsIngame = 1;
+let ChargerId = 0;
+let OldChargerId;
+let Opponent;
+let InputKey = undefined;
+let ActiveCard = 0;
+let ChosenCards = [];
+let CanKill = [];
+let CanCharge;
+let MustKill;
+let Supporting;
+let inactivitytimer;
+let arr;
+
+//Ges user info and updaterequired = false 
 const xhttp = new XMLHttpRequest();
+xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
+xhttp.send();
 xhttp.onload = function () {
 	let x = this.responseText;
 	console.log(x);
 	let UserInfo = JSON.parse(x);
 	if (UserInfo.status == "2") {
-		UId = UserInfo.UID;
-		CanChangeTrump = UserInfo.canchangetrump;
+		SessionId = UserInfo.SID;
+		LobbyId = UserInfo.lobby;
+
 		GetGameInfo();
-		console.log(activeCard);
-		if (CanChangeTrump == "1") {
+		InactivityNotice(UserInfo.inactive);
+
+		console.log(ActiveCard);
+
+		if (UserInfo.canchangetrump == "1") {
 			ChangeTrump();
-			CanChangeTrump = 0;
-		} else { Sumtin(); }
+		} else { GameLoop(); }
 	} else {
 		Win();
 	}
 }
-xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
-xhttp.send();
 
-
-async function Input(funcName) {
-
-	document.onkeydown = function Rr(event) {
+function Input(funcName) {
+	document.onkeydown = function (event) {
 		//console.log(event);
-		result = event;
-		if (isingame == 1) { window[funcName](); }
+		InputKey = event.code;
+		if (IsIngame == 1) { window[funcName](); }
 		return;
 	};
 }
 
 function GetGameInfo() {
-	const xhttp = new XMLHttpRequest();
+	const xhttp = new XMLHttpRequest
+	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=0&SID=" + SessionId);
 	xhttp.onload = function () {
-		let x = this.responseText;
-		LoadGameInfo(x);
-	}
+		let response = this.responseText;
+		console.log(response);
+		let GameInfo = JSON.parse(response);
 
-	xhttp.open("GET", "/NewDBSystem/server/GetGameInfo.php?UID=" + UId + "&Ingame=" + isingame);
-	xhttp.send();
-}
-
-function LoadGameInfo(txt) {
-	parser = new DOMParser();
-	xmldocument = parser.parseFromString(txt, "text/xml");
-
-	playercount = xmldocument.getElementsByTagName("playercount")[0].childNodes[0].nodeValue;
-	ischargeturn = xmldocument.getElementsByTagName("ischargeturn")[0].childNodes[0].nodeValue;
-	oldchargerid = chargerid;
-	chargerid = xmldocument.getElementsByTagName("chargerid")[0].childNodes[0].nodeValue;
-	let oldtcard = tcard
-	tcard0 = xmldocument.getElementsByTagName("trumpcard0")[0].childNodes[0].nodeValue;
-	tcard1 = xmldocument.getElementsByTagName("trumpcard1")[0].childNodes[0].nodeValue;
-	tcard = [[tcard0, tcard1]];
-	deckleft = xmldocument.getElementsByTagName("deckleft")[0].childNodes[0].nodeValue;
-	if (deckleft > 10) { deckstr = "&thickapprox;" + Math.round(deckleft / 10) * 10; }
-	else {
-		deckstr = deckleft;
-		if (deckleft == 1) {
-			document.getElementById("deck").classList = "hidden";
+		if (GameInfo.hasOwnProperty("gameover")) {
+			IsIngame = GameInfo.gameover.ingame;
+			Win(GameInfo.gameover.winstatus);
+			return;
 		}
-		if (deckleft == 0) {
-			document.getElementById("deck").classList = "hidden";
-			document.getElementById("trumpcard").classList = "hidden";
+
+		CanCharge = MustKill = Supporting = 0;
+		let oldtrumpcard = TrumpCard
+		let oldplayers = Players;
+		OldChargerId = ChargerId;
+
+		PlayerId = GameInfo.PID;
+		let ischargeturn = GameInfo.ischargeturn;
+		ChargerId = GameInfo.chargerid;
+		TrumpCard = GameInfo.trumpcard;
+		DeckStr = GameInfo.deckleft;
+		Players = GameInfo.players;
+		Hand = GameInfo.hand;
+		Field = GameInfo.field;
+		Opponent = GameInfo.opponent;
+
+		if (ischargeturn == 1 && ChargerId == PlayerId) { console.log("Charge Turn"); CanCharge = 1; }
+		else if (ChargerId == PlayerId) { console.log("Kill Turn"); MustKill = 1; }
+		else { console.log("Support Turn"); Supporting = 1; }
+
+		if (DeckStr > 10) {
+			DeckStr = "&thickapprox;" + Math.round(DeckStr / 10) * 10;
+		} else if (DeckStr == 1) {
+			document.getElementById("deck").classList.add("hidden");
+		} else if (DeckStr <= 0) {
+			document.getElementById("deck").classList.add("hidden");
+			document.getElementById("trumpcard").classList.add("hidden");
 			document.getElementById("trumpsuit").classList.remove("hidden");
 		}
+
+		if (oldtrumpcard != Trumpcard | oldplayers != Players) { initialized++; InitializeGUI(); }
+		if (CanKill.length == 0) { GUI(); }
 	}
-
-	playerid = xmldocument.getElementsByTagName("PID")[0].childNodes[0].nodeValue;
-
-	fffDebug = playercount + ischargeturn + chargerid + tcard0 + tcard1 + deckleft + playerid;
-	if (xmldocument.getElementsByTagName("ingamecontainer")[0].hasChildNodes()) {
-		isingame = xmldocument.getElementsByTagName("ingame")[0].childNodes[0].nodeValue;
-		winstatus = xmldocument.getElementsByTagName("winner")[0].childNodes[0].nodeValue;
-		Win(winstatus); return;
-	}
-
-	let oldplayers = players;
-	players = [];
-	x = xmldocument.getElementsByTagName("players")[0].childNodes;
-	for (i = 0; i < x.length; i += 2) {
-		players.push([x[i].childNodes[0].nodeValue, x[i + 1].childNodes[0].nodeValue]);
-	}
-
-	opponent = xmldocument.getElementsByTagName("opponent")[0].childNodes[0].nodeValue;
-	
-	hand = [];
-	x = xmldocument.getElementsByTagName("hand")[0].childNodes;
-
-	for (i = 0; i < x.length; i += 2) {
-		hand.push([x[i].childNodes[0].nodeValue, x[i + 1].childNodes[0].nodeValue]);
-	}
-
-	if (xmldocument.getElementsByTagName("fieldcontainer")[0].hasChildNodes()) {
-		x = xmldocument.getElementsByTagName("field")[0].childNodes;
-		field = [];
-		for (i = 0; i < x.length; i += 4) {
-			field.push([x[i].childNodes[0].nodeValue, x[i + 1].childNodes[0].nodeValue, x[i + 2].childNodes[0].nodeValue, x[i + 3].childNodes[0].nodeValue]);
-		}
-	}
-	else { field = []; }
-
-	cancharge = 0;
-	mustkill = 0;
-	supporting = 0;
-
-	if (ischargeturn == 1 && chargerid == playerid) { console.log("you, charge"); cancharge = 1; }
-	else if (chargerid == playerid) { console.log("you, kill"); mustkill = 1; }
-	else { console.log("you, support"); supporting = 1; }
-
-	if (oldtcard != tcard | oldplayers != players) { initialized++; InitializeGUI(); }
-	if (cankill.length == 0) { GUI(); }
 }
 
 function GUI() {
@@ -328,15 +306,14 @@ function ParseCard(array, num) {
 
 
 //TODO actually name this and remember func name used in other places
-function Sumtin() {
-	Input('Sumtin');
-	let key = result.code;
-	let oldActiveCard = activeCard;
+function GameLoop() {
+	Input('GameLoop');
+	let oldActiveCard = ActiveCard;
 
 	if (cankill.length == 0) { array = hand; }
 	else { array = cankill; }
 
-	switch (key) {
+	switch (InputKey) {
 		case 'ArrowDown':
 			activeCard = 0;
 			console.log(activeCard);
@@ -577,30 +554,29 @@ function ChangeTrump() {
 	document.getElementById("trump").classList.remove("hidden");
 
 	Input('ChangeTrump');
-	let key = result.code;
 
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("GET", "/NewDBSystem/server/ChangeTrump.php?UID=" + UId);
 	xhttp.send();
 
-	if (typeof key != 'undefined') {
+	if (typeof InputKey != 'undefined') {
 		xhttp.onload = function () {
 			document.getElementById("trump").classList.add("hidden");
 			initialized = 0;
-			Sumtin();
+			GameLoop();
 		}
 	}
 }
 
 function Win(winstatus) {
 	document.getElementById("win").classList.remove("hidden");
-	if (winstatus == "0") {
+	if (winstatus == 1) {
 		document.getElementById("win").innerHTML += "<div id=winmsg>Voitto</div>";
 		document.getElementById("spectate").onclick = Spectate;
-	} else if (winstatus == "1") {
+	} else if (winstatus == 0) {
 		document.getElementById("win").innerHTML += "<div id=winmsg>P" + "&#228&#228" + "sit pois pelist" + "&#228" + "</div>";
 		document.getElementById("spectate").onclick = Spectate;
-	} else if (winstatus == "2") {
+	} else if (winstatus == -1) {
 		document.getElementById("win").innerHTML += "<div id=winmsg>Tappio</div>";
 		document.getElementById("spectate").style.color = "#888";
 	} else {
@@ -625,6 +601,22 @@ function Win(winstatus) {
 		socket.close();
 	}
 
+}
+
+function InactivityNotice(seconds) {
+	clearTimeout(inactivitytimer);
+	inactivitytimer = setTimeout(() => {
+		document.getElementById("notice").classList.remove("hidden");
+		document.getElementById("main").classList.add("hidden");
+		document.getElementById("lobbygui").classList.add("hidden");
+		document.getElementById("main").classList.add("hidden");
+		document.addEventListener("keypress", HideNotice);
+	}, seconds * 1000);
+
+	function HideNotice() {
+		document.getElementById("notice").classList.add("hidden");
+		window.location.reload();
+	}
 }
 
 function HasPairs(value, index, array) {

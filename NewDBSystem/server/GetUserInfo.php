@@ -33,8 +33,8 @@
 	}
 	
 	if ($status == "2"){
-		$dbname = "vms";
 
+		$dbname = "lobby" . $lobby;
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 	
