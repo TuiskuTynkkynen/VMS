@@ -16,6 +16,7 @@
 		case "1":
 			$playerinfo = GetPlayerInfo($servername, $dbusername, $dbpassword);
 			Charge($playerinfo, $servername, $dbusername, $dbpassword);
+			Draw($playerinfo, $servername, $dbusername, $dbpassword);
 			break;
 	}
 
@@ -103,10 +104,7 @@
 	}
 	
 	function Charge($playerinfo, $servername, $dbusername, $dbpassword){
-		$sessionid = $playerinfo[0];
-		$ingame = $playerinfo[1];
 		$lobbyid = $playerinfo[2];
-		$isadmin = $playerinfo[3];
 		$PID = $playerinfo[4];
 		$CardsJSON = $_REQUEST["Cards"];
 		$isSupporting = $_REQUEST["Support"];
@@ -169,7 +167,7 @@
 			echo "support";
 			$sql = "SELECT COUNT(*) FROM field";
 			if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
-			$x = $m_conn->query($sql)->num_rows;
+			$x = $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0];
 	
 			for ($i = 0; $i < $cardcount; $i++) {
 				$y = $Cards[$i][0];
@@ -254,6 +252,53 @@
 		$playerinfo[4] = $PID;
 		
 		return $playerinfo;
+	}
+
+	function Draw($playerinfo, $servername, $dbusername, $dbpassword){
+		$lobbyid = $playerinfo[2];
+		$PID = $playerinfo[4];
+
+		$dbname = "lobby" . $lobbyid;
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+	
+		$sql = "SELECT COUNT(*) FROM hands WHERE playerid = $PID";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
+		$handcount = $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0];
+
+		$sql = "SELECT deckleft, handsize FROM gamestates";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
+		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
+		$deckleft = $result[0];
+		$drawcount = $result[1] - $handcount;
+
+		for ($i = 0; $i < $drawcount; $i++) {
+			$deckleft--;
+			if ($deckleft < 0) { 
+				$deckleft = 0;
+				break;
+			}
+			
+			$sql = "SELECT deck0, deck1 FROM deck WHERE id = $deckleft";	
+			if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+
+			$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
+			$y = $result[0];
+			$z= $result[1];
+			echo $y .",". $z . "/";
+	
+			$sql = "INSERT INTO hands (playerid, card0, card1) VALUES ($PID, $y, $z)";	
+			if ($m_conn->query($sql) === FALSE) {
+				echo "Error: " . $sql . "<br>" . $m_conn->error;
+				$deckleft++;
+			} else {
+				$sql = "DELETE FROM deck WHERE id=$deckleft";	
+				if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+			}
+		}
+
+		$sql = "UPDATE gamestates SET deckleft = $deckleft";
+		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
 	}
 
 	function GameOver($playerinfo, $servername, $dbusername, $dbpassword){

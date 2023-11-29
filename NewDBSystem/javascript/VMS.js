@@ -523,9 +523,8 @@ function Charge(cards, isSupporting) {
 
 		ChosenCards.splice(0, ChosenCards.length);
 		console.log("you charged");
-		if (MustKill == 0) {
-			Draw();
-		} else { CanKill = []; GetGameInfo(); GUI(); }
+		CanKill = [];
+		GetGameInfo(); GUI();
 	}
 }
 
@@ -549,19 +548,6 @@ function Kill(card, killedId) {
 	xhttp.open("GET", "/NewDBSystem/server/Kill.php?Card=" + card + "&KillsId=" + killedId + "&UID=" + UId);
 	xhttp.send();
 }
-
-function Draw() {
-	console.log("Drawing cards");
-
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function () {
-		GetGameInfo();
-		GUI();
-	}
-	xhttp.open("GET", "/NewDBSystem/server/Draw.php?UID=" + UId);
-	xhttp.send();
-}
-
 
 function ChangeTrump() {
 	document.getElementById("trump").classList.remove("hidden");
