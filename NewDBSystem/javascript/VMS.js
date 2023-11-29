@@ -533,20 +533,21 @@ function Kill(card, killedId) {
 	console.log(card.toString());
 	console.log("you killed id " + killedId);
 
+	let cardsJSON = '{"card":' + JSON.stringify(card) + '}'
+
 	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=2&SID=" + SessionId + "&Card=" + cardsJSON + "&KillsId=" + killedId + "&CID=" + ChargerId);
+
 	xhttp.onload = function () {
-		x = this.responseText;
-		console.log(x);
+		let response = this.responseText;
+		console.log(response);
 		ChosenCards.splice(0, ChosenCards.length);
 		CanKill = [];
-		if (x != "0") { Draw(); }
-		else {
-			GetGameInfo();
-			GUI();
-		}
+		GetGameInfo();
+		GUI();
 	}
-	xhttp.open("GET", "/NewDBSystem/server/Kill.php?Card=" + card + "&KillsId=" + killedId + "&UID=" + UId);
-	xhttp.send();
 }
 
 function ChangeTrump() {
