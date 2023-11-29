@@ -16,11 +16,18 @@
 		case "1":
 			$playerinfo = GetPlayerInfo($servername, $dbusername, $dbpassword);
 			Charge($playerinfo, $servername, $dbusername, $dbpassword);
-			Draw($playerinfo, $servername, $dbusername, $dbpassword);
+			if ($_POST["owncharge"] == "0"){
+				Draw($playerinfo, $servername, $dbusername, $dbpassword);
+			}
 			break;
 		case "2":
 			$playerinfo = GetPlayerInfo($servername, $dbusername, $dbpassword);
 			KillCard($playerinfo, $servername, $dbusername, $dbpassword);
+			break;
+		case "3":
+			$playerinfo = GetPlayerInfo($servername, $dbusername, $dbpassword);
+			KillField($playerinfo, $servername, $dbusername, $dbpassword);
+			Draw($playerinfo, $servername, $dbusername, $dbpassword);
 			break;
 	}
 
@@ -207,7 +214,6 @@
 		$PID = $playerinfo[4];
 		$CardJSON = $_REQUEST["Card"];
 		$KillsId = $_REQUEST["KillsId"];
-		$CID = $_REQUEST["CID"];
 		$Card = json_decode($CardJSON)->{'card'};
 		$card0 = $Card[0][0];
 		$card1 = $Card[0][1];
@@ -221,11 +227,11 @@
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$killcount = $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0];
 		
-		$sql = "SELECT ischargeturn, chargerid, playercount FROM gamestates";
+		$sql = "SELECT ischargeturn, chargerid FROM gamestates";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 		
-		if($killcount == 0 || $CID != $result[1]){
+		if($killcount == 0 || $result[0] != 0 || $result[1] != $PID){
 			echo 1;
 			$m_conn->close();
 			exit();
@@ -245,6 +251,63 @@
 		$sql = "UPDATE field SET state = 1 WHERE id = $KillsId";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $sql . "<br>" . $m_conn->error; }
 		
+		$m_conn->close();
+
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $sql . "<br>" . $m_conn->error; }
+
+		$m_conn->close();
+		echo 0;
+	}
+
+	function KillField($playerinfo, $servername, $dbusername, $dbpassword){
+		$lobbyid = $playerinfo[2];
+		$PID = $playerinfo[4];
+		$now = time();
+
+		$dbname = "lobby" . $lobbyid;
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "SELECT ischargeturn, chargerid, playercount FROM gamestates";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
+		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
+		
+		if($result[0] != 0 || $result[1] != $PID){
+			echo 1;
+			$m_conn->close();
+			exit();
+		}
+		
+		$newCID = $result[1] + 1;
+		$newCID = ($newCID >= $result[2]) ? 0 : $newCID;
+
+		
+		$sql = "SELECT card0, card1 FROM field WHERE state=0";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
+		$result = $m_conn->query($sql);
+		
+		$alivecount = $result->num_rows;
+		$newCID = ($alivecount == 0) ? $PID : $newCID;
+
+		for($i = 0; $i < $alivecount; $i++){
+			$row = $result->fetch_array(MYSQLI_NUM);
+			$y = $row[0];
+			$z = $row[1];
+			$sql = "INSERT INTO hands (playerid, card0, card1) VALUES ($PID, $y, $z)";
+			if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+		}
+
+		$sql = "UPDATE gamestates SET ischargeturn=1, chargerid=$newCID";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
+
+		$sql = "DELETE FROM field";
+		if ($m_conn->query($sql) === FALSE) { echo "Error deleting record: " . $sql . "<br>" . $m_conn->error; }
+
 		$m_conn->close();
 
 		$dbname = "vms";

@@ -500,7 +500,6 @@ function KillTest() {
 	}
 }
 
-
 function Charge(cards, isSupporting) {
 	console.log(CanCharge); console.log(isSupporting);
 	console.log(JSON.stringify(cards));
@@ -510,7 +509,7 @@ function Charge(cards, isSupporting) {
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("action=1&SID=" + SessionId + "&Cards=" + cardsJSON + "&Support=" + isSupporting + "&ChargeTurn=" + IsChargeturn + "&CID=" + ChargerId);
+	xhttp.send("action=1&SID=" + SessionId + "&Cards=" + cardsJSON + "&Support=" + isSupporting + "&ChargeTurn=" + IsChargeturn + "&CID=" + ChargerId + "&owncharge=" + MustKill);
 
 	xhttp.onload = function () {
 		let response = this.responseText;
@@ -538,7 +537,11 @@ function Kill(card, killedId) {
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("action=2&SID=" + SessionId + "&Card=" + cardsJSON + "&KillsId=" + killedId + "&CID=" + ChargerId);
+	if (killedId > -1) {
+		xhttp.send("action=2&SID=" + SessionId + "&Card=" + cardsJSON + "&KillsId=" + killedId);
+	} else {
+		xhttp.send("action=3&SID=" + SessionId);
+	}
 
 	xhttp.onload = function () {
 		let response = this.responseText;
