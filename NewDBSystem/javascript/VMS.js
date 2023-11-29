@@ -240,10 +240,8 @@ function GUIFlex(array, name) {
 	document.getElementById(name + 'flexcontainer').innerHTML = str;
 
 	function RemovePairs(value, index) {
-		if (parseInt(value[0]) == parseInt(array[i][0])) {
-			if (parseInt(value[1]) == parseInt(array[i][1])) {
-				Hand.splice(index, 1);
-			}
+		if (parseInt(value[2]) == parseInt(array[i][2])) {
+			Hand.splice(index, 1);
 		}
 	}
 }
@@ -402,7 +400,6 @@ function GameLoop() {
 }
 
 function ChargeTest() {
-
 	if (ChosenCards.length > 0) {
 
 		arr = ChosenCards;

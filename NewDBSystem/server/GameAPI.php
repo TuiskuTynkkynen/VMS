@@ -84,7 +84,7 @@
 		}
 		echo '"opponent":' . $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0] . ', ';
 
-		$sql = "SELECT card0, card1 FROM hands WHERE playerid = $PID";
+		$sql = "SELECT card0, card1, id FROM hands WHERE playerid = $PID";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$result = $m_conn->query($sql);
 		$handcount = $result->num_rows;
@@ -99,7 +99,7 @@
 		echo '"hand":[';
 		for ($i = 0; $i < $handcount; $i++){
 			$row = $result->fetch_array(MYSQLI_NUM);
-			echo '[' . $row[0] . ', ' . $row[1] . ']';
+			echo '[' . $row[0] . ', ' . $row[1] . ', ' . $row[2] . ']';
 			if ($i < $handcount-1) {echo ', '; }
 		}
 		echo '], ';
@@ -197,7 +197,7 @@
 		for ($i = 0; $i < $cardcount; $i++) {
 			$y = $Cards[$i][0];
 			$z= $Cards[$i][1];
-			$sql = "DELETE FROM hands WHERE card0 = $y AND card1 = $z AND playerid = $PID";
+			$sql = "DELETE FROM hands WHERE card0 = $y AND card1 = $z AND playerid = $PID LIMIT 1";
 			if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
 		}
 		
@@ -245,7 +245,7 @@
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$id =  $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0];
 		
-		$sql = "DELETE FROM hands WHERE card0 = $card0 AND card1 = $card1 AND playerid = $PID";
+		$sql = "DELETE FROM hands WHERE card0 = $card0 AND card1 = $card1 AND playerid = $PID LIMIT 1";
 		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error; }
 	
 		$sql = "INSERT INTO field (id, card0, card1, state, killsid)

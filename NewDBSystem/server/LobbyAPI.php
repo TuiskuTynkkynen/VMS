@@ -570,9 +570,9 @@
 		}
 		
 		//Generates new sub decks if deck is smaller that it's supposed to be and merges into deck
-		$x = $decksize / ($suitcount*$suitsize);
+		$subdeckcount = $decksize / ($suitcount*$suitsize);
 		$deck = array();
-		for ($i = 0; $i < $x; $i++){
+		for ($i = 0; $i < $subdeckcount; $i++){
 			$subdeck = array();
 			$z = 0;
 
