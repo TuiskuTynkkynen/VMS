@@ -29,6 +29,10 @@
 			KillField($playerinfo, $servername, $dbusername, $dbpassword);
 			Draw($playerinfo, $servername, $dbusername, $dbpassword);
 			break;
+		case "4":
+			$playerinfo = GetPlayerInfo($servername, $dbusername, $dbpassword);
+			ChangeTrump($playerinfo, $servername, $dbusername, $dbpassword);
+			break;
 	}
 
 	function GetGameInfo($playerinfo, $servername, $dbusername, $dbpassword){
@@ -310,6 +314,42 @@
 
 		$m_conn->close();
 
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
+		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $sql . "<br>" . $m_conn->error; }
+
+		$m_conn->close();
+		echo 0;
+	}
+
+	function ChangeTrump($playerinfo, $servername, $dbusername, $dbpassword){
+		$lobbyid = $playerinfo[2];
+		$PID = $playerinfo[4];
+		$now = time();
+
+		$dbname = "lobby" . $lobbyid;
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+		
+		$sql = "SELECT trumpcard0, trumpcard1 FROM gamestates";
+		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+
+		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
+		$tcard0 = $result[0];
+		$tcard1 = $result[1];
+
+		$sql = "UPDATE hands SET card1 = $tcard1 WHERE card0=$tcard0 AND card1=2 AND playerid = $PID";
+		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+
+		$sql = "UPDATE gamestates SET trumpcard1 = 2 WHERE id = 1";
+		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+
+		$sql = "UPDATE players SET canchangetrump = 0 WHERE playerid = $PID";
+		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
+		
 		$dbname = "vms";
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }

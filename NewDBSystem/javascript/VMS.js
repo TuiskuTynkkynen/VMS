@@ -267,14 +267,14 @@ function InitializeGUI() {
 
 	document.getElementById("player" + PlayerId).classList.add("yellow");
 
-	result = ParseCard([[TrumpCard[0][0], "2"]], 0);
+	result = ParseCard([[TrumpCard[0], "2"]], 0);
 	suit = result[0];
 	value = result[1];
 	color = result[2];
 
 	str = '<p style=color:' + color + ' >' + value + '<br>' + suit + '</p>';
 	document.getElementById('newtrump').innerHTML += str;
-	result = ParseCard(TrumpCard, 0);
+	result = ParseCard([TrumpCard], 0);
 	suit = result[0];
 	value = result[1];
 	color = result[2];
@@ -559,8 +559,9 @@ function ChangeTrump() {
 	Input('ChangeTrump');
 
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "/NewDBSystem/server/ChangeTrump.php?UID=" + UId);
-	xhttp.send();
+	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=4&SID=" + SessionId);
 
 	if (typeof InputKey != 'undefined') {
 		xhttp.onload = function () {
