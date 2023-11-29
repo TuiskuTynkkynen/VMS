@@ -48,6 +48,7 @@ let DeckStr;
 let IsIngame = 1;
 let ChargerId = 0;
 let OldChargerId;
+let IsChargeturn;
 let Opponent;
 let InputKey = undefined;
 let ActiveCard = 0;
@@ -115,7 +116,7 @@ function GetGameInfo() {
 		OldChargerId = ChargerId;
 
 		PlayerId = GameInfo.PID;
-		let ischargeturn = GameInfo.ischargeturn;
+		IsChargeturn = GameInfo.ischargeturn;
 		ChargerId = GameInfo.chargerid;
 		TrumpCard = GameInfo.trumpcard;
 		DeckStr = GameInfo.deckleft;
@@ -124,7 +125,7 @@ function GetGameInfo() {
 		Field = GameInfo.field;
 		Opponent = GameInfo.opponent;
 
-		if (ischargeturn == 1 && ChargerId == PlayerId) { console.log("Charge Turn"); CanCharge = 1; }
+		if (IsChargeturn == 1 && ChargerId == PlayerId) { console.log("Charge Turn"); CanCharge = 1; }
 		else if (ChargerId == PlayerId) { console.log("Kill Turn"); MustKill = 1; }
 		else { console.log("Support Turn"); Supporting = 1; }
 
@@ -139,7 +140,7 @@ function GetGameInfo() {
 		}
 
 		if (oldtrumpcard != TrumpCard | oldplayers != Players) { Initialized++; InitializeGUI(); }
-		if (CanKill.length == 0) { GUI(); }
+		GUI();
 	}
 }
 
@@ -185,6 +186,7 @@ function GUI() {
 		str = '<div class=fieldflex id=field_button> <img src="/imgs/field_img.png" id="field_img" style=width:90%;height:auto> </div>';
 		document.getElementById('fieldflexcontainer').innerHTML = str;
 	}
+
 	for (let i = 0; i < Field.length; i++) {
 		let result = ParseCard(Field, i);
 		let suit = result[0];
@@ -197,6 +199,17 @@ function GUI() {
 			str = ' <div class=killerflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
 			document.getElementById('Field' + Field[i][3]).innerHTML += str;
 		}
+	}
+
+	if (MustKill == 1 && CanKill.length > 0) {
+		let result = ParseCard(ChosenCards, 0);
+		let suit = result[0];
+		let value = result[1];
+		let color = result[2];
+		let str = ' <div class=killingflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
+		try {
+			document.getElementById('Field' + CanKill[ActiveCard]).innerHTML += str;
+		} catch (error) {/*console.error(error); */ }
 	}
 	str = '<div class=fieldflex flex id=Field' + Field.length + ' style=width:1> <div style=height:37%> </div></div>'
 	document.getElementById('fieldflexcontainer').innerHTML += str;
@@ -337,11 +350,6 @@ function GameLoop() {
 			else { ActiveCard = array.length - 1; }
 			console.log(ActiveCard);
 			break;
-		case 'Space':
-			//GetGameInfo();
-			//GUI();
-			//TODO remove this debug thing
-			break;
 		case 'Enter':
 			if (MustKill == 1) { console.log("you killing"); KillTest(); }
 			else { console.log("you charging"); ChargeTest(); }
@@ -371,7 +379,6 @@ function GameLoop() {
 		}
 	}
 	if (MustKill == 1 && CanKill.length > 0) {
-		console.log("ff");
 		GUI();
 		let result = ParseCard(ChosenCards, 0);
 		let suit = result[0];
@@ -485,8 +492,8 @@ function KillTest() {
 	function IsKillable(value, index, array) {
 		console.log("testing Field for killables");
 		if (value[2] != 0) { return; }
-		if (parseInt(ChosenCards[0][0]) == TrumpCard0) {
-			if (parseInt(value[0]) != TrumpCard0) { CanKill.push(index); }
+		if (parseInt(ChosenCards[0][0]) == TrumpCard[0]) {
+			if (parseInt(value[0]) != TrumpCard[0]) { CanKill.push(index); }
 			else if (parseInt(value[1]) <= parseInt(ChosenCards[0][1])) { CanKill.push(index); }
 		}
 		else if (parseInt(value[0]) == parseInt(ChosenCards[0][0]) && parseInt(value[1]) < parseInt(ChosenCards[0][1])) { CanKill.push(index); }
@@ -495,25 +502,31 @@ function KillTest() {
 
 
 function Charge(cards, isSupporting) {
-	console.log(cancharge); console.log(isSupporting);
-	console.log(cards.toString());
+	console.log(CanCharge); console.log(isSupporting);
+	console.log(JSON.stringify(cards));
+
+	let cardsJSON = '{"cards":' + JSON.stringify(cards) + '}'
 
 	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=1&SID=" + SessionId + "&Cards=" + cardsJSON + "&Support=" + isSupporting + "&ChargeTurn=" + IsChargeturn + "&CID=" + ChargerId);
+
 	xhttp.onload = function () {
-		str = this.responseText;
-		console.log(str);
-		if (str == "1" | str == "2") {
+		let response = this.responseText;
+		console.log(response);
+
+		if (response == "1" | response == "2") {
 			AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
 			return;
 		}
+
 		ChosenCards.splice(0, ChosenCards.length);
 		console.log("you charged");
 		if (MustKill == 0) {
 			Draw();
 		} else { CanKill = []; GetGameInfo(); GUI(); }
 	}
-	xhttp.open("GET", "/NewDBSystem/server/Charge.php?Cards=" + cards + "&Support=" + isSupporting + "&UID=" + UId + "&ChargeTurn=" + ischargeturn + "&CID=" + ChargerId);
-	xhttp.send();
 }
 
 function Kill(card, killedId) {
