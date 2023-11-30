@@ -532,7 +532,7 @@ function Kill(card, killedId) {
 		let cardsJSON = '{"card":' + JSON.stringify(card) + '}'
 		xhttp.send("action=2&SID=" + SessionId + "&Card=" + cardsJSON + "&KillsId=" + killedId);
 	} else {
-		xhttp.send("action=3&SID=" + SessionId);
+		xhttp.send("action=3&SID=" + SessionId + "&FieldCount=" + Field.length);
 	}
 
 	xhttp.onload = function () {

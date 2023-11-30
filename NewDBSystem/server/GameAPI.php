@@ -272,16 +272,20 @@
 		$lobbyid = $playerinfo[2];
 		$PID = $playerinfo[4];
 		$now = time();
-
+		
 		$dbname = "lobby" . $lobbyid;
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 		
+		$sql = "SELECT COUNT(*) FROM field";
+		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
+		$fieldcount =  $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0];
+
 		$sql = "SELECT ischargeturn, chargerid, playercount FROM gamestates";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 		
-		if($result[0] != 0 || $result[1] != $PID){
+		if($result[0] != 0 || $result[1] != $PID || $fieldcount != $_REQUEST["FieldCount"]){
 			echo 1;
 			$m_conn->close();
 			exit();
