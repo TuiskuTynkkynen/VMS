@@ -146,10 +146,30 @@ function GetGameInfo() {
 
 function GUI() {
 	let str = '<img id="deckimg2"; src="/imgs/card_img.png"> <div>' + DeckStr + '</div>';
+	let i;
 	document.getElementById('deck').innerHTML = str;
 
-	if (MustKill == 0 || ActiveCard == -1) { GUIFlex(ChosenCards, "chosen"); }
-	else { GUIFlex("", "chosen"); }
+	str = "";
+	if ((MustKill == 0 || ActiveCard == -1) && ChosenCards.length > 0) {
+		if (MustKill == 0) {
+			str += '<div class=chosenflex id=chosencharge style=margin:1rem> <img src="/imgs/charge_img.png" id="charge_img" style=height:30%> </div>';
+		}
+
+		for (i = 0; i < ChosenCards.length; i++) {
+			let result = ParseCard(ChosenCards, i);
+			let suit = result[0];
+			let value = result[1];
+			let color = result[2];
+			str += '<div class=chosenflex id=chosen' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+
+			Hand.some(RemovePairs);
+		}
+	} else {
+		for (i = 0; i < ChosenCards.length; i++) {
+			Hand.some(RemovePairs);
+		}
+	}
+	document.getElementById('chosenflexcontainer').innerHTML = str;
 
 	str = "";
 	Hand = Hand.sort((a, b) => a[1] - b[1]);
@@ -183,7 +203,7 @@ function GUI() {
 
 	document.getElementById('fieldflexcontainer').innerHTML = "";
 	if (MustKill == 1) {
-		str = '<div class=fieldflex id=field_button> <img src="/imgs/field_img.png" id="field_img" style=width:90%;height:auto> </div>';
+		str = '<div class=fieldflex id=field_button> <img src="/imgs/field_img.png" id="field_img0" style=width:90%;height:auto> <div> </div> </div>';
 		document.getElementById('fieldflexcontainer').innerHTML = str;
 	}
 
@@ -193,7 +213,7 @@ function GUI() {
 		let value = result[1];
 		let color = result[2];
 		if (Field[i][2] < 2) {
-			str = '<div class=fieldflex id=Field' + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
+			str = '<div class=fieldflex id=Field' + i + '> <div class=flexcontent> <div style="display:inline-block"> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div> </div>';
 			document.getElementById('fieldflexcontainer').innerHTML += str;
 		} else {
 			str = ' <div class=killerflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
@@ -206,7 +226,7 @@ function GUI() {
 		let suit = result[0];
 		let value = result[1];
 		let color = result[2];
-		let str = ' <div class=killingflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
+		let str = ' <div class=killingflexcontent id=killingflexcontent> <div id="killing0" style="display:inline-block"> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> <div> </div> </div>';
 		try {
 			document.getElementById('Field' + CanKill[ActiveCard]).innerHTML += str;
 		} catch (error) {/*console.error(error); */ }
@@ -218,29 +238,9 @@ function GUI() {
 		document.getElementById("player" + OldChargerId).children[0].children[1].remove();
 	}
 	document.getElementById("player" + ChargerId).children[0].innerHTML += "<p> > </p>";
-}
-function GUIFlex(array, name) {
-
-	let i;
-	let str = "";
-
-	if (array.length > 0 && MustKill == 0) {
-		str += '<div class=' + name + 'flex id=' + name + 'charge style=margin:1rem> <img src="/imgs/charge_img.png" id="charge_img" style=height:30%> </div>';
-	}
-
-	for (i = 0; i < array.length; i++) {
-		let result = ParseCard(array, i);
-		let suit = result[0];
-		let value = result[1];
-		let color = result[2];
-		str += '<div class=' + name + 'flex id=' + name + i + '> <div class=flexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div> </div>';
-
-		Hand.some(RemovePairs);
-	}
-	document.getElementById(name + 'flexcontainer').innerHTML = str;
 
 	function RemovePairs(value, index) {
-		if (parseInt(value[2]) == parseInt(array[i][2])) {
+		if (parseInt(value[2]) == parseInt(ChosenCards[i][2])) {
 			Hand.splice(index, 1);
 		}
 	}
@@ -286,7 +286,8 @@ function ParseCard(array, num) {
 	let suit = parseInt(array[num][0])
 	let color = "green";
 	if (suit == 1 || suit == 4) { suit = suit + 9823; color = "#666666"; }
-	else { suit = suit + 9827; color = "#bb1010"; }
+	else if (suit == 2 || suit == 3) { suit = suit + 9827; color = "#bb1010"; }
+	else { color = (suit % 2 == 0) ? "#666666" : "#bb1010";  suit = suit + 9827;}
 
 	suit = "&#" + suit;
 	let value = parseInt(array[num][1]);
@@ -365,9 +366,9 @@ function GameLoop() {
 
 	if (MustKill == 1) {
 		if (ActiveCard == -1) {
-			document.getElementById('field_img').classList.add("active1");
+			document.getElementById('field_img0').classList.add("active1");
 		} else if (oldActiveCard == -1) {
-			document.getElementById('field_img').classList.remove("active1");
+			document.getElementById('field_img0').classList.remove("active1");
 		}
 	} else {
 		if (ActiveCard == -1 && ChosenCards.length > 0) {
@@ -376,16 +377,9 @@ function GameLoop() {
 			document.getElementById('charge_img').classList.remove("active1");
 		}
 	}
+
 	if (MustKill == 1 && CanKill.length > 0) {
 		GUI();
-		let result = ParseCard(ChosenCards, 0);
-		let suit = result[0];
-		let value = result[1];
-		let color = result[2];
-		let str = ' <div class=killingflexcontent> <img src="/imgs/card_img.png"> <p style=color:' + color + ' >' + value + '<br>' + suit + '</p> </div>';
-		try {
-			document.getElementById('Field' + CanKill[ActiveCard]).innerHTML += str;
-		} catch (error) {/*console.error(error); */ }
 	} else {
 		try {
 			document.getElementById('Hand' + ActiveCard).classList.add("active");
@@ -404,7 +398,7 @@ function ChargeTest() {
 
 		arr = ChosenCards;
 		if (ActiveCard == -1) {
-			if (Supporting == 1) {	//!!!!!!!!!!!!!!! might not work
+			if (Supporting == 1) {
 				arr = ChosenCards;
 				if (Field.length > 0 && Field.some(HasPairs)) {
 					console.log("Field matches");
@@ -415,7 +409,7 @@ function ChargeTest() {
 				}
 				return;
 			}
-			if (ChosenCards.length > 1 && !ChosenCards.every(HasPairs)) { //!!!!!!!!!!!!!!! .every might not work
+			if (ChosenCards.length > 1 && !ChosenCards.every(HasPairs)) {
 				AddAnimation('chosenflexcontainer', 'chosen', 'feedback');
 				return;
 			}
@@ -428,10 +422,9 @@ function ChargeTest() {
 		temp[0] = Hand.splice(ActiveCard, 1).flat();
 		ActiveCard = Hand.length;
 
-		let x = 0;
 		arr = ChosenCards;
 		if (temp.some(HasPairs)) {
-			ChosenCards.push(temp.splice(0, 1).flat()); x++;
+			ChosenCards.push(temp.splice(0, 1).flat());
 			GUI();
 			return;
 		}
@@ -445,23 +438,26 @@ function ChargeTest() {
 
 		arr = Hand;
 		if (Supporting == 0 && temp.some(HasPairs)) {
-			ChosenCards.push(temp.splice(0, temp.length).flat()); x++;
+			ChosenCards.push(temp.splice(0, temp.length).flat());
 			GUI();
 			return;
 		}
 
-		if (x == 0) {
-			console.log("that wasnt a pair");
-			Hand.push(temp.splice(0, temp.length).flat());
-			console.log(ChosenCards); console.log(Hand);
-			GUI();
-		}
+		console.log("that wasnt a pair");
+		Hand.push(temp.splice(0, temp.length).flat());
+		console.log(ChosenCards); console.log(Hand);
+		GUI();
 	} else { ChosenCards.push(Hand.splice(ActiveCard, 1).flat()); GUI(); }
 
 
 }
 function KillTest() {
-	if (ActiveCard == -1) { Kill(ChosenCards, ActiveCard); return; }//picks cards from Field to Hand 
+	if (ActiveCard == -1) {
+		if (CanKill.length == 0) {
+			Kill(ChosenCards, ActiveCard); //picks cards from Field to Hand 
+		}
+		return;
+	}
 
 	if (CanKill.length > 0) {
 		if (CanKill[ActiveCard] < Field.length) {
@@ -529,12 +525,11 @@ function Kill(card, killedId) {
 	console.log(card.toString());
 	console.log("you killed id " + killedId);
 
-	let cardsJSON = '{"card":' + JSON.stringify(card) + '}'
-
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	if (killedId > -1) {
+		let cardsJSON = '{"card":' + JSON.stringify(card) + '}'
 		xhttp.send("action=2&SID=" + SessionId + "&Card=" + cardsJSON + "&KillsId=" + killedId);
 	} else {
 		xhttp.send("action=3&SID=" + SessionId);
@@ -542,7 +537,17 @@ function Kill(card, killedId) {
 
 	xhttp.onload = function () {
 		let response = this.responseText;
-		console.log(response);
+
+		if (response != "0") {
+			console.log(response);
+			if (killedId != -1) {
+				AddAnimation('killingflexcontent', 'killing', 'feedback');
+			} else {
+				AddAnimation('field_button', 'field_img', 'feedback');
+			}
+			return;
+		}
+
 		ChosenCards.splice(0, ChosenCards.length);
 		CanKill = [];
 		GetGameInfo();
@@ -645,6 +650,4 @@ function AddAnimation(container, item, animation) {
 	}
 }
 
-//TODO figure out if need to add more state testing on server requests(ie kill, charge, ect ect) that client has correct state
 //TODO more animations (especially a red border and shake or something when you cant perform an action)
-//TODO make sure winning losing ect and spectate works correctly

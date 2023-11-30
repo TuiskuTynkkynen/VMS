@@ -274,7 +274,7 @@ body {
     width: 15%;
     height: 100%;
     overflow-x: visible;
-    overflow-y: clip;
+    overflow-y: visible;
     text-align: left;
     margin-bottom: 1%;
 }
