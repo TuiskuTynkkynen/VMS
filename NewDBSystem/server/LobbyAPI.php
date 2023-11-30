@@ -662,7 +662,7 @@
 		if ($m_conn->connect_error) {die("New connection failed: " . $m_conn->connect_error); }
 
 		$sql = "UPDATE gamestates
-		SET isactive=0, playercount=0, handsize=0, ischargeturn=0, chargerid=0, trumpcard0=0, trumpcard1=0, deckleft = 0, winnerid = NULL, lastupdated = $now";
+		SET isactive=0, playercount=0, handsize=0, ischargeturn=0, chargerid=0, trumpcard0=0, trumpcard1=0, deckleft = 0, winnerid = NULL";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		$m_conn->close();

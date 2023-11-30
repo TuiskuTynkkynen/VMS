@@ -60,6 +60,36 @@
 		<p id="trumcontinue" ;>Vaihda valttikortti</p>
 	</div>
 
+	<div id="admin" class="hidden">
+		<button id="admintoggle"> <img src="/imgs/settings_img"> </button>
+		<div id="admincontainer" class="hidden">
+			<div id="adminmenu">
+				<div id="adminbuttons">
+					<button id="restartgame">Aloita uusi peli</button>
+					<button id="stopgame">Lopeta peli</button>
+					<button id="settings">Pelin asetukset</button>
+				</div>
+			</div>
+			<div id="gamesettings" class="hidden">
+				<div id="lsinputs" class="inputs">
+					<label for="decksize">Pakan koko:</label>
+					<input type="number" name="decksize" id="decksize" min="1" value=52>
+					<label for="suitcount">Maiden m‰‰r‰:</label>
+					<input type="number" name="suitcount" id="suitcount" min="1" value=4>
+					<label for="suitsize">Maiden koko:</label>
+					<input type="number" name="suitsize" id="suitsize" min="1" value=13>
+					<label for="handsize">K‰sien koko:</label>
+					<input type="number" name="handsize" id="handsize" min="1" value=6>
+					<p id="lsincorrect" class="incorrect">&nbsp;</p>
+				</div>
+				<div class="gamebuttons">
+					<button id="submit">Valmis</button>
+					<button id="return">Takaisin</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div id="notice" class="hidden">
 		<div id="ntc">
 			<p id="ntctittle">Huomautus:</p>

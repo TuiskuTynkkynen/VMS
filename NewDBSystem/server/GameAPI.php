@@ -94,6 +94,8 @@
 			$winstatus = GameOver($playerinfo, $servername, $dbusername, $dbpassword);
 			
 			echo '"gameover":{"ingame":' . $ingame . ', "winstatus":' . $winstatus . '}, ';
+		} elseif( $ingame == 0){
+			echo '"gameover":{"ingame":' . $ingame . ', "winstatus":"2"}, ';
 		}
 
 		echo '"hand":[';

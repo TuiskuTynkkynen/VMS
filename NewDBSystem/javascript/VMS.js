@@ -39,6 +39,7 @@ socket.addEventListener("message", (event) => {
 let SessionId = -1;
 let LobbyId;
 let PlayerId;
+let AdminToggle = 0;
 let Initialized = 0;
 let Players = [];
 let Field = [];
@@ -77,6 +78,10 @@ xhttp.onload = function () {
 
 		console.log(ActiveCard);
 
+		if (UserInfo.isadmin == "1") {
+			Admin();
+		}
+
 		if (UserInfo.canchangetrump == "1") {
 			ChangeTrump();
 		} else { GameLoop(); }
@@ -89,7 +94,7 @@ function Input(funcName) {
 	document.onkeydown = function (event) {
 		//console.log(event);
 		InputKey = event.code;
-		if (IsIngame == 1) { window[funcName](); }
+		if (IsIngame == 1 && funcName != '') { window[funcName](); }
 		return;
 	};
 }
@@ -575,6 +580,8 @@ function ChangeTrump() {
 }
 
 function Win(winstatus) {
+	document.getElementById("admintoggle").onclick = "";
+
 	document.getElementById("win").classList.remove("hidden");
 	if (winstatus == 1) {
 		document.getElementById("win").innerHTML += "<div id=winmsg>Voitto</div>";
@@ -647,6 +654,91 @@ function AddAnimation(container, item, animation) {
 			document.getElementById(item + i).classList.remove(animation);
 			GetGameInfo();
 		}, "500");
+	}
+}
+
+function Admin() {
+	document.getElementById("admin").classList.remove("hidden");
+	document.getElementById("admintoggle").onclick = AdminToggle;
+	document.getElementById("settings").onclick = GameSettings;
+	document.getElementById("restartgame").onclick = RestartGame;
+	document.getElementById("stopgame").onclick = StopGame;
+
+	function AdminToggle() {
+		if (AdminToggle == 0) {
+			document.getElementById("admincontainer").classList.remove("hidden");
+			AdminToggle = 1;
+			Input('');
+		} else {
+			document.getElementById("admincontainer").classList.add("hidden");
+			AdminToggle = 0;
+			Input('GameLoop');
+		}
+	}
+	function GameSettings() {
+		document.getElementById("adminmenu").classList.add("hidden");
+		document.getElementById("gamesettings").classList.remove("hidden");
+
+		document.getElementById("return").onclick = function () {
+			document.getElementById("adminmenu").classList.remove("hidden");
+			document.getElementById("gamesettings").classList.add("hidden");
+		}
+
+		document.getElementById("submit").onclick = function () {
+			let decksize = document.getElementById("decksize").value;
+			let suitcount = document.getElementById("suitcount").value;
+			let suitsize = document.getElementById("suitsize").value;
+			let handsize = document.getElementById("handsize").value;
+
+			if (decksize == "" || suitcount == "" || suitsize == "" || handsize == "") {
+				document.getElementById("lsincorrect").innerHTML = "Täytä kaikki kentät";
+				return;
+			}
+
+			const xhttp = new XMLHttpRequest();
+			xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send("action=6" + "&id=" + LobbyId + "&decksize=" + decksize + "&suitcount=" + suitcount + "&suitsize=" + suitsize + "&handsize=" + handsize);
+
+			xhttp.onload = function () {
+				let response = this.responseText;
+				if (response == 0) {
+					document.getElementById("adminmenu").classList.remove("hidden");
+					document.getElementById("gamesettings").classList.add("hidden");
+
+					document.getElementById("lsincorrect").innerHTML = "";
+				} else {
+					console.log(response);
+					document.getElementById("lsincorrect").innerHTML = "Ennalta odottamaton virhe";
+					return;
+				}
+			}
+		}
+
+	}
+
+	function RestartGame() {
+		const xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("action=7&id=" + LobbyId);
+		xhttp.onload = function () {
+			document.getElementById("admincontainer").classList.add("hidden");
+			AdminToggle = 0;
+			GetGameInfo();
+			Input('GameLoop');
+		}
+	}
+	function StopGame() {
+		const xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("action=8&id=" + LobbyId);
+
+		xhttp.onload = function () {
+			document.getElementById("admintoggle").onclick = "";
+			document.getElementById("admincontainer").classList.add("hidden");
+		}
 	}
 }
 

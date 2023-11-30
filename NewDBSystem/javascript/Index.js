@@ -500,7 +500,6 @@ function LobbyActions(action) {
 	}
 
 	function StartOnLoad() {
-		alert("TODO make VMS version that works on new db system");
 		window.location.replace("/NewDBSystem/VMS.html");
 	}
 

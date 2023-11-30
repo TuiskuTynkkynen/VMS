@@ -346,7 +346,7 @@ body {
 
 #winbuttons {
     position: absolute;
-    top: 30%;
+    top: 25%;
     left: 20%;
     width: 60%;
     height: 70%;
@@ -426,6 +426,126 @@ body {
     margin: 0;
     font-weight: 525;
     font-size: 1.5rem;
+}
+
+#admintoggle {
+    position: absolute;
+    bottom: 4%;
+    right: 2%;
+    width: 4%;
+    border: none;
+    border: none;
+    padding: 0;
+}
+
+    #admintoggle img {
+        width: 100%;
+    }
+
+#admincontainer {
+    position: absolute;
+    top: 25%;
+    left: 30%;
+    height: 50%;
+    width: 40%;
+    background-image: url("/imgs/win_img.png");
+    background-size: 100% 100%;
+}
+
+#adminbuttons {
+    position: absolute;
+    top: 5%;
+    left: 20%;
+    width: 60%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+    #adminbuttons button {
+        position: relative;
+        width: 100%;
+        height: 3rem;
+        color: #fff;
+        font-weight: 525;
+        font-size: 1.5rem;
+        line-height: 1.2rem;
+        background-image: url("/imgs/button_img");
+        background-size: 100% 100%;
+        border: none;
+    }
+
+        #adminbuttons button:hover {
+            color: #f2c511;
+        }
+
+.gamebuttons {
+    display: flex;
+    position: absolute;
+    bottom: 7.5%;
+    left: 3%;
+    width: 94%;
+    height: 10%;
+    flex-direction: row;
+    justify-content: center;
+}
+
+    .gamebuttons button {
+        width: 24%;
+        height: 100%;
+        color: #fff;
+        font-weight: 500;
+        font-size: 100%;
+        line-height: 1.2rem;
+        background-image: url("/imgs/button_img");
+        background-size: 100% 100%;
+        border: none;
+        margin-left: 0.5%;
+        margin-right: 0.5%;
+    }
+
+        .gamebuttons button:hover {
+            color: #f2c511;
+        }
+
+.inputs {
+    position: absolute;
+    top: 7.5%;
+    left: 5%;
+    width: 90%;
+    height: 72.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    container-type: size;
+}
+
+    .inputs label {
+        display: block;
+        font-size: min(1.25rem, 20cqh);
+        margin: 0;
+    }
+
+    .inputs input {
+        height: min(1.25rem, 27.5cqh);
+        width: 70%;
+        border-width: 1cqh;
+        border-radius: 1cqh;
+        margin: 0;
+    }
+
+        .inputs input:focus {
+            border: 1.2cqh solid #888;
+            outline: none;
+        }
+
+.incorrect {
+    font-size: min(1rem, 7cqh);
+    color: #e62727;
+    text-align: center;
+    margin: 0;
 }
 
 #notice {
