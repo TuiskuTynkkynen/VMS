@@ -275,8 +275,8 @@
 		if($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		$sql = "INSERT INTO gamestates
-		(id, isactive, playercount, handsize, ischargeturn, chargerid, trumpcard0, trumpcard1, deckleft, winnerid, lastupdated)
-		VALUES (1, 0, 0, 0, 0, 0, 0, 0, 0, NULL, $now)";
+		(id, isactive, playercount, handsize, ischargeturn, chargerid, trumpcard0, trumpcard1, deckleft, winnerid)
+		VALUES (1, 0, 0, 0, 0, 0, 0, 0, 0, NULL)";
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 
 		$stmt = $m_conn->prepare("INSERT INTO players (id, nickname) VALUES ($sessionid, ?)");
@@ -522,7 +522,7 @@
 		$players = $m_conn->query($sql);
 		$playercount = $players->num_rows;
 		
-		if ($playercount == 0){
+		if ($playercount <= 1){
 			echo 7;
 			$m_conn -> close();
 			exit();
@@ -641,7 +641,7 @@
 		//Updates gamestates
 		$deckleft = count($deck);
 		$sql = "UPDATE gamestates
-		SET isactive=1, playercount=$playercount, handsize=$handsize, ischargeturn=1, chargerid=0, trumpcard0=$tcard0, trumpcard1=$tcard1, deckleft = $deckleft, winnerid = NULL, lastupdated = $now";
+		SET isactive=1, playercount=$playercount, handsize=$handsize, ischargeturn=1, chargerid=0, trumpcard0=$tcard0, trumpcard1=$tcard1, deckleft = $deckleft, winnerid = NULL";
 
 		if ($m_conn->query($sql) === FALSE) { echo "Error updating record : " . $m_conn->error; }
 

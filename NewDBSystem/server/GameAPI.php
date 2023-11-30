@@ -88,10 +88,10 @@
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
 		$result = $m_conn->query($sql);
 		$handcount = $result->num_rows;
-		
+
 		if (($playercount <= 1 || $handcount <= 0) && $ingame == 1 && $deckleft <= 0){
 			$ingame = 0;
-			$winstatus = GameOver($PID, $playerinfo, $servername, $dbusername, $dbpassword);
+			$winstatus = GameOver($playerinfo, $servername, $dbusername, $dbpassword);
 			
 			echo '"gameover":{"ingame":' . $ingame . ', "winstatus":' . $winstatus . '}, ';
 		}
@@ -522,6 +522,7 @@
 		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
 		$userid = $m_conn->query($sql)->fetch_array(MYSQLI_NUM)[0];
 		
+		$sql = array();
 		$sql[0] = "UPDATE lobbies SET lastupdated = $now WHERE id = $lobbyid";
 		$sql[1] = "UPDATE sessions SET status = 1, last_seen = $now WHERE id = $sessionid";
 		$sql[2] = "UPDATE users SET games = games+1 WHERE id = $userid";
