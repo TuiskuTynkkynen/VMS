@@ -107,9 +107,15 @@ function GetPlayers() {
 		}
 
 		let playerinfo = JSON.parse(response);
+		PlayerCount = playerinfo.Players.length;
+
+		if (PlayerCount <= 0) {
+			Win();
+			return;
+		}
+
 		SpectateSessionId = playerinfo.Players[ActivePlayer].SID;
 		PlayerId = playerinfo.Players[ActivePlayer].PID;
-		PlayerCount = playerinfo.Players.length;
 		GetGameInfo();
 	}
 }
@@ -122,10 +128,16 @@ function GetGameInfo() {
 	xhttp.onload = function () {
 		let response = this.responseText;
 		console.log(response);
+
+		if (response == -1) {
+			Win();
+			return;
+		}
+
 		let GameInfo = JSON.parse(response);
 
 		if (GameInfo.hasOwnProperty("gameover")) {
-			Win(GameInfo.gameover.winstatus);
+			Win();
 			return;
 		}
 
