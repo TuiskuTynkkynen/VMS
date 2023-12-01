@@ -31,7 +31,7 @@ $halfhour = 24 * 3600;
 
 $old_time_stamps = array();
 $new_time_stamps = array();
-$new_time_stamps[] = 0;
+$new_time_stamps[-1] = 0;
 $updated_lobbies = array();
 
 for($i = 0; $i < $config['logosize']; $i++){
@@ -105,6 +105,8 @@ while (true) {
     unset($new_time_stamps);
     unset($updated_lobbies);
 
+    $new_time_stamps[-1] = 0;
+    
     for ($i = 0; $i < $lobbycount; $i++){
         $row = $result->fetch_array(MYSQLI_NUM);
         $lobbyid = $row[0];
@@ -129,8 +131,8 @@ while (true) {
     }
 
 
-    if (!empty($updated_lobbies)){
-        $content = '{"connection":"open", "updatedlobbies":[-1, ';
+    if (count($updated_lobbies) > 1){
+        $content = '{"connection":"open", "updatedlobbies":[';
         $updated_lobby_count = count($updated_lobbies);
         
         for($i = 0; $i < $updated_lobby_count; $i++){
