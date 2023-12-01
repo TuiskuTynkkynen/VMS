@@ -36,11 +36,15 @@ socket.addEventListener("message", (event) => {
 		UpdateLobbies();
 	}
 
-	if (islobbyshown == 1 && info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(selectedlobby))) {
-		UpdateLobby();
+	if (info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(selectedlobby))) {
+		if (islobbyshown == 1) {
+			UpdateLobby();
+		} else {
+			ShowLobby(selectedlobby)
+		}
 	}
 
-	fml();
+	GetUserStatus();
 	GetUsers();
 });
 
@@ -52,12 +56,15 @@ let playertoggle = 0;
 let selectedlobby = -1;
 let islobbiesshown, islobbyshown = 0;
 let isadmin;
+let islobbyactive = 0;
 let inactivitytimer;
 
 function GetUserInfo() {
 	//TODO figure out if this function and GetUserInfo.php or can be combined into AccountAPI
 	document.getElementById("container").classList.remove("hidden");
 	const xhttp = new XMLHttpRequest();
+	xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
+	xhttp.send();
 	xhttp.onload = function () {
 		let serverresponse = this.responseText;
 		console.log(serverresponse);
@@ -79,8 +86,22 @@ function GetUserInfo() {
 			MainMenu();
 		}
 	}
-	xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
+}
+
+function GetUserStatus() {
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("GET", "/NewDBSystem/server/GetUserStatus.php");
 	xhttp.send();
+	xhttp.onload = function () {
+		if (this.responseText == "2") {
+			window.location.replace("/NewDBSystem/VMS.html");
+		} else if (this.responseText == "0") {
+			userstatus = 0;
+		} else if (this.responseText == "1") {
+			userstatus = 1;
+		}
+		fml();
+	}
 }
 
 function SignupLogin() {
@@ -227,10 +248,21 @@ function fml() {
 		} else {
 			document.getElementById("lobby").innerHTML = "Odotetaan...";
 		}
+
+		if (islobbyactive == "1") {
+			document.getElementById("lobby").classList.add("hidden");
+			document.getElementById("spectate").classList.remove("hidden");
+			document.getElementById("spectate").onclick = function () {
+				window.location.assign("/NewDBSystem/Spectate.html");
+			}
+			return;
+		}
 	} else if (userstatus == 2) {
-		alert("TODO make VMS version that works on new db system");
 		window.location.replace("/NewDBSystem/VMS.html");
 	}
+
+	document.getElementById("lobby").classList.remove("hidden");
+	document.getElementById("spectate").classList.add("hidden");
 }
 
 function ShowLobbies() {
@@ -328,6 +360,7 @@ function UpdateLobby() {
 		let lobbyinfo = JSON.parse(x);
 		let playercount = lobbyinfo.Players.length;
 		let str = "";
+		isadmin = false;
 
 		document.getElementById("lobbytittle").innerHTML = lobbyinfo.name;
 
@@ -337,6 +370,8 @@ function UpdateLobby() {
 			} else {
 				document.getElementById("join").onclick = function () { LobbyActions(9); }
 			}
+		} else {
+			islobbyactive = lobbyinfo.isactive;
 		}
 
 		for (let i = 0; i < playercount; i++) {
@@ -344,8 +379,6 @@ function UpdateLobby() {
 			if (lobbyinfo.Players[i].id == lobbyinfo.adminid) {
 				if (lobbyinfo.Players[i].id == SID) {
 					isadmin = true;
-				} else {
-					isadmin = false;
 				}
 				str += '<img src="/imgs/crown_img">';
 				str += '<p style="color:#f2c511">';
@@ -466,7 +499,8 @@ function LobbyActions(action) {
 					document.getElementById("lobbyinputs").classList.add("hidden");
 					document.getElementById("createlobby").classList.add("hidden");
 
-					UpdateLobby(userlobby);
+					
+					ShowLobby(userlobby);
 
 					document.getElementById("clincorrect").innerHTML = "";
 					document.getElementById("lobbypassword").value = "";
