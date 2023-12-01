@@ -290,8 +290,8 @@ function UpdateLobbies() {
 
 	xhttp.onload = function () {
 		let x = this.responseText;
-		console.log(x);
 		if (x != "0") {
+			console.log(x);
 			let lobbies = JSON.parse(x);
 			let lobbycount = lobbies.Lobbies.length;
 			let str = "";
@@ -355,8 +355,21 @@ function UpdateLobby() {
 
 	xhttp.onload = function () {
 		let x = this.responseText;
-		console.log(x);
 
+		if (x == "1") {
+			console.log("incorrect lobby id");
+			islobbyshown = islobbiesshown = 0;
+			selectedlobby = userlobby = -1;
+
+			document.getElementById("lobbygui").classList.add("hidden");
+			document.getElementById("lobbiescontainer").classList.add("hidden");
+			document.getElementById("lobbycontainer").classList.add("hidden");
+			document.getElementById("menu").classList.remove("hidden");
+
+			GetUserInfo();
+		}
+
+		console.log(x);
 		let lobbyinfo = JSON.parse(x);
 		let playercount = lobbyinfo.Players.length;
 		let str = "";

@@ -68,6 +68,7 @@
 		
 		if($lobbycount <= 0){
 			echo 0;
+			exit();
 		}
 
 		$str = '{"Lobbies":[';
@@ -88,11 +89,17 @@
 		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
 		
-		$sql = "SELECT lobbyname, haspassword, adminid FROM lobbies WHERE id=$lobbyid";
+		$sql = "SELECT COUNT(*), lobbyname, haspassword, adminid FROM lobbies WHERE id=$lobbyid";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $m_conn->error; }
 		$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 		
-		$str = '{"name":"'  . $result[0] . '", "haspassword":"' . $result[1] . '", "adminid":"' . $result[2];
+		if($result[0] == 0){
+			echo 1;
+			$m_conn->close();
+			exit();
+		}
+
+		$str = '{"name":"'  . $result[1] . '", "haspassword":"' . $result[2] . '", "adminid":"' . $result[3];
 
 		$m_conn->close();
 
