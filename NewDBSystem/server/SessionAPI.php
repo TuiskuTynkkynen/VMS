@@ -19,6 +19,9 @@
 		case "1":
 			GetUsers($servername, $dbusername, $dbpassword);
 			break;
+		case "2":
+			GetUserStatus($servername, $dbusername, $dbpassword);
+			break;
 	}
 
 	function GetUserInfo($servername, $dbusername, $dbpassword){
@@ -99,6 +102,29 @@
 
 		echo ']}';
 	
+		$m_conn->close();
+	}
+
+	function GetUserStatus($servername, $dbusername, $dbpassword){
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+	
+		//session id needs to be a double quoted string to work with MySQL
+		$phpsessionid = '"' . session_id() . '"';
+		$sql = "SELECT status FROM sessions WHERE php_session_id=$phpsessionid";
+		if ($m_conn->query($sql) === FALSE) {echo "Error: " . $m_conn->error; }
+		$result = $m_conn->query($sql);
+		$row = $result->fetch_array(MYSQLI_NUM);
+	
+		$status = -1;
+	
+		if ($result->num_rows != 0){
+			$status = $row[0];
+		}
+
+		echo $status;
+
 		$m_conn->close();
 	}
 ?>

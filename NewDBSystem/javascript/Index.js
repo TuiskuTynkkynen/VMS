@@ -89,9 +89,9 @@ function GetUserInfo() {
 }
 
 function GetUserStatus() {
-	const xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "/NewDBSystem/server/GetUserStatus.php");
-	xhttp.send();
+	const xhttp = new XMLHttpRequest(); xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=2");
 	xhttp.onload = function () {
 		if (this.responseText == "2") {
 			window.location.replace("/NewDBSystem/VMS.html");
