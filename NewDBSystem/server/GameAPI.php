@@ -293,7 +293,6 @@
 		
 		$newCID = $result[1] + 1;
 		$newCID = ($newCID >= $result[2]) ? 0 : $newCID;
-
 		
 		$sql = "SELECT card0, card1 FROM field WHERE state=0";
 		if ($m_conn->query($sql) === FALSE) { echo "Error: " . $sql . "<br>" . $m_conn->error; }
@@ -461,7 +460,6 @@
 			$result = $m_conn->query($sql)->fetch_array(MYSQLI_NUM);
 			$y = $result[0];
 			$z= $result[1];
-			echo $y .",". $z . "/";
 	
 			$sql = "INSERT INTO hands (playerid, card0, card1) VALUES ($PID, $y, $z)";	
 			if ($m_conn->query($sql) === FALSE) {
