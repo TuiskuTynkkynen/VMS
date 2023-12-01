@@ -104,7 +104,7 @@
 		}
 		echo '], ';
 		
-		$sql = "SELECT card0, card1, state, killsid FROM field";
+		$sql = "SELECT card0, card1, state, killsid FROM field ORDER BY id";
 		$result = $m_conn->query($sql);
 		$fieldcount = $result->num_rows;
 
