@@ -90,6 +90,8 @@
 				$sql[2] = "UPDATE hands SET playerid = playerid-1 WHERE playerid > $PID";
 				$sql[3] = "UPDATE gamestates SET playercount = playercount-1 WHERE playercount != 0";
 				$sql[4] = "UPDATE gamestates SET isactive = 0 WHERE playercount <= 1";
+				$sql[5] = "DELETE FROM field WHERE EXISTS(SELECT id FROM gamestates WHERE ischargeturn = 0 AND chargerid = $PID)";
+				$sql[6] = "UPDATE gamestates SET ischargeturn = 1 WHERE chargerid = $PID";
 				for ($i = 0; $i < count($sql); $i++){
 					if ($m_conn->query($sql[$i]) === FALSE) {echo "Error: " . $sql . "<br>" . $m_conn->error;}
 				}
