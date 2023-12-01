@@ -39,7 +39,7 @@ socket.addEventListener("message", (event) => {
 	if (info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(selectedlobby))) {
 		if (islobbyshown == 1) {
 			UpdateLobby();
-		} else {
+		} else if (selectedlobby < 0){
 			ShowLobby(selectedlobby)
 		}
 	}
@@ -348,6 +348,9 @@ function ShowLobby(index) {
 }
 
 function UpdateLobby() {
+	if (selectedlobby < 0) {
+		return;
+	}
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -521,7 +524,7 @@ function LobbyActions(action) {
 	}
 
 	function LeaveOnLoad() {
-		islobbyshown = 0;
+		islobbyshown = islobbiesshown = 0;
 		selectedlobby = userlobby = -1;
 
 		document.getElementById("lobbygui").classList.add("hidden");
