@@ -227,6 +227,9 @@ function GUI() {
 		}
 	}
 
+	str = '<div class=fieldflex flex id=Field' + Field.length + ' style=width:1> <div style=height:37%> </div></div>'
+	document.getElementById('fieldflexcontainer').innerHTML += str;
+
 	if (MustKill == 1 && CanKill.length > 0) {
 		let result = ParseCard(ChosenCards, 0);
 		let suit = result[0];
@@ -237,8 +240,6 @@ function GUI() {
 			document.getElementById('Field' + CanKill[ActiveCard]).innerHTML += str;
 		} catch (error) {/*console.error(error); */ }
 	}
-	str = '<div class=fieldflex flex id=Field' + Field.length + ' style=width:1> <div style=height:37%> </div></div>'
-	document.getElementById('fieldflexcontainer').innerHTML += str;
 
 	while (1 < document.getElementById("player" + OldChargerId).children[0].childElementCount) {
 		document.getElementById("player" + OldChargerId).children[0].children[1].remove();
