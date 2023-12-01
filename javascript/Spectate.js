@@ -1,7 +1,7 @@
 const beforeUnloadHandler = (event) => {
 	//set updaterequired = true -> needs to update within 1 min or session will be deleted
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+	xhttp.open("POST", "/server/AccountAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=6");
 
@@ -11,7 +11,7 @@ window.addEventListener("beforeunload", beforeUnloadHandler);
 
 // Create WebSocket connection.
 const serverip = location.host;
-const socket = new WebSocket("ws://" + serverip + ":8080/NewDBSystem/server/VMSsocket.php");
+const socket = new WebSocket("ws://" + serverip + ":8080/server/VMSsocket.php");
 
 // Socket error
 socket.addEventListener("error", (event) => {
@@ -54,7 +54,7 @@ let Initialized = 0;
 
 //Ges user info and updaterequired = false 
 const xhttp = new XMLHttpRequest
-xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+xhttp.open("POST", "/server/SessionAPI.php");
 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 xhttp.send("action=0");
 xhttp.onload = function () {
@@ -69,7 +69,7 @@ xhttp.onload = function () {
 		GetPlayers();
 		InactivityNotice(UserInfo.inactive);
 	} else {
-		window.location.replace("/NewDBSystem/VMS.html");
+		window.location.replace("/VMS.html");
 	}
 }
 
@@ -95,7 +95,7 @@ function Input() {
 
 function GetPlayers() {
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.open("POST", "/server/SessionAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=3&lobbyid=" + LobbyId);
 	xhttp.onload = function () {
@@ -103,7 +103,7 @@ function GetPlayers() {
 		console.log(response);
 
 		if (response == "-1") {
-			window.location.replace("/NewDBSystem/VMS.html");
+			window.location.replace("/VMS.html");
 		}
 
 		let playerinfo = JSON.parse(response);
@@ -122,7 +122,7 @@ function GetPlayers() {
 
 function GetGameInfo() {
 	const xhttp = new XMLHttpRequest
-	xhttp.open("POST", "/NewDBSystem/server/GameAPI.php");
+	xhttp.open("POST", "/server/GameAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=0&SID=" + SpectateSessionId);
 	xhttp.onload = function () {
@@ -273,11 +273,11 @@ function Win(winstatus) {
 	document.getElementById("leaderboard").onclick = Leaderboard;
 
 	function MainMenu(event) {
-		window.location.replace("/NewDBSystem/Index.html");
+		window.location.replace("/Index.html");
 		socket.close();
 	}
 	function Leaderboard(event) {
-		window.location.replace("/NewDBSystem/Leaderboard.html");
+		window.location.replace("/Leaderboard.html");
 		socket.close();
 	}
 }

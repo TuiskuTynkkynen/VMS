@@ -1,7 +1,7 @@
 const beforeUnloadHandler = (event) => {
 	//set updaterequired = true -> needs to update within 1 min or session will be deleted
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+	xhttp.open("POST", "/server/AccountAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=6");
 
@@ -11,7 +11,7 @@ window.addEventListener("beforeunload", beforeUnloadHandler);
 
 //set updaterequired = false
 const xhttp = new XMLHttpRequest();
-xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+xhttp.open("POST", "/server/SessionAPI.php");
 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 xhttp.send("action=0");
 
@@ -417,7 +417,7 @@ function Notice() {
 			document.getElementById("container").innerHTML = '<img src="/imgs/bg_image.png" ; id="bg_img">';
 			break;
 		case 29:
-			window.location.assign("/NewDBSystem/Index.html");
+			window.location.assign("/Index.html");
 			break;
 		default:
 			return false;

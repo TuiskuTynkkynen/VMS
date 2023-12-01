@@ -1,7 +1,7 @@
 const beforeUnloadHandler = (event) => {
     //set updaterequired = true -> needs to update within 1 min or session will be deleted
     const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+    xhttp.open("POST", "/server/AccountAPI.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("action=6");
 
@@ -11,7 +11,7 @@ window.addEventListener("beforeunload", beforeUnloadHandler);
 
 //set updaterequired = false
 const xhttp = new XMLHttpRequest();
-xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+xhttp.open("POST", "/server/SessionAPI.php");
 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 xhttp.send("action=0");
 
@@ -23,7 +23,7 @@ function MainMenu() {
     document.getElementById("changename").onclick = function () { action = 2; LogIn(); }
     document.getElementById("changepin").onclick = function () { action = 3; LogIn(); }
     document.getElementById("logout").onclick = function () { action = -1; LogOut(); }
-    document.getElementById("index").onclick = function () { window.location.replace("/NewDBSystem/Index.html"); }
+    document.getElementById("index").onclick = function () { window.location.replace("/Index.html"); }
 }
 
 function LogIn() {
@@ -54,7 +54,7 @@ function LogIn() {
         let PIN = document.getElementById("PIN").value;
 
         const xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+        xhttp.open("POST", "/server/AccountAPI.php");
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("account=" + account + "&password=" + PIN + "&action=0");
 
@@ -110,7 +110,7 @@ function ChangeNick(acc, pin) {
         document.getElementById("nnincorrect").innerHTML = "";
 
         const xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+        xhttp.open("POST", "/server/AccountAPI.php");
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("account=" + acc + "&password=" + pin + "&action=1" + "&name=" + nickname);
 
@@ -120,7 +120,7 @@ function ChangeNick(acc, pin) {
             if (x == "0") {
                 document.getElementById("name").disabled = true;
                 document.getElementById("nick").classList.add("hidden");
-                window.location.replace("/NewDBSystem/Index.html");
+                window.location.replace("/Index.html");
             } else {
                 alert("Ota järjestelmänvalvojaan yhteyttä");
                 document.getElementById("nnincorrect").innerHTML = "Ennalta arvaamaton virhe, ota järjestelmänvalvojaan yhteyttä";
@@ -160,7 +160,7 @@ function ChangeAccountName(acc, pin) {
         document.getElementById("anincorrect").innerHTML = "";
 
         const xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+        xhttp.open("POST", "/server/AccountAPI.php");
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("account=" + acc + "&password=" + pin + "&action=2" + "&accname=" + accname);
 
@@ -170,7 +170,7 @@ function ChangeAccountName(acc, pin) {
             if (x == "0") {
                 document.getElementById("newacc").disabled = true;
                 document.getElementById("accname").classList.add("hidden");
-                window.location.replace("/NewDBSystem/Index.html");
+                window.location.replace("/Index.html");
             } else if (x == "01") {
                 document.getElementById("anincorrect").innerHTML = "Käyttäjänimi ei ole vapaa";
             } else {
@@ -233,7 +233,7 @@ function ChangeAccountPIN(acc, pin) {
         document.getElementById("apincorrect").innerHTML = "";
 
         const xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+        xhttp.open("POST", "/server/AccountAPI.php");
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("account=" + acc + "&password=" + pin + "&action=3" + "&accpassword=" + accPIN);
 
@@ -244,7 +244,7 @@ function ChangeAccountPIN(acc, pin) {
                 document.getElementById("newPIN").disabled = true;
                 document.getElementById("newPIN1").disabled = true;
                 document.getElementById("accpin").classList.add("hidden");
-                window.location.replace("/NewDBSystem/Index.html");
+                window.location.replace("/Index.html");
             } else {
                 alert("Ota järjestelmänvalvojaan yhteyttä");
                 document.getElementById("apincorrect").innerHTML = "Ennalta arvaamaton virhe, ota järjestelmänvalvojaan yhteyttä";
@@ -255,7 +255,7 @@ function ChangeAccountPIN(acc, pin) {
 
 function LogOut() {
     const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+    xhttp.open("POST", "/server/AccountAPI.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("action=4");
 
@@ -263,7 +263,7 @@ function LogOut() {
         x = this.responseText;
         console.log(x);
         if (x == "0") {
-            window.location.replace("/NewDBSystem/Index.html");
+            window.location.replace("/Index.html");
         } else {
             alert("Ota järjestelmänvalvojaan yhteyttä");
             document.getElementById("apincorrect").innerHTML = "Ennalta arvaamaton virhe, ota järjestelmänvalvojaan yhteyttä";

@@ -1,7 +1,7 @@
 const beforeUnloadHandler = (event) => {
 	//set updaterequired = true -> needs to update within 1 min or session will be deleted
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+	xhttp.open("POST", "/server/AccountAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=6");
 
@@ -11,7 +11,7 @@ window.addEventListener("beforeunload", beforeUnloadHandler);
 
 // Create WebSocket connection.
 const serverip = location.host;
-const socket = new WebSocket("ws://" + serverip + ":8080/NewDBSystem/server/VMSsocket.php");
+const socket = new WebSocket("ws://" + serverip + ":8080/server/VMSsocket.php");
 
 // Socket error
 socket.addEventListener("error", (event) => {
@@ -62,7 +62,7 @@ let inactivitytimer;
 function GetUserInfo() {
 	document.getElementById("container").classList.remove("hidden");
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.open("POST", "/server/SessionAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=0");
 	xhttp.onload = function () {
@@ -91,12 +91,12 @@ function GetUserInfo() {
 }
 
 function GetUserStatus() {
-	const xhttp = new XMLHttpRequest(); xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	const xhttp = new XMLHttpRequest(); xhttp.open("POST", "/server/SessionAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=2");
 	xhttp.onload = function () {
 		if (this.responseText == "2") {
-			window.location.replace("/NewDBSystem/VMS.html");
+			window.location.replace("/VMS.html");
 		} else if (this.responseText == "0") {
 			userstatus = 0;
 		} else if (this.responseText == "1") {
@@ -115,7 +115,7 @@ function SignupLogin() {
 	document.getElementById("sup").onclick = SignUp;
 
 	function SignUp() {
-		window.location.assign("/NewDBSystem/SignUp.html");
+		window.location.assign("/SignUp.html");
 	}
 }
 
@@ -152,7 +152,7 @@ function LogIn() {
 		let name = document.getElementById("inputtxt").value;
 
 		const xhttp = new XMLHttpRequest();
-		xhttp.open("POST", "/NewDBSystem/server/AccountAPI.php");
+		xhttp.open("POST", "/server/AccountAPI.php");
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send("account=" + account + "&password=" + password + "&name=" + name + "&status=" + userstatus+ "&action=1");
 
@@ -189,7 +189,7 @@ function MainMenu() {
 	document.getElementById("playerlabel1").onclick = function () { PlayersLabel(1); }
 	document.getElementById("playerlabel2").onclick = function () { PlayersLabel(2); }
 
-	document.getElementById("accountsettings").onclick = function () { window.location.assign("/NewDBSystem/AccountSettings.html"); }
+	document.getElementById("accountsettings").onclick = function () { window.location.assign("/AccountSettings.html"); }
 
 	function Lobby(event) {
 		ShowLobbies();
@@ -204,11 +204,11 @@ function MainMenu() {
 
 	function Tutorial(event) {
 		socket.close();
-		window.location.assign("/NewDBSystem/Tutorial.html");
+		window.location.assign("/Tutorial.html");
 	}
 	function Leaderboard(event) {
 		socket.close();
-		window.location.assign("/NewDBSystem/Leaderboard.html");
+		window.location.assign("/Leaderboard.html");
 	}
 
 	function Players() {
@@ -249,12 +249,12 @@ function fml() {
 		if (islobbyactive == "1") {
 			document.getElementById("spectate").style.color = "";
 			document.getElementById("spectate").onclick = function () {
-				window.location.assign("/NewDBSystem/Spectate.html");
+				window.location.assign("/Spectate.html");
 			}
 			return;
 		}
 	} else if (userstatus == 2) {
-		window.location.replace("/NewDBSystem/VMS.html");
+		window.location.replace("/VMS.html");
 	}
 
 	document.getElementById("spectate").style.color = "#555";
@@ -284,7 +284,7 @@ function ShowLobbies() {
 }
 function UpdateLobbies() {
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+	xhttp.open("POST", "/server/LobbyAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=0");
 
@@ -349,7 +349,7 @@ function UpdateLobby() {
 		return;
 	}
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+	xhttp.open("POST", "/server/LobbyAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=1&id=" + selectedlobby);
 
@@ -415,7 +415,7 @@ function LobbyActions(action) {
 	let xhttp;
 	if (action != 2 && action != 6 && action != 9) {
 		xhttp = new XMLHttpRequest();
-		xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+		xhttp.open("POST", "/server/LobbyAPI.php");
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	}
 
@@ -482,7 +482,7 @@ function LobbyActions(action) {
 			}
 
 			xhttp = new XMLHttpRequest();
-			xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+			xhttp.open("POST", "/server/LobbyAPI.php");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send("action=" + action + "&name=" + lobbyname + "&password=" + lobbypassword);
 
@@ -536,7 +536,7 @@ function LobbyActions(action) {
 	}
 
 	function StartOnLoad() {
-		window.location.replace("/NewDBSystem/VMS.html");
+		window.location.replace("/VMS.html");
 	}
 
 	function LobbySettings() {
@@ -562,7 +562,7 @@ function LobbyActions(action) {
 			}
 
 			xhttp = new XMLHttpRequest();
-			xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+			xhttp.open("POST", "/server/LobbyAPI.php");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send("action=6" + "&id=" + userlobby + "&decksize=" + decksize + "&suitcount=" + suitcount + "&suitsize=" + suitsize + "&handsize=" + handsize);
 
@@ -603,7 +603,7 @@ function LobbyActions(action) {
 			}
 
 			const xhttp = new XMLHttpRequest();
-			xhttp.open("POST", "/NewDBSystem/server/LobbyAPI.php");
+			xhttp.open("POST", "/server/LobbyAPI.php");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send("action=3" + "&id=" + selectedlobby + "&password=" + password);
 
@@ -633,7 +633,7 @@ function LobbyActions(action) {
 
 function GetUsers() {
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.open("POST", "/server/SessionAPI.php");
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("action=1");
 	xhttp.onload = function () {

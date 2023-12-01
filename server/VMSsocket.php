@@ -23,7 +23,7 @@ $mysqli = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
 $serverdirectory = $config['serverdirectory'];
 $sessionid = $status = $lobbyid = "-1 ";
-$cmd = "php -q " . $serverdirectory . "/NewDBSystem/server/DeleteSession.php";
+$cmd = "php -q " . $serverdirectory . "/server/DeleteSession.php";
 
 $minute = 60;
 //TODO set $halfhour value to 30 * 60 instead of dev value
@@ -31,16 +31,21 @@ $halfhour = 24 * 3600;
 
 $old_time_stamps = array();
 $new_time_stamps = array();
-$new_time_stamps[-1] = 0;
+$new_time_stamps[] = 0;
 $updated_lobbies = array();
 
-echo "VMS ws opened\n";
+for($i = 0; $i < $config['logosize']; $i++){
+    usleep(100);
+    echo $config['logo' . $i] . "\r\n";
+}
+
+echo "VMS websocket opened\n";
 // Send messages into WebSocket in a loop.
 while (true) {
     
     if(($newc = socket_accept($server)) !== false)
     {
-        echo "New client has connected\n";
+        echo "New client has connected\r\n";
         $clients[] = $newc;
         // Send WebSocket handshake headers.
         $request = socket_read($newc, 5000);
@@ -88,7 +93,7 @@ while (true) {
             exec($cmd . $arguments .  " > /dev/null &"); 
         }
 
-        echo "Deleted session with id = " . $sessionid;
+        echo "Deleted session with id = " . $sessionid . "\r\n";
     }
 
     $sql = "SELECT id, lastupdated FROM lobbies";
