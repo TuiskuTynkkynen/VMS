@@ -53,9 +53,10 @@ let DeckStr;
 let Initialized = 0;
 
 //Ges user info and updaterequired = false 
-const xhttp = new XMLHttpRequest();
-xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
-xhttp.send();
+const xhttp = new XMLHttpRequest
+xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhttp.send("action=0");
 xhttp.onload = function () {
 	let x = this.responseText;
 	console.log(x);

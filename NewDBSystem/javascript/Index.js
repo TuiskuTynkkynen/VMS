@@ -60,11 +60,11 @@ let islobbyactive = 0;
 let inactivitytimer;
 
 function GetUserInfo() {
-	//TODO figure out if this function and GetUserInfo.php or can be combined into AccountAPI
 	document.getElementById("container").classList.remove("hidden");
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "/NewDBSystem/server/GetUserInfo.php");
-	xhttp.send();
+	xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=0");
 	xhttp.onload = function () {
 		let serverresponse = this.responseText;
 		console.log(serverresponse);

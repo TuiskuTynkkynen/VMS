@@ -1,6 +1,4 @@
 <?php
-	session_start();
-
 	$config = parse_ini_file("config/serverconfig.ini");
 	
 	$servername = $config['databaseservername'];
