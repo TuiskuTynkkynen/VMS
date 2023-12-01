@@ -39,8 +39,8 @@ socket.addEventListener("message", (event) => {
 	if (info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(selectedlobby))) {
 		if (islobbyshown == 1) {
 			UpdateLobby();
-		} else if (selectedlobby < 0){
-			ShowLobby(selectedlobby)
+		} else if (selectedlobby >= 0){
+			ShowLobby(selectedlobby);
 		}
 	}
 
@@ -74,8 +74,10 @@ function GetUserInfo() {
 		} else {
 			userstatus = UserInfo.status;
 			userlobby = UserInfo.lobby;
+
 			if (userstatus != 0) {
 				selectedlobby = userlobby;
+				ShowLobby(selectedlobby);
 			}
 
 			SID = UserInfo.SID;
@@ -180,7 +182,6 @@ function MainMenu() {
 	
 	document.getElementById("lobby").onclick = Lobby;
 	document.getElementById("tutorial").onclick = Tutorial;
-	document.getElementById("setup").onclick = SetUp;
 	document.getElementById("leaderboard").onclick = Leaderboard;
 
 	document.getElementById("playerstoggle").onclick = Players;
@@ -208,10 +209,6 @@ function MainMenu() {
 	function Leaderboard(event) {
 		socket.close();
 		window.location.assign("/NewDBSystem/Leaderboard.html");
-	}
-
-	function SetUp() {
-		window.open("CGSettings.php", "_blanck").focus();
 	}
 
 	function Players() {
@@ -250,8 +247,7 @@ function fml() {
 		}
 
 		if (islobbyactive == "1") {
-			document.getElementById("lobby").classList.add("hidden");
-			document.getElementById("spectate").classList.remove("hidden");
+			document.getElementById("spectate").style.color = "";
 			document.getElementById("spectate").onclick = function () {
 				window.location.assign("/NewDBSystem/Spectate.html");
 			}
@@ -261,8 +257,9 @@ function fml() {
 		window.location.replace("/NewDBSystem/VMS.html");
 	}
 
-	document.getElementById("lobby").classList.remove("hidden");
-	document.getElementById("spectate").classList.add("hidden");
+	document.getElementById("spectate").style.color = "#555";
+	document.getElementById("spectate").onclick = "";
+
 }
 
 function ShowLobbies() {
@@ -409,6 +406,8 @@ function UpdateLobby() {
 			document.getElementById("settings").classList.add("disabled");
 			document.getElementById("startgame").classList.add("disabled");
 		}
+
+		fml();
 	}
 }
 
