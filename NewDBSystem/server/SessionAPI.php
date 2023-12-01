@@ -22,6 +22,9 @@
 		case "2":
 			GetUserStatus($servername, $dbusername, $dbpassword);
 			break;
+		case "3":
+			GetPlayers($servername, $dbusername, $dbpassword);
+			break;
 	}
 
 	function GetUserInfo($servername, $dbusername, $dbpassword){
@@ -125,6 +128,31 @@
 
 		echo $status;
 
+		$m_conn->close();
+	}
+
+	function GetPlayers($servername, $dbusername, $dbpassword){
+		$dbname = "lobby" . $_POST['lobbyid'];
+
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+	
+		$sql = "SELECT id, playerid, nickname FROM players WHERE playerid IS NOT NULL";
+		if ($m_conn->query($sql) === FALSE) { echo "Error reading record: " . $m_conn->error; }
+		$result = $m_conn->query($sql);
+
+		echo '{"Players":[';
+		for($i = 0; $i < $result->num_rows; $i++){
+			$row = $result->fetch_array(MYSQLI_NUM);
+			$SID = $row[0];
+			$PID = $row[1];
+			$nick = $row[2];
+			echo '{"SID":"' . $SID . '", "PID":"' . $PID . '", "nick":"' . $nick . '"}';
+			if ($i != $result->num_rows - 1){ echo ","; }
+		}
+
+		echo ']}';
+	
 		$m_conn->close();
 	}
 ?>

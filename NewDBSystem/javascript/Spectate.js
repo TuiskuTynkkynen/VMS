@@ -95,8 +95,9 @@ function Input() {
 
 function GetPlayers() {
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "/NewDBSystem/server/GetPlayers.php?lobbyid=" + LobbyId);
-	xhttp.send();
+	xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=3&lobbyid=" + LobbyId);
 	xhttp.onload = function () {
 		let response = this.responseText;
 		console.log(response);
