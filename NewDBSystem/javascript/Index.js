@@ -633,8 +633,10 @@ function LobbyActions(action) {
 }
 
 function GetUsers() {
-
 	const xhttp = new XMLHttpRequest();
+	xhttp.open("POST", "/NewDBSystem/server/SessionAPI.php");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("action=1");
 	xhttp.onload = function () {
 		let x = this.responseText;
 		let Users = JSON.parse(x);
@@ -653,8 +655,6 @@ function GetUsers() {
 		document.getElementById('playercount2').innerHTML = "(" + statuses[2] + ")";
 
 	}
-	xhttp.open("GET", "/NewDBSystem/server/GetUsers.php");
-	xhttp.send();
 }
 
 function InactivityNotice(seconds) {

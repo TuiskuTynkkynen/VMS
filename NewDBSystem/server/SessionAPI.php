@@ -16,6 +16,9 @@
 		case "0":
 			GetUserInfo($servername, $dbusername, $dbpassword);
 			break;
+		case "1":
+			GetUsers($servername, $dbusername, $dbpassword);
+			break;
 	}
 
 	function GetUserInfo($servername, $dbusername, $dbpassword){
@@ -73,6 +76,28 @@
 		}
 
 		echo '{"SID":"' . $SID . '", "status":"' . $status . '", "lobby":"' . $lobby . '", "isadmin":"' . $isadmin . '", "inactive":"' . $inactivitytimer . '", "canchangetrump":"' . $canchangetrump . '"}';
+	
+		$m_conn->close();
+	}
+
+	function GetUsers($servername, $dbusername, $dbpassword){
+		$dbname = "vms";
+		$m_conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+		if ($m_conn->connect_error) {die("Connection failed: " . $m_conn->connect_error); }
+	
+		$sql = "SELECT nickname, status FROM sessions";
+		$result = $m_conn->query($sql);
+
+		echo '{"Users":[';
+		for($i = 0; $i < $result->num_rows; $i++){
+			$row = $result->fetch_array(MYSQLI_NUM);
+			$nick = $row[0];
+			$status = $row[1];
+			echo '{"nick":"' . $nick . '", "status":"' . $status . '"}';
+			if ($i != $result->num_rows - 1){ echo ","; }
+		}
+
+		echo ']}';
 	
 		$m_conn->close();
 	}
