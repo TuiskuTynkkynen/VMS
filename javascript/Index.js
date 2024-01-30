@@ -10,7 +10,7 @@ const beforeUnloadHandler = (event) => {
 window.addEventListener("beforeunload", beforeUnloadHandler);
 
 // Create WebSocket connection.
-const serverip = location.host;
+const serverip = location.host.split(':')[0];
 const socket = new WebSocket("ws://" + serverip + ":8080/server/VMSsocket.php");
 
 // Socket error

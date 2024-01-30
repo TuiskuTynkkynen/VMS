@@ -1,0 +1,45 @@
+Database Instructions
+
+
+Create a database called `vms` with the following 3 tables:
+
+-- A table called `lobbies` for storing information about open lobbies
+
+CREATE TABLE IF NOT EXISTS `lobbies` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `lobbyname` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `haspassword` tinyint(1) NOT NULL,
+  `lobbypassword` varchar(255) NOT NULL,
+  `adminid` int UNSIGNED NOT NULL,
+  `playercount` tinyint UNSIGNED NOT NULL,
+  `lastupdated` int UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+
+-- A table called `sessions` for storing session data of currently active users
+
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `php_session_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `userid` tinyint UNSIGNED NOT NULL,
+  `status` tinyint UNSIGNED NOT NULL DEFAULT '0' COMMENT '0/paikalla, 1/aulassa, 2/pelissä',
+  `lobbyid` int UNSIGNED DEFAULT NULL,
+  `nickname` tinytext NOT NULL,
+  `updaterequired` tinyint(1) NOT NULL DEFAULT '0',
+  `last_seen` int UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+
+-- A table called `users` for storing user data(password is encrypted)
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `games` smallint UNSIGNED NOT NULL DEFAULT '0',
+  `wins` smallint UNSIGNED NOT NULL DEFAULT '0',
+  `losses` smallint UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+)

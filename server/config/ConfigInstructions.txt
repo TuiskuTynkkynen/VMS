@@ -1,0 +1,30 @@
+Config Instructions: 
+
+Create a file called "serverconfig.ini" and with the following information
+(comments, marked with //,  are not necessary and can be omitted):
+
+//Database credentials are needed for reading and writing to the database
+//This application needs full read and write access to ´vms´ database
+//and ability to create and destroy databases (lobbies create/destroy own db)
+//Credentials should be double quoted strings followed by a semicolon
+[database]
+databaseservername = ;
+databaseusername = ;
+databasepassword = ;
+
+//Full path to server root directory is needed for some features
+//Directory path should be adouble quoted strings followed by a semicolon
+[directory]
+serverdirectory = ;
+
+//Logo is completely optional
+//If you do not want one set logo size to 0 and delete rest of the logo lines 
+[logo]
+logosize = 7;
+logo0 = "██╗   ██╗███╗   ███╗███████╗";
+logo1 = "██║   ██║████╗ ████║██╔════╝";
+logo2 = "██║   ██║██╔████╔██║███████╗";
+logo3 = "╚██╗ ██╔╝██║╚██╔╝██║╚════██║";
+logo4 = " ╚████╔╝ ██║ ╚═╝ ██║███████║";
+logo5 = "  ╚═══╝  ╚═╝     ╚═╝╚══════╝";
+logo6 = "VIRTUAL MOSKA SIMULATOR V1.0.0";
