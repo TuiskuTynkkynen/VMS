@@ -11,7 +11,7 @@ window.addEventListener("beforeunload", beforeUnloadHandler);
 
 // Create WebSocket connection.
 const serverip = location.host.split(':')[0];
-const socket = new WebSocket("ws://" + serverip + ":8080/server/VMSsocket.php");
+const socket = new WebSocket("ws://" + serverip + "/server/VMSsocket.php");
 
 // Socket error
 socket.addEventListener("error", (event) => {
@@ -298,7 +298,7 @@ function UpdateLobbies() {
 			for (let i = 0; i < lobbycount; i++) {
 				str += '<div id="lobby' + i + '" class="lobbiesbutton">';
 				if (lobbies.Lobbies[i].haspassword == "1") {
-					str += '<img src="/imgs/padlock_img">';
+					str += '<img src="/imgs/padlock_img.png">';
 				}
 				str += '<p>' + lobbies.Lobbies[i].name + '</p></div> ';
 			}
@@ -393,7 +393,7 @@ function UpdateLobby() {
 				if (lobbyinfo.Players[i].id == SID) {
 					isadmin = true;
 				}
-				str += '<img src="/imgs/crown_img">';
+				str += '<img src="/imgs/crown_img.png">';
 				str += '<p style="color:#f2c511">';
 
 			} else if (lobbyinfo.Players[i].id == SID){

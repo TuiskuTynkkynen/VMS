@@ -39,7 +39,7 @@ body {
         font-weight: 525;
         font-size: min(1.5rem, 12cqh);
         line-height: 1.2rem;
-        background-image: url("/imgs/button_img");
+        background-image: url("/imgs/button_img.png");
         background-size: 100% 100%;
         border: none;
         margin: 2.5%;
@@ -130,7 +130,7 @@ body {
         font-weight: 525;
         font-size: 1.5rem;
         line-height: 1.2rem;
-        background-image: url("/imgs/button_img");
+        background-image: url("/imgs/button_img.png");
         background-size: 100% 100%;
         border: none;
     }
@@ -268,7 +268,7 @@ body {
     font-weight: 500;
     font-size: 100%;
     line-height: 1.2rem;
-    background-image: url("/imgs/button_img");
+    background-image: url("/imgs/button_img.png");
     background-size: 100% 100%;
     border: none;
     margin-left: 0.5%;

@@ -1,5 +1,5 @@
 <?php
-//php -q C:\wamp64\www\php_test/socket_test.php
+//php -q VMS/server/VMSsocket.php
 
 $address = $argv[1];
 $port = 8080;
