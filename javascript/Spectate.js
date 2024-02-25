@@ -36,6 +36,8 @@ socket.addEventListener("message", (event) => {
 	}
 });
 
+document.getElementById("leavebutton").onclick = Leave;
+
 let UserSessionId = -1;
 let LobbyId;
 let SpectateSessionId;
@@ -280,6 +282,11 @@ function Win(winstatus) {
 		window.location.replace("/Leaderboard.html");
 		socket.close();
 	}
+}
+
+function Leave() {
+	window.location.replace("/Index.html");
+	socket.close();
 }
 
 function InactivityNotice(seconds) {

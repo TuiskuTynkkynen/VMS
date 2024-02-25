@@ -263,6 +263,20 @@ body {
             color: #f2c511;
         }
 
+#leavebutton {
+    position: absolute;
+    bottom: 4%;
+    right: 2%;
+    width: 4%;
+    border: none;
+    border: none;
+    padding: 0;
+}
+
+    #leavebutton img {
+        width: 100%;
+    }
+
 #notice {
     position: absolute;
     top: 50%;
