@@ -306,7 +306,7 @@ function Notice() {
 			document.getElementById("ntcmain").innerHTML = "Vastustajallesi ajetut kortit näkyvät tässä";
 			document.getElementById("playerinfo").classList.remove("highlight");
 			document.getElementById("fieldflexcontainer").classList.add("highlight");
-			document.getElementById("notice").style.bottom = "";
+			document.getElementById("notice").style.bottom = "25%";
 			document.getElementById("notice").style.left = "";
 			break;
 		case 16:
@@ -335,7 +335,7 @@ function Notice() {
 			field = [];
 			GUI();
 			document.getElementById("ntcmain").innerHTML = "Vastustajasi tappoi kentällä olevat kortit";
-			document.getElementById("notice").style.bottom = "";
+			document.getElementById("notice").style.bottom = "50%";
 			break;
 		case 20:
 			document.getElementById("ntcmain").innerHTML = "Vuoroa merkkaava &ldquo;>&rdquo; symboli on vastustajasi kohdalla, joten on heidän vuoro ajaa";
@@ -351,7 +351,7 @@ function Notice() {
 			document.getElementById("ntcmain").innerHTML = "Vastustaja ajoi sinulle hertta kolmosen";
 			document.getElementById("ntcaux").innerHTML = "Valitse hertta vitonen";
 			document.getElementById("playerinfo").classList.remove("highlight");
-			document.getElementById("notice").style.bottom = "50%";
+			document.getElementById("notice").style.bottom = "62.5%";
 			document.getElementById("notice").style.left = "";
 			return false;
 			break;
