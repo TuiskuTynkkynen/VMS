@@ -32,6 +32,7 @@ socket.addEventListener("message", (event) => {
 	info = JSON.parse(data);
 
 	if (UserSessionId != -1 && info.hasOwnProperty("updatedlobbies") && info.updatedlobbies.includes(Number(LobbyId))) {
+		GetPlayers();
 		GetGameInfo();
 	}
 });
@@ -114,6 +115,14 @@ function GetPlayers() {
 		if (PlayerCount <= 0) {
 			Win();
 			return;
+		}
+
+		//Checks if spectating player should be in game
+		if (playerinfo.Players.some(item => item.SID == UserSessionId)) {
+			console.log("yes");
+			window.location.replace("/VMS.html");
+		} else {
+			console.log("no");
 		}
 
 		SpectateSessionId = playerinfo.Players[ActivePlayer].SID;
