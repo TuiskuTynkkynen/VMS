@@ -131,18 +131,19 @@
 	}
 
 	function LogOut($conn, $phpsessionid, $time){
-		$sql = "SELECT id, php_session_id FROM sessions WHERE php_session_id=$phpsessionid";
+		$sql = "SELECT id FROM sessions WHERE php_session_id=$phpsessionid";
 		$result = $conn->query($sql);
 		$row = $result -> fetch_array(MYSQLI_NUM);
 	
 		if ($result->num_rows > 0){
 			$sessionid = $row[0];
-
-			$sql = "DELETE FROM sessions WHERE id=$sessionid";
+			
+			$sql = "UPDATE sessions SET updaterequired = 1, last_seen=0 WHERE id = $sessionid";
 			if ($conn->query($sql) === FALSE) { echo "Error updating record: " . $conn->error; }
 		}
 
 		$conn->close();
+		sleep(1.5);
 		echo 0;
 		exit();
 	}
