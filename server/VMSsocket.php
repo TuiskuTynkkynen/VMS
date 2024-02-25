@@ -34,6 +34,9 @@ $new_time_stamps = array();
 $new_time_stamps[-1] = 0;
 $updated_lobbies = array();
 
+$last_io_message = -1;
+$last_io_count = 0;
+
 for($i = 0; $i < $config['logosize']; $i++){
     usleep(100);
     echo $config['logo' . $i] . "\r\n";
@@ -45,7 +48,13 @@ while (true) {
     
     if(($newc = socket_accept($server)) !== false)
     {
-        echo "New client has connected\r\n";
+        if ($last_io_message != 1){
+            echo "\r\nNew client has connected";
+            $last_io_message = $last_io_count = 1;
+        } else {
+            echo ", X" . ++$last_io_count;
+        }
+
         $clients[] = $newc;
         // Send WebSocket handshake headers.
         $request = socket_read($newc, 5000);
@@ -63,7 +72,7 @@ while (true) {
     
         $content = '{"connection":"establised"}';
         $response = chr(129) . chr(strlen($content)) . $content;
-        socket_write($newc, $response);
+        if (socket_write($newc, $response) == false){ $last_io_message = -1; };
     }
     
     sleep(1);
@@ -93,7 +102,13 @@ while (true) {
             exec($cmd . $arguments .  " > /dev/null &"); 
         }
 
-        echo "Deleted session with id = " . $sessionid . "\r\n";
+        
+        if ($last_io_message != 2){
+            echo "\r\nDeleted session with id = " . $sessionid;
+            $last_io_message = 2;
+        } else {
+            echo  ", " . $sessionid;
+        }
     }
 
     $sql = "SELECT id, lastupdated FROM lobbies";
@@ -142,20 +157,22 @@ while (true) {
         }
         
         $content .= ']}';
-        echo "Message = " . $content . "\r\n";
+        echo "\r\nMessage = " . $content;
+        $last_io_message = 3;
         
         $x = 0;
         $client_count = count($clients);
+        echo "\r\nMessage sent to clients: ";
         for ($i = 0; $i < $client_count; $i++){
             $response = chr(129) . chr(strlen($content)) . $content;
-            if (socket_write($clients[$i], $response)){
-                echo "Message sent to client " . $i ,"\r\n";
+            if (socket_write($clients[$i], $response) != false){
+                echo $x , ", ";
             } else {
-                echo "closing client " . $x ,"\r\n";
+                echo "\r\nClosing client " . $x;
                 socket_shutdown($clients[$i]);
                 socket_close($clients[$i]);
                 array_splice($clients, $i, 1);
-                echo 'Client disconnected!',"\r\n";
+                echo "\r\nMessage sent to clients: ";
                 $i--;
                 $client_count--;
             }
