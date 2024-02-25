@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `lobbies` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `lobbyname` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `haspassword` tinyint(1) NOT NULL,
-  `lobbypassword` varchar(255) NOT NULL,
+  `lobbypassword` varchar(255),
   `adminid` int UNSIGNED NOT NULL,
   `playercount` tinyint UNSIGNED NOT NULL,
   `lastupdated` int UNSIGNED NOT NULL,

@@ -228,14 +228,14 @@
 		  deckleft smallint UNSIGNED NOT NULL,
 		  winnerid int UNSIGNED DEFAULT NULL,
 		  PRIMARY KEY (id)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		);";
 
 		$sqlarray[1] = "CREATE TABLE IF NOT EXISTS deck (
 		  id int UNSIGNED NOT NULL,
 		  deck0 smallint UNSIGNED NOT NULL,
 		  deck1 smallint UNSIGNED NOT NULL,
 		  PRIMARY KEY (id)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		);";
 
 		$sqlarray[2] = "CREATE TABLE IF NOT EXISTS field (
 		  id int UNSIGNED NOT NULL,
@@ -244,7 +244,7 @@
 		  state tinyint UNSIGNED NOT NULL COMMENT '0 if alive, 1 if dead, 2 if kills another card',
 		  killsid smallint UNSIGNED DEFAULT NULL COMMENT 'if state = 2, is on top of the card with  id=killsid',
 		  PRIMARY KEY (id)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		);";
 		
 		$sqlarray[3] = "CREATE TABLE IF NOT EXISTS hands (
 		  id int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -252,7 +252,7 @@
 		  card0 smallint UNSIGNED NOT NULL,
 		  card1 smallint UNSIGNED NOT NULL,
 		  PRIMARY KEY (id)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		);";
 		
 		$sqlarray[4] = "CREATE TABLE IF NOT EXISTS players (
 		  id int UNSIGNED NOT NULL,
@@ -260,7 +260,7 @@
 		  nickname tinytext NOT NULL,
 		  canchangetrump tinyint(1) UNSIGNED DEFAULT '0',
 		  PRIMARY KEY (id) USING BTREE
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		);";
 		
 		$sqlarray[5] = "CREATE TABLE IF NOT EXISTS settings (
 		  id int UNSIGNED NOT NULL,
@@ -269,7 +269,7 @@
 		  suitsize smallint UNSIGNED NOT NULL DEFAULT '13',
 		  handsize smallint UNSIGNED NOT NULL DEFAULT '6',
 		  PRIMARY KEY (id)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		);";
 		
 		$arr_length = count($sqlarray);
 		for($i = 0; $i < $arr_length; $i++){
@@ -277,8 +277,8 @@
 		}
 		
 		$sql = "INSERT INTO settings
-		(decksize, suitcount, suitsize, handsize)
-		VALUES (52, 4, 13, 6)";
+		(id, decksize, suitcount, suitsize, handsize)
+		VALUES (1, 52, 4, 13, 6)";
 		if($m_conn->query($sql) === FALSE) { echo "Error updating record: " . $m_conn->error; }
 		
 		$sql = "INSERT INTO gamestates
