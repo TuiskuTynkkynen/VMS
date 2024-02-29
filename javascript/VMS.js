@@ -323,8 +323,6 @@ function ParseCard(array, num) {
 	return [suit, value, color];
 }
 
-
-//TODO actually name this and remember func name used in other places
 function GameLoop() {
 	Input('GameLoop');
 	let oldActiveCard = ActiveCard;

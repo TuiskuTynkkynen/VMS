@@ -26,8 +26,7 @@ $sessionid = $status = $lobbyid = "-1 ";
 $cmd = "php -q " . $serverdirectory . "/server/DeleteSession.php";
 
 $minute = 60;
-//TODO set $halfhour value to 30 * 60 instead of dev value
-$halfhour = 24 * 3600;
+$halfhour = 30 * $minute;
 
 $old_time_stamps = array();
 $new_time_stamps = array();

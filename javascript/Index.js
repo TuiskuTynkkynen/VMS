@@ -684,6 +684,3 @@ function InactivityNotice(seconds) {
 		window.location.reload();
 	}
 }
-	//TODO make CG work with lobby system
-	//
-	//TODO (optional) reduce .php server executables to fewer files
